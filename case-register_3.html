@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>سجل القضايا — أرشيفك الذكي للقضايا</title>
+<style>
+:root{--g:#17483b;--g2:#236554;--gold:#b58a48;--sand:#f5f0e6;--ivory:#fcfaf5;--line:#ded5c4;--muted:#6e746e}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 70% 10%,#b58a4817,transparent 28%),var(--ivory);color:#23332e;font-family:Tahoma,Arial,sans-serif}.app{min-height:100vh;display:grid;grid-template-columns:240px 1fr}.side{position:fixed;right:0;top:0;width:240px;height:100vh;padding:28px 18px;background:linear-gradient(#103b31,#0c2d26);color:#fff}.brand{display:flex;align-items:center;gap:12px}.mark{display:grid;place-items:center;width:44px;height:44px;border:1px solid #d8b978;border-radius:13px;color:#e1c486;font:700 23px Georgia}.brand small{display:block;color:#afc1ba;margin-top:3px}.side nav{display:grid;gap:7px;margin-top:50px}.side nav button{border:0;background:none;color:#c7d4cf;text-align:right;padding:13px;border-radius:11px;cursor:pointer}.side nav button.active{background:#ffffff18;color:#fff}.main{grid-column:2;padding:0 min(7vw,85px) 60px}.top{height:75px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:12px}.page{display:none;max-width:940px;margin:55px auto}.page.active{display:block}.hero{text-align:center;max-width:720px;margin:0 auto 30px}.hero small,.eyebrow{color:var(--gold);font-weight:700}.hero h1{font-size:48px;color:var(--g);margin:12px}.hero h1 span{color:var(--gold)}.hero p{color:var(--muted);line-height:1.8}.box{background:#fff;border:1px solid var(--line);border-radius:20px;padding:5px;box-shadow:0 20px 55px #273c3212}.box textarea{width:100%;height:190px;border:0;outline:0;resize:vertical;padding:25px;background:none;font:16px/1.9 Tahoma;color:var(--g)}.bar{border-top:1px solid #eee8dd;padding:12px;display:flex;align-items:center;justify-content:flex-end}.primary,.soft{border:0;border-radius:10px;padding:12px 19px;cursor:pointer;font-weight:700}.primary{background:linear-gradient(135deg,var(--g2),var(--g));color:#fff}.primary:disabled{opacity:.5;cursor:not-allowed}.soft{background:#f1ede5;color:var(--g)}.review,.card,.tree{margin-top:15px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}.review-head,.section-head,.card-head{display:flex;align-items:center;justify-content:space-between}.badge{background:#edf8f1;color:#187346;border:1px solid #cfe8d8;border-radius:20px;padding:6px 10px;font-size:11px}.classification{margin:18px 0;padding:14px;background:#f7f4ed;border-radius:11px;color:var(--g)}.classification b{color:var(--gold);padding:0 9px}.tags span{display:inline-block;margin:5px 0 0 6px;padding:5px 9px;background:#f7f0e3;color:#7d6948;border-radius:12px;font-size:10px}.save{display:block;margin:20px auto}.section-head h1{color:var(--g);font-size:38px}.search{width:100%;padding:15px;border:1px solid var(--line);border-radius:12px;background:#fff;outline:0}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.card h3{color:var(--g)}.card p{color:var(--muted);font-size:12px}.card footer{display:flex;justify-content:space-between;border-top:1px solid #eee;padding-top:12px;margin-top:15px}.card footer button{border:0;background:none;color:#985d4e;cursor:pointer}.card .meta{font-size:10.5px;color:#9aa39c;margin-top:6px}.tree details{border-bottom:1px solid #eee;padding:10px}.tree details:last-child{border:0}.tree summary{cursor:pointer;color:var(--g);font-weight:700}.tree li{margin:10px;color:var(--muted)}.empty{text-align:center;color:var(--muted);padding:55px}.note{margin-top:20px;text-align:center;color:var(--muted);font-size:11px}.mobile{display:none}
+.acct{display:flex;align-items:center;gap:8px}.acct img{width:28px;height:28px;border-radius:50%}.syncbadge{background:#eef1fb;color:#3b4c9e;border:1px solid #d6ddf5;border-radius:20px;padding:4px 9px;font-size:10.5px}
+@media(max-width:760px){.app{display:block}.side{display:none}.main{padding:0 15px 85px}.top{justify-content:center;flex-wrap:wrap;height:auto;padding:10px 0;gap:8px}.page{margin-top:20px}.hero h1{font-size:34px}.grid{grid-template-columns:1fr}.mobile{position:fixed;display:flex;bottom:0;left:0;right:0;height:65px;background:#fff;border-top:1px solid var(--line);justify-content:space-around;z-index:5}.mobile button{border:0;background:none;color:var(--muted)}.mobile button.active{color:var(--g)}}
+</style></head>
+<body><div class="app"><aside class="side"><div class="brand"><span class="mark">س</span><div><b>سجل القضايا</b><small>أرشيفك الذكي للقضايا</small></div></div><nav id="nav"></nav><p style="position:absolute;bottom:20px;color:#afc1ba;font-size:11px" id="storageLine">● جارٍ الاتصال بالسحابة…</p></aside><main class="main"><header class="top"><span id="syncLine">جارٍ التحقق من حالة الدخول…</span><div class="acct" id="acctArea"></div></header><section id="home" class="page active"><div class="hero"><small>مساعدك القانوني المنظّم</small><h1>أدخل القضية <span>بأي طريقة تريد</span></h1><p>اكتب رقم القضية ووصفًا مختصرًا بأي ترتيب، وسنرتبها ونصنفها لك دون افتراض أي واقعة لم تذكرها.</p></div><div class="box"><textarea id="input" placeholder="مثال:&#10;حادث&#10;8789797"></textarea><div class="bar"><button class="soft" onclick="document.getElementById('input').value='4870044548\nمطالبة المدعي المدعى عليه بمبلغ العقد لعدم إتمام العقد وحكم له'">استخدم مثالًا تجريبيًا</button><span style="flex:1"></span><button class="primary" onclick="runAnalysis()">تحليل القضية ←</button></div></div><div id="preview"></div><p class="note"><b style="color:var(--g)">خصوصيتك أولًا:</b> لا نضيف وقائع غير مذكورة، ويمكنك مراجعة كل اقتراح قبل حفظه.</p></section><section id="cases" class="page"><div class="section-head"><div><small class="eyebrow">أرشيفك</small><h1>قضاياك المحفوظة <span class="badge" id="caseCounter">0</span></h1></div><button class="primary" onclick="newCase()">+ إضافة قضية</button></div><input class="search" id="search" placeholder="ابحث بالرقم أو التصنيف أو النص أو الوسوم..." oninput="renderCases()"><div id="caseList"></div></section><section id="taxonomy" class="page"><div class="section-head"><div><small class="eyebrow">تصنيف رئيسي ← تصنيف فرعي ← القضايا</small><h1>دليل التصنيفات</h1></div></div><div id="tree" class="tree"></div></section><section id="trash" class="page"><div class="section-head"><div><small class="eyebrow">سلة المحذوفات</small><h1>القضايا المحذوفة</h1></div></div><div id="trashList"></div></section><section id="settings" class="page"><div class="section-head"><div><small class="eyebrow">الحساب والبيانات</small><h1>الإعدادات</h1></div></div><article class="card" id="acctCard"><h3>الحساب والمزامنة</h3><p>سجّل الدخول بحساب Google لحفظ قضاياك سحابيًا في Firestore ومزامنتها فورًا بين كل أجهزتك.</p><div id="acctSettingsArea"></div></article><article class="card"><h3>النسخة الاحتياطية</h3><p>صدّر جميع بياناتك أو استورد نسخة سابقة إلى حسابك السحابي. لن تتكرر أرقام القضايا الموجودة.</p><div style="display:flex;gap:8px;margin-top:15px"><button class="soft" onclick="exportData()">تصدير JSON</button><button class="primary" onclick="document.getElementById('importFile').click()">استيراد نسخة</button><input hidden id="importFile" type="file" accept="application/json" onchange="importData(event)"></div></article><article class="card"><h3>سياسة الحذف</h3><p>لا تحذف القضايا نهائيًا؛ تنتقل إلى السلة سحابيًا ويمكن استعادتها من أي جهاز في أي وقت.</p><span class="badge">حذف آمن</span></article></section></main><nav class="mobile" id="mobile"></nav></div>
+<script>
+const navItems=[['home','الرئيسية'],['cases','القضايا'],['taxonomy','التصنيفات'],['trash','المحذوفات'],['settings','الإعدادات']];
+let records=[],draft=[];
+const rules=[
+['المركبات والحوادث','حادث مركبة دون تأمين','حادث مركبة',/(حادث|حوادث|تصادم|صدم|دهس|اصطدام|ارتطام|انقلاب).*(بدون|عدم وجود|ما فيه|لا يوجد|منتهي).*(تامين)|تامين.*منتهي/,['حادث','مركبة','دون تأمين']],
+['المركبات والحوادث','تعويض عن حادث مروري','حادث مروري',/(حادث مروري|تصادم.*تعويض|حادث.*سياره)/,['حادث','مركبة']],
+['المركبات والحوادث','حادث مروري غير محدد','حادث مروري',/(حادث|حوادث|تصادم|اصطدام|صدم|دهس|دعس|انقلاب|ارتطام|صدمه)/,['حادث','مركبة']],
+['العقود والالتزامات','مطالبة مالية ناشئة عن عقد','عقد',/(مبلغ العقد|مطالب.*عقد)/,['عقد','مطالبة مالية']],
+['العقود والالتزامات','عدم تنفيذ العقد','عقد',/(عدم تنفيذ العقد|ما نفذ العقد)/,['عقد','عدم تنفيذ']],
+['القروض والديون','إنكار استلام مبلغ القرض','قرض',/(قرض.*انكار.*استلام|قرض.*ما استلم)/,['قرض','إنكار']],
+['القروض والديون','مطالبة بسداد قرض','قرض',/(قرض|سداد.*دين)/,['قرض','دين']],
+['العقارات والملكية','رد ثمن العقار لعدم وجود صك ملكية','عقار',/(ارض.*ما لها صك.*رد|عقار.*بدون صك.*استرجاع)/,['عقار','صك']],
+['الأيمان والبينة','نكول المدعى عليه بسبب غيابه','يمين',/(غياب.*ما ادي اليمين|غاب.*نكول)/,['يمين','نكول']],
+['البيع والمبيع','عيب مبيع','بيع',/(عيب مبيع|مبيع.*معيب|اشتريت.*عيب)/,['بيع','عيب']],
+['الإيجار','مطالبة بأجرة','إيجار',/(عقد ايجار|اجره|ايجار.*ما دفع)/,['إيجار']],
+['الشركات والخدمات','مطالبة بموجب فواتير','خدمات',/(فواتير|فاتوره.*غير مسدده)/,['فواتير']],
+['الكفالة والضمان','مطالبة كفيل','كفالة',/(كفيل|كفاله)/,['كفالة']],
+['الدفوع الشكلية والإجرائية','عدم الاختصاص','دفع إجرائي',/(عدم اختصاص|غير مختصه)/,['اختصاص']]
+];
+const catalog={
+'العقود والالتزامات':['مطالبة مالية ناشئة عن عقد','عدم تنفيذ العقد','عدم إتمام العقد','فسخ العقد','تنفيذ الالتزام','التعويض عن الإخلال بالعقد'],
+'المركبات والحوادث':['حادث مروري غير محدد','تعويض عن حادث مروري','حادث مركبة دون تأمين','مطالبة بقيمة إصلاح مركبة','عدم صفة قائد المركبة'],
+'القروض والديون':['مطالبة بسداد قرض','إنكار استلام مبلغ القرض','إثبات قرض','مطالبة بدين'],
+'العقارات والملكية':['إثبات ملكية عقار','نزاع على صك ملكية','عدم وجود صك','رد ثمن العقار لعدم وجود صك ملكية'],
+'الأيمان والبينة':['توجيه اليمين','نكول عن اليمين','نكول المدعى عليه بسبب غيابه','شهادة شاهد'],
+'البيع والمبيع':['مطالبة بثمن مبيع','تسليم المبيع','فسخ عقد بيع','عيب مبيع'],
+'الإيجار':['مطالبة بأجرة','إخلاء مأجور','فسخ عقد إيجار','عدم سداد الأجرة'],
+'الشركات والخدمات':['مستحقات شريك','محاسبة بين الشركاء','مطالبة بموجب فواتير','عقد خدمات'],
+'الكفالة والضمان':['مطالبة كفيل','رجوع الكفيل على المدين','إنكار الكفالة','ضمان مالي'],
+'الصلح والتنازل':['إثبات صلح','تنفيذ اتفاق صلح','تنازل عن مطالبة','مخالصة'],
+'أتعاب المحاماة والخبرة':['مطالبة بأتعاب محاماة','نزاع في مقدار الأتعاب','أتعاب خبير'],
+'الدفوع الشكلية والإجرائية':['عدم الاختصاص','عدم القبول','عدم الصفة','سبق الفصل في الدعوى'],
+'التنفيذ والالتزامات المالية':['تنفيذ سند تنفيذي','تنفيذ حكم مالي','منازعة تنفيذ'],
+'غير مصنف بدقة':['يحتاج مراجعة يدوية']};
+function norm(s){return s.normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/ة/g,'ه').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\s+/g,' ').trim()}
+function parse(s){let lines=s.split(/\n/).map(x=>x.trim()).filter(Boolean),nums=[],text='',used=false,out=[];for(const l of lines){let n=norm(l);if(/^\d{4,20}$/.test(n)){if(text){out.push([n,text]);used=true}else nums.push(n);continue}let same=l.match(/^([0-9٠-٩]{4,20})\s+(.+)$/);if(same){out.push([norm(same[1]),same[2]]);continue}if(nums.length){nums.forEach(x=>out.push([x,l]));nums=[];text='';used=false}else if(text&&!used)text+=' '+l;else{text=l;used=false}}nums.forEach(x=>out.push([x,'']));return out}
+function analyze(number,text){let n=norm(text),r=rules.find(x=>x[3].test(n));return{caseNumber:number,originalText:text,mainCategory:r?r[0]:'غير مصنف بدقة',subCategory:r?r[1]:'غير مصنف بدقة',caseType:r?r[2]:'غير محدد',tags:r?r[4]:[],confidence:r?86:24,isDeleted:false}}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fmtDate(iso){if(!iso)return '—';try{const d=new Date(iso);return d.toLocaleDateString('ar-SA',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
+
+function runAnalysis(){
+  draft=parse(document.getElementById('input').value).map(x=>analyze(x[0],x[1]));
+  let el=document.getElementById('preview');
+  if(!draft.length){el.innerHTML='<div class="empty">أضف رقم قضية من 4 أرقام على الأقل.</div>';return}
+  el.innerHTML='<div class="section-head"><div><small class="eyebrow">نتيجة التحليل</small><h2>راجع الاقتراح قبل الحفظ</h2></div></div>'+
+    draft.map(x=>`<article class="review"><div class="review-head"><div><small style="color:var(--muted)">رقم القضية</small><br><strong>#${esc(x.caseNumber)}</strong></div><span class="badge">${x.confidence>60?'جديدة':'تحتاج مراجعة'}</span></div><div class="classification">${esc(x.mainCategory)}<b>←</b>${esc(x.subCategory)}</div><p>${esc(x.originalText)||'لا يوجد وصف'}</p><p style="font-size:11px;color:var(--muted)">درجة الثقة <b style="color:var(--g)">${x.confidence}%</b></p><div class="tags">${x.tags.map(t=>`<span>#${esc(t)}</span>`).join('')}</div><details style="margin-top:15px"><summary style="cursor:pointer;color:var(--g)">تفاصيل إضافية</summary><p>نوع القضية: ${esc(x.caseType)}</p><p>النص الأصلي: ${esc(x.originalText)||'غير مذكور'}</p></details></article>`).join('')+
+    `<button class="primary save" id="btnSaveDraft" ${window.__authUid?'':'disabled'} onclick="saveDraft()">${window.__authUid?'اعتماد الاقتراح وحفظ سحابيًا ☁️':'سجّل الدخول أولًا لحفظ القضية سحابيًا'}</button>`;
+}
+
+/* ============================= حفظ/تعديل/حذف — كل شيء يكتب مباشرة إلى Firestore (autosave، لا يوجد تخزين محلي) ============================= */
+async function saveDraft(){
+  if(!window.__authUid){alert('سجّل الدخول بحساب Google أولًا لحفظ القضية.');return}
+  const btn=document.getElementById('btnSaveDraft');
+  if(btn){btn.disabled=true;btn.textContent='جارٍ الحفظ سحابيًا... ☁️';}
+  setSync('جارٍ الحفظ ☁️');
+  const existing=new Set(records.map(x=>String(x.caseNumber)));
+  const toSave=draft.filter(x=>!existing.has(String(x.caseNumber)));
+  try{
+    const now=new Date().toISOString();
+    for(const c of toSave){
+      c.createdAt=now;c.updatedAt=now;
+      await window.__cloudSetCase(c);
+    }
+    setSync('تم الحفظ ☁️');
+  }catch(err){
+    console.error(err);setSync('تعذّر الحفظ ⚠️');alert('تعذّر الحفظ سحابيًا: '+(err.message||err));
+  }
+  draft=[];document.getElementById('input').value='';document.getElementById('preview').innerHTML='';document.getElementById('search').value='';show('cases');
+}
+function exportData(){let blob=new Blob([JSON.stringify({schemaVersion:1,exportedAt:new Date().toISOString(),cases:records},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='case-register-backup.json';a.click();URL.revokeObjectURL(a.href)}
+async function importData(e){
+  if(!window.__authUid){alert('سجّل الدخول أولًا لاستيراد نسخة إلى حسابك السحابي.');e.target.value='';return}
+  try{
+    let data=JSON.parse(await e.target.files[0].text()),rows=Array.isArray(data)?data:data.cases;
+    if(!Array.isArray(rows))throw new Error('بنية غير متوقعة');
+    let existing=new Set(records.map(x=>String(x.caseNumber)));
+    let added=0;
+    setSync('جارٍ استيراد النسخة الاحتياطية ☁️');
+    for(const row of rows){
+      if(!row||!row.caseNumber||existing.has(String(row.caseNumber)))continue;
+      const now=new Date().toISOString();
+      await window.__cloudSetCase({
+        caseNumber:String(row.caseNumber),originalText:String(row.originalText||''),
+        mainCategory:row.mainCategory||'غير مصنف بدقة',subCategory:row.subCategory||'غير مصنف بدقة',
+        caseType:row.caseType||'غير محدد',tags:Array.isArray(row.tags)?row.tags:[],
+        confidence:row.confidence||0,isDeleted:!!row.isDeleted,
+        createdAt:row.createdAt||now,updatedAt:now
+      });
+      added++;
+    }
+    setSync('تم الحفظ ☁️');
+    alert('تم استيراد '+added+' قضية جديدة بنجاح إلى حسابك السحابي');
+  }catch(err){console.error(err);alert('ملف النسخة الاحتياطية غير صالح: '+(err.message||err))}
+  e.target.value='';
+}
+async function trash(n,restore=false){
+  if(!window.__authUid)return;
+  setSync('جارٍ الحفظ ☁️');
+  try{
+    await window.__cloudUpdateCase(n,{isDeleted:!restore,updatedAt:new Date().toISOString()});
+    setSync('تم الحفظ ☁️');
+  }catch(err){console.error(err);setSync('تعذّر الحفظ ⚠️');}
+}
+
+/* ============================= العرض ============================= */
+function renderCases(){
+  let q=document.getElementById('search').value,
+      rows=records.filter(x=>!x.isDeleted&&JSON.stringify(x).includes(q));
+  rows.sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));
+  document.getElementById('caseCounter').textContent=records.filter(x=>!x.isDeleted).length;
+  document.getElementById('caseList').innerHTML=rows.length?`<div class="grid">${rows.map(x=>`<article class="card"><div class="card-head"><strong>#${esc(x.caseNumber)}</strong><span class="badge">${esc(x.caseType)}</span></div><h3>${esc(x.subCategory)}</h3><p>${esc(x.originalText)}</p><div class="meta">أُنشئت: ${fmtDate(x.createdAt)} — آخر تعديل: ${fmtDate(x.updatedAt)}</div><footer><span>${esc(x.mainCategory)}</span><button onclick="trash('${esc(x.caseNumber)}')">نقل إلى السلة</button></footer></article>`).join('')}</div>`:(window.__authUid?'<div class="empty">لا توجد قضايا بعد</div>':'<div class="empty">سجّل الدخول بحساب Google من الأعلى لعرض قضاياك المحفوظة سحابيًا</div>');
+}
+function renderTrash(){
+  let rows=records.filter(x=>x.isDeleted);
+  document.getElementById('trashList').innerHTML=rows.length?rows.map(x=>`<article class="card"><strong>#${esc(x.caseNumber)}</strong><h3>${esc(x.subCategory)}</h3><div class="meta">حُذفت: ${fmtDate(x.updatedAt)}</div><footer><span>${esc(x.mainCategory)}</span><button onclick="trash('${esc(x.caseNumber)}',true)">استعادة</button></footer></article>`).join(''):'<div class="empty">السلة فارغة</div>';
+}
+function renderTree(){
+  let rows=records.filter(x=>!x.isDeleted);
+  document.getElementById('tree').innerHTML=Object.entries(catalog).map(([m,subs])=>{
+    let count=rows.filter(x=>x.mainCategory===m).length;
+    return `<details><summary>${esc(m)} <span class="badge" style="float:left">${count}</span></summary><ul>${subs.map(s=>`<li>${esc(s)} — ${rows.filter(x=>x.subCategory===s).length} قضية</li>`).join('')}</ul></details>`;
+  }).join('');
+}
+function newCase(){document.getElementById('search').value='';draft=[];document.getElementById('preview').innerHTML='';show('home')}
+function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===id));if(id==='cases')renderCases();if(id==='trash')renderTrash();if(id==='taxonomy')renderTree()}
+function initNav(where){document.getElementById(where).innerHTML=navItems.map(x=>`<button data-page="${x[0]}" onclick="show('${x[0]}')">${x[1]}</button>`).join('')}
+function setSync(text){const l=document.getElementById('syncLine');if(l)l.textContent=text;}
+initNav('nav');initNav('mobile');show('home');
+</script>
+
+<!-- ====================== Firebase: تسجيل دخول Google + Firestore بديلاً كاملاً عن localStorage ======================
+     عدّل القيم بين FIREBASE_CONFIG_START و FIREBASE_CONFIG_END بإعدادات مشروعك الحقيقية
+     (Firebase Console → Project settings → Your apps → Web app → SDK setup and configuration). -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, updateDoc, collection, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+// FIREBASE_CONFIG_START
+const firebaseConfig = {
+  apiKey: "AIzaSyDZ4TdRkD4JNoQsyl_f4Io4qSne1zikIbQ",
+  authDomain: "case-register.firebaseapp.com",
+  projectId: "case-register",
+  storageBucket: "case-register.firebasestorage.app",
+  messagingSenderId: "289439690308",
+  appId: "1:289439690308:web:07f7a23646460334679611"
+};
+// FIREBASE_CONFIG_END
+
+const configLooksReal = firebaseConfig.apiKey && !firebaseConfig.apiKey.includes('ضع-قيمتك-هنا');
+const acctArea = document.getElementById('acctArea');
+const acctSettingsArea = document.getElementById('acctSettingsArea');
+const storageLine = document.getElementById('storageLine');
+const syncLine = document.getElementById('syncLine');
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function renderSignedOutUI(){
+  const btnHtml = '<button class="soft" id="btnGoogleIn">تسجيل الدخول بحساب Google</button>';
+  acctArea.innerHTML = btnHtml;
+  acctSettingsArea.innerHTML = btnHtml;
+  storageLine.textContent='● سجّل الدخول لعرض قضاياك السحابية';
+  syncLine.textContent='غير مسجَّل الدخول';
+  window.__authUid = null;
+  if(typeof records!=='undefined'){records.length=0;}
+  if(typeof renderCases==='function'){renderCases();renderTrash();renderTree();}
+}
+function renderSignedInUI(user){
+  const html = '<div class="acct">'+(user.photoURL?'<img src="'+user.photoURL+'">':'')+
+    '<span>'+esc(user.displayName||user.email)+'</span>'+
+    '<button class="soft" id="btnGoogleOut">خروج</button></div>';
+  acctArea.innerHTML = html;
+  acctSettingsArea.innerHTML = '<div class="acct">'+(user.photoURL?'<img src="'+user.photoURL+'">':'')+
+    '<span><strong>'+esc(user.displayName||'')+'</strong><br><small>'+esc(user.email||'')+'</small></span>'+
+    '<span style="flex:1"></span><button class="soft" id="btnGoogleOut2">تسجيل الخروج</button></div>';
+  storageLine.textContent='● مزامنة سحابية فعّالة (Firestore)';
+}
+
+if(!configLooksReal){
+  acctArea.innerHTML='<span class="syncbadge">لم يتم ضبط Firebase بعد</span>';
+  acctSettingsArea.innerHTML='<p style="font-size:11px;color:var(--muted)">ضع إعدادات مشروعك الحقيقية داخل الملف بين FIREBASE_CONFIG_START وFIREBASE_CONFIG_END لتفعيل تسجيل الدخول والمزامنة السحابية.</p>';
+  storageLine.textContent='● لم يتم ضبط Firebase — لا يمكن الحفظ حاليًا';
+  syncLine.textContent='إعداد Firebase غير مكتمل';
+} else {
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+  let unsub = null;
+
+  async function doSignIn(){
+    try{ await signInWithPopup(auth, provider); }
+    catch(err){ console.error(err); alert('تعذّر تسجيل الدخول: '+(err.code||err.message)); }
+  }
+  async function doSignOut(){
+    if(unsub){unsub();unsub=null;}
+    await signOut(auth);
+  }
+
+  window.__cloudSetCase = async (caseObj) => {
+    if(!window.__authUid) throw new Error('غير مسجَّل الدخول');
+    await setDoc(doc(db,'users',window.__authUid,'cases',String(caseObj.caseNumber)), caseObj, {merge:true});
+  };
+  window.__cloudUpdateCase = async (caseNumber, patch) => {
+    if(!window.__authUid) throw new Error('غير مسجَّل الدخول');
+    await updateDoc(doc(db,'users',window.__authUid,'cases',String(caseNumber)), patch);
+  };
+
+  onAuthStateChanged(auth, user => {
+    if(unsub){unsub();unsub=null;}
+    if(user){
+      window.__authUid = user.uid;
+      renderSignedInUI(user);
+      unsub = onSnapshot(collection(db,'users',user.uid,'cases'), snap => {
+        const list = snap.docs.map(d=>d.data());
+        if(typeof records!=='undefined'){records.length=0;records.push(...list);}
+        if(typeof renderCases==='function'){renderCases();renderTrash();renderTree();}
+        syncLine.textContent='تم الحفظ ☁️ — آخر مزامنة الآن';
+      }, err => { console.error(err); syncLine.textContent='تعذّر تحميل القضايا ⚠️'; });
+    } else {
+      window.__authUid = null;
+      renderSignedOutUI();
+    }
+  });
+
+  // تفويض النقر لأزرار الدخول/الخروج (تُنشأ ديناميكيًا)
+  document.addEventListener('click', e=>{
+    if(e.target && e.target.id==='btnGoogleIn') doSignIn();
+    if(e.target && (e.target.id==='btnGoogleOut'||e.target.id==='btnGoogleOut2')) doSignOut();
+  });
+}
+</script>
+</body></html>

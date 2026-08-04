@@ -12,9 +12,10 @@
 <script>
 const navItems=[['home','الرئيسية'],['cases','القضايا'],['taxonomy','التصنيفات'],['trash','المحذوفات'],['settings','الإعدادات']];
 let records=[],draft=[];
-const rules=[
+let rules=[
 ['المركبات والحوادث','حادث مركبة دون تأمين','حادث مركبة',/(حادث|حوادث|تصادم|صدم|دهس|اصطدام|ارتطام|انقلاب).*(بدون|عدم وجود|ما فيه|لا يوجد|منتهي).*(تامين)|تامين.*منتهي/,['حادث','مركبة','دون تأمين']],
 ['المركبات والحوادث','تعويض عن حادث مروري','حادث مروري',/(حادث مروري|تصادم.*تعويض|حادث.*سياره)/,['حادث','مركبة']],
+['المركبات والحوادث','أجرة مركبات','مركبات',/(اجره|أجرة|ايجار).{0,10}(مركبه|مركبات|سياره|سيارات)|(مركبه|مركبات|سياره|سيارات).{0,10}(اجره|أجرة|ايجار)/,['مركبات','أجرة']],
 ['المركبات والحوادث','حادث مروري غير محدد','حادث مروري',/(حادث|حوادث|تصادم|اصطدام|صدم|دهس|دعس|انقلاب|ارتطام|صدمه)/,['حادث','مركبة']],
 ['العقود والالتزامات','مطالبة مالية ناشئة عن عقد','عقد',/(مبلغ العقد|مطالب.*عقد)/,['عقد','مطالبة مالية']],
 ['العقود والالتزامات','عدم تنفيذ العقد','عقد',/(عدم تنفيذ العقد|ما نفذ العقد)/,['عقد','عدم تنفيذ']],
@@ -28,9 +29,9 @@ const rules=[
 ['الكفالة والضمان','مطالبة كفيل','كفالة',/(كفيل|كفاله)/,['كفالة']],
 ['الدفوع الشكلية والإجرائية','عدم الاختصاص','دفع إجرائي',/(عدم اختصاص|غير مختصه)/,['اختصاص']]
 ];
-const catalog={
+let catalog={
 'العقود والالتزامات':['مطالبة مالية ناشئة عن عقد','عدم تنفيذ العقد','عدم إتمام العقد','فسخ العقد','تنفيذ الالتزام','التعويض عن الإخلال بالعقد'],
-'المركبات والحوادث':['حادث مروري غير محدد','تعويض عن حادث مروري','حادث مركبة دون تأمين','مطالبة بقيمة إصلاح مركبة','عدم صفة قائد المركبة'],
+'المركبات والحوادث':['حادث مروري غير محدد','تعويض عن حادث مروري','حادث مركبة دون تأمين','مطالبة بقيمة إصلاح مركبة','عدم صفة قائد المركبة','أجرة مركبات'],
 'القروض والديون':['مطالبة بسداد قرض','إنكار استلام مبلغ القرض','إثبات قرض','مطالبة بدين'],
 'العقارات والملكية':['إثبات ملكية عقار','نزاع على صك ملكية','عدم وجود صك','رد ثمن العقار لعدم وجود صك ملكية'],
 'الأيمان والبينة':['توجيه اليمين','نكول عن اليمين','نكول المدعى عليه بسبب غيابه','شهادة شاهد'],
@@ -43,19 +44,58 @@ const catalog={
 'الدفوع الشكلية والإجرائية':['عدم الاختصاص','عدم القبول','عدم الصفة','سبق الفصل في الدعوى'],
 'التنفيذ والالتزامات المالية':['تنفيذ سند تنفيذي','تنفيذ حكم مالي','منازعة تنفيذ'],
 'غير مصنف بدقة':['يحتاج مراجعة يدوية']};
+let customCategories=[]; // {id, main, sub, caseType, pattern, tags} — مخزّنة سحابيًا لكل مستخدم
+function caseTypeForSub(sub){const r=rules.find(x=>x[1]===sub);return r?r[2]:'';}
+function isCustomCategory(main,sub){return customCategories.some(c=>c.main===main&&c.sub===sub);}
+function addCustomCategoryRuntime(entry){
+  if(!catalog[entry.main])catalog[entry.main]=[];
+  if(!catalog[entry.main].includes(entry.sub))catalog[entry.main].push(entry.sub);
+  const parts=(entry.pattern||'').split(',').map(s=>norm(s.trim())).filter(Boolean).map(s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+  const re=parts.length?new RegExp(parts.join('|')):/$^/;
+  rules.unshift([entry.main,entry.sub,entry.caseType||entry.main,re,(entry.tags||[]).length?entry.tags:[entry.sub]]);
+}
+function removeCustomCategoryRuntime(id){
+  const entry=customCategories.find(c=>c.id===id);
+  if(!entry)return;
+  rules=rules.filter(r=>!(r[0]===entry.main&&r[1]===entry.sub));
+  if(catalog[entry.main])catalog[entry.main]=catalog[entry.main].filter(s=>s!==entry.sub);
+  customCategories=customCategories.filter(c=>c.id!==id);
+}
 function norm(s){return s.normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/ة/g,'ه').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\s+/g,' ').trim()}
 function parse(s){let lines=s.split(/\n/).map(x=>x.trim()).filter(Boolean),nums=[],text='',used=false,out=[];for(const l of lines){let n=norm(l);if(/^\d{4,20}$/.test(n)){if(text){out.push([n,text]);used=true}else nums.push(n);continue}let same=l.match(/^([0-9٠-٩]{4,20})\s+(.+)$/);if(same){out.push([norm(same[1]),same[2]]);continue}if(nums.length){nums.forEach(x=>out.push([x,l]));nums=[];text='';used=false}else if(text&&!used)text+=' '+l;else{text=l;used=false}}nums.forEach(x=>out.push([x,'']));return out}
 function analyze(number,text){let n=norm(text),r=rules.find(x=>x[3].test(n));return{caseNumber:number,originalText:text,mainCategory:r?r[0]:'غير مصنف بدقة',subCategory:r?r[1]:'غير مصنف بدقة',caseType:r?r[2]:'غير محدد',tags:r?r[4]:[],confidence:r?86:24,isDeleted:false}}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function fmtDate(iso){if(!iso)return '—';try{const d=new Date(iso);return d.toLocaleDateString('ar-SA',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
 
+function mainOptionsHTML(selected){return Object.keys(catalog).map(m=>`<option value="${esc(m)}" ${m===selected?'selected':''}>${esc(m)}</option>`).join('');}
+function subOptionsHTML(main,selected){return (catalog[main]||[]).map(s=>`<option value="${esc(s)}" ${s===selected?'selected':''}>${esc(s)}</option>`).join('');}
+
 function runAnalysis(){
   draft=parse(document.getElementById('input').value).map(x=>analyze(x[0],x[1]));
   let el=document.getElementById('preview');
   if(!draft.length){el.innerHTML='<div class="empty">أضف رقم قضية من 4 أرقام على الأقل.</div>';return}
   el.innerHTML='<div class="section-head"><div><small class="eyebrow">نتيجة التحليل</small><h2>راجع الاقتراح قبل الحفظ</h2></div></div>'+
-    draft.map(x=>`<article class="review"><div class="review-head"><div><small style="color:var(--muted)">رقم القضية</small><br><strong>#${esc(x.caseNumber)}</strong></div><span class="badge">${x.confidence>60?'جديدة':'تحتاج مراجعة'}</span></div><div class="classification">${esc(x.mainCategory)}<b>←</b>${esc(x.subCategory)}</div><p>${esc(x.originalText)||'لا يوجد وصف'}</p><p style="font-size:11px;color:var(--muted)">درجة الثقة <b style="color:var(--g)">${x.confidence}%</b></p><div class="tags">${x.tags.map(t=>`<span>#${esc(t)}</span>`).join('')}</div><details style="margin-top:15px"><summary style="cursor:pointer;color:var(--g)">تفاصيل إضافية</summary><p>نوع القضية: ${esc(x.caseType)}</p><p>النص الأصلي: ${esc(x.originalText)||'غير مذكور'}</p></details></article>`).join('')+
+    draft.map((x,i)=>`<article class="review" data-i="${i}"><div class="review-head"><div><small style="color:var(--muted)">رقم القضية</small><br><strong>#${esc(x.caseNumber)}</strong></div><span class="badge">${x.confidence>60?'جديدة':'تحتاج مراجعة'}</span></div>
+      <div class="fields" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0">
+        <div><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي</label><select class="editMain" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px">${mainOptionsHTML(x.mainCategory)}</select></div>
+        <div><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي</label><select class="editSub" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px">${subOptionsHTML(x.mainCategory,x.subCategory)}</select></div>
+      </div>
+      <p>${esc(x.originalText)||'لا يوجد وصف'}</p><p style="font-size:11px;color:var(--muted)">درجة الثقة <b style="color:var(--g)">${x.confidence}%</b></p><div class="tags">${x.tags.map(t=>`<span>#${esc(t)}</span>`).join('')}</div><details style="margin-top:15px"><summary style="cursor:pointer;color:var(--g)">تفاصيل إضافية</summary><p>نوع القضية: <span class="typeShow">${esc(x.caseType)}</span></p><p>النص الأصلي: ${esc(x.originalText)||'غير مذكور'}</p></details></article>`).join('')+
     `<button class="primary save" id="btnSaveDraft" ${window.__authUid?'':'disabled'} onclick="saveDraft()">${window.__authUid?'اعتماد الاقتراح وحفظ سحابيًا ☁️':'سجّل الدخول أولًا لحفظ القضية سحابيًا'}</button>`;
+  el.querySelectorAll('.review').forEach(card=>{
+    const i=+card.dataset.i, mainSel=card.querySelector('.editMain'), subSel=card.querySelector('.editSub');
+    mainSel.onchange=()=>{
+      draft[i].mainCategory=mainSel.value;
+      subSel.innerHTML=subOptionsHTML(mainSel.value,(catalog[mainSel.value]||[])[0]);
+      subSel.dispatchEvent(new Event('change'));
+    };
+    subSel.onchange=()=>{
+      draft[i].subCategory=subSel.value;
+      draft[i].caseType=caseTypeForSub(subSel.value)||mainSel.value;
+      draft[i].confidence=99;
+      card.querySelector('.typeShow').textContent=draft[i].caseType;
+    };
+  });
 }
 
 /* ============================= حفظ/تعديل/حذف — كل شيء يكتب مباشرة إلى Firestore (autosave، لا يوجد تخزين محلي) ============================= */
@@ -114,23 +154,67 @@ async function trash(n,restore=false){
 }
 
 /* ============================= العرض ============================= */
+let activeSubFilter=null; // عند الضغط على تصنيف فرعي من الدليل
 function renderCases(){
   let q=document.getElementById('search').value,
       rows=records.filter(x=>!x.isDeleted&&JSON.stringify(x).includes(q));
+  if(activeSubFilter)rows=rows.filter(x=>x.subCategory===activeSubFilter);
   rows.sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));
   document.getElementById('caseCounter').textContent=records.filter(x=>!x.isDeleted).length;
-  document.getElementById('caseList').innerHTML=rows.length?`<div class="grid">${rows.map(x=>`<article class="card"><div class="card-head"><strong>#${esc(x.caseNumber)}</strong><span class="badge">${esc(x.caseType)}</span></div><h3>${esc(x.subCategory)}</h3><p>${esc(x.originalText)}</p><div class="meta">أُنشئت: ${fmtDate(x.createdAt)} — آخر تعديل: ${fmtDate(x.updatedAt)}</div><footer><span>${esc(x.mainCategory)}</span><button onclick="trash('${esc(x.caseNumber)}')">نقل إلى السلة</button></footer></article>`).join('')}</div>`:(window.__authUid?'<div class="empty">لا توجد قضايا بعد</div>':'<div class="empty">سجّل الدخول بحساب Google من الأعلى لعرض قضاياك المحفوظة سحابيًا</div>');
+  const chip=activeSubFilter?`<div style="margin-bottom:10px"><span class="badge">مصفّى حسب: ${esc(activeSubFilter)} <a href="#" onclick="activeSubFilter=null;renderCases();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span></div>`:'';
+  document.getElementById('caseList').innerHTML=chip+(rows.length?`<div class="grid">${rows.map(x=>`<article class="card"><div class="card-head"><strong>#${esc(x.caseNumber)}</strong><span class="badge">${esc(x.caseType)}</span></div><h3>${esc(x.subCategory)}</h3><p>${esc(x.originalText)}</p><div class="meta">أُنشئت: ${fmtDate(x.createdAt)} — آخر تعديل: ${fmtDate(x.updatedAt)}</div><footer><span>${esc(x.mainCategory)}</span><button onclick="trash('${esc(x.caseNumber)}')">نقل إلى السلة</button></footer></article>`).join('')}</div>`:(window.__authUid?'<div class="empty">لا توجد قضايا مطابقة</div>':'<div class="empty">سجّل الدخول بحساب Google من الأعلى لعرض قضاياك المحفوظة سحابيًا</div>'));
 }
 function renderTrash(){
   let rows=records.filter(x=>x.isDeleted);
   document.getElementById('trashList').innerHTML=rows.length?rows.map(x=>`<article class="card"><strong>#${esc(x.caseNumber)}</strong><h3>${esc(x.subCategory)}</h3><div class="meta">حُذفت: ${fmtDate(x.updatedAt)}</div><footer><span>${esc(x.mainCategory)}</span><button onclick="trash('${esc(x.caseNumber)}',true)">استعادة</button></footer></article>`).join(''):'<div class="empty">السلة فارغة</div>';
 }
+function goToSub(sub){activeSubFilter=sub;show('cases');}
 function renderTree(){
   let rows=records.filter(x=>!x.isDeleted);
-  document.getElementById('tree').innerHTML=Object.entries(catalog).map(([m,subs])=>{
-    let count=rows.filter(x=>x.mainCategory===m).length;
-    return `<details><summary>${esc(m)} <span class="badge" style="float:left">${count}</span></summary><ul>${subs.map(s=>`<li>${esc(s)} — ${rows.filter(x=>x.subCategory===s).length} قضية</li>`).join('')}</ul></details>`;
-  }).join('');
+  document.getElementById('tree').innerHTML=
+    `<div style="margin-bottom:14px"><button class="soft" onclick="toggleAddCategoryForm()">+ إضافة تصنيف فرعي جديد</button></div>`+
+    `<div id="addCategoryForm" style="display:none;background:#f7f4ed;border-radius:12px;padding:14px;margin-bottom:16px">
+      <div class="fields" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي</label><select id="newCatMain" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px">${mainOptionsHTML()}</select></div>
+        <div><label style="font-size:11px;color:var(--muted)">اسم التصنيف الفرعي الجديد</label><input id="newCatSub" placeholder="مثال: أجرة مركبات" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px"></div>
+        <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">كلمات دالة (مفصولة بفاصلة) — تُستخدم للتعرّف على هذا التصنيف تلقائيًا مستقبلًا</label><input id="newCatKeywords" placeholder="مثال: اجرة مركبة, ايجار سياره" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px"></div>
+        <div><label style="font-size:11px;color:var(--muted)">نوع القضية (اختياري)</label><input id="newCatType" placeholder="مثال: مركبات" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px"></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px"><button class="primary" onclick="submitAddCategory()">إضافة</button><button class="soft" onclick="toggleAddCategoryForm()">إلغاء</button></div>
+    </div>`+
+    Object.entries(catalog).map(([m,subs])=>{
+      let count=rows.filter(x=>x.mainCategory===m).length;
+      return `<details><summary>${esc(m)} <span class="badge" style="float:left">${count}</span></summary><ul>${subs.map(s=>{
+        const n=rows.filter(x=>x.subCategory===s).length;
+        const del=isCustomCategory(m,s)?` <a href="#" onclick="event.stopPropagation();deleteCustomCategory('${esc(m)}','${esc(s)}');return false" style="color:#a1443a;text-decoration:none;font-weight:700;margin-inline-start:6px">حذف</a>`:'';
+        return `<li style="cursor:pointer" onclick="goToSub('${esc(s)}')">${esc(s)} — ${n} قضية${del}</li>`;
+      }).join('')}</ul></details>`;
+    }).join('');
+}
+function toggleAddCategoryForm(){
+  const f=document.getElementById('addCategoryForm');
+  if(f)f.style.display=f.style.display==='none'?'block':'none';
+}
+function submitAddCategory(){
+  const main=document.getElementById('newCatMain').value.trim();
+  const sub=document.getElementById('newCatSub').value.trim();
+  const keywords=document.getElementById('newCatKeywords').value.trim();
+  const caseType=document.getElementById('newCatType').value.trim();
+  if(!sub){alert('اكتب اسم التصنيف الفرعي الجديد');return}
+  if(!window.__authUid){alert('سجّل الدخول أولًا لحفظ التصنيفات الجديدة سحابيًا');return}
+  const entry={id:'cat_'+Date.now().toString(36),main,sub,caseType,pattern:keywords,tags:[]};
+  addCustomCategoryRuntime(entry);
+  customCategories.push(entry);
+  if(window.__cloudSaveCustomCategories)window.__cloudSaveCustomCategories(customCategories);
+  renderTree();
+}
+function deleteCustomCategory(main,sub){
+  const entry=customCategories.find(c=>c.main===main&&c.sub===sub);
+  if(!entry)return;
+  if(!confirm('حذف تصنيف "'+sub+'"؟ لن يتم حذف القضايا المصنفة سابقًا تحته، لكن لن يُقترح تلقائيًا بعد الآن.'))return;
+  removeCustomCategoryRuntime(entry.id);
+  if(window.__cloudSaveCustomCategories)window.__cloudSaveCustomCategories(customCategories);
+  renderTree();
 }
 function newCase(){document.getElementById('search').value='';draft=[];document.getElementById('preview').innerHTML='';show('home')}
 function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===id));if(id==='cases')renderCases();if(id==='trash')renderTrash();if(id==='taxonomy')renderTree()}
@@ -220,9 +304,16 @@ if(!configLooksReal){
     if(!window.__authUid) throw new Error('غير مسجَّل الدخول');
     await updateDoc(doc(db,'users',window.__authUid,'cases',String(caseNumber)), patch);
   };
+  window.__cloudSaveCustomCategories = async (list) => {
+    if(!window.__authUid) return;
+    try{ await setDoc(doc(db,'users',window.__authUid,'settings','customCategories'), {list}); }
+    catch(err){ console.error('تعذّر حفظ التصنيفات المخصصة:', err); }
+  };
 
+  let unsubCats = null;
   onAuthStateChanged(auth, user => {
     if(unsub){unsub();unsub=null;}
+    if(unsubCats){unsubCats();unsubCats=null;}
     if(user){
       window.__authUid = user.uid;
       renderSignedInUI(user);
@@ -232,6 +323,17 @@ if(!configLooksReal){
         if(typeof renderCases==='function'){renderCases();renderTrash();renderTree();}
         syncLine.textContent='تم الحفظ ☁️ — آخر مزامنة الآن';
       }, err => { console.error(err); syncLine.textContent='تعذّر تحميل القضايا ⚠️'; });
+      unsubCats = onSnapshot(doc(db,'users',user.uid,'settings','customCategories'), snap => {
+        const data = snap.exists() ? snap.data() : {list:[]};
+        const remoteList = Array.isArray(data.list) ? data.list : [];
+        if(typeof customCategories!=='undefined' && typeof addCustomCategoryRuntime==='function'){
+          // إعادة بناء التصنيفات المخصصة من الصفر لتفادي التكرار عند كل مزامنة
+          customCategories.forEach(c=>removeCustomCategoryRuntime(c.id));
+          customCategories.length = 0;
+          remoteList.forEach(entry=>{ addCustomCategoryRuntime(entry); customCategories.push(entry); });
+          if(document.getElementById('taxonomy').classList.contains('active') && typeof renderTree==='function') renderTree();
+        }
+      }, err => console.error('تعذّر تحميل التصنيفات المخصصة:', err));
     } else {
       window.__authUid = null;
       renderSignedOutUI();

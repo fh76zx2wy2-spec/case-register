@@ -62,8 +62,33 @@ function removeCustomCategoryRuntime(id){
   customCategories=customCategories.filter(c=>c.id!==id);
 }
 function norm(s){return s.normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/ة/g,'ه').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\s+/g,' ').trim()}
-function parse(s){let lines=s.split(/\n/).map(x=>x.trim()).filter(Boolean),nums=[],text='',used=false,out=[];for(const l of lines){let n=norm(l);if(/^\d{4,20}$/.test(n)){if(text){out.push([n,text]);used=true}else nums.push(n);continue}let same=l.match(/^([0-9٠-٩]{4,20})\s+(.+)$/);if(same){out.push([norm(same[1]),same[2]]);continue}if(nums.length){nums.forEach(x=>out.push([x,l]));nums=[];text='';used=false}else if(text&&!used)text+=' '+l;else{text=l;used=false}}nums.forEach(x=>out.push([x,'']));return out}
-function analyze(number,text){let n=norm(text),r=rules.find(x=>x[3].test(n));return{caseNumber:number,originalText:text,mainCategory:r?r[0]:'غير مصنف بدقة',subCategory:r?r[1]:'غير مصنف بدقة',caseType:r?r[2]:'غير محدد',tags:r?r[4]:[],confidence:r?86:24,isDeleted:false}}
+function parse(s){
+  const lines=s.split(/\n/).map(x=>x.trim());
+  let pendingNums=[],pendingDesc=[],out=[];
+  function flush(){ if(pendingNums.length){ const joined=pendingDesc.join(' ').trim(); pendingNums.forEach(num=>out.push([num,joined])); } pendingNums=[];pendingDesc=[]; }
+  for(const l of lines){
+    if(!l){ flush(); continue; }
+    const n=norm(l);
+    const same=l.match(/^([0-9٠-٩]{4,20})\s+(.+)$/);
+    if(same){ flush(); out.push([norm(same[1]),same[2]]); continue; }
+    if(/^\d{4,20}$/.test(n)){
+      if(pendingNums.length&&pendingDesc.length){ flush(); pendingNums=[n]; }
+      else if(pendingDesc.length){ out.push([n,pendingDesc.join(' ').trim()]); pendingDesc=[]; }
+      else{ pendingNums.push(n); }
+      continue;
+    }
+    pendingDesc.push(l);
+  }
+  flush();
+  return out;
+}
+function detectCaseStatus(n){
+  if(/غير\s*نهاي/.test(n))return 'قابلة للاعتراض';
+  if(/قابل(ه|ة)?\s*للاعتراض/.test(n))return 'قابلة للاعتراض';
+  if(/نهاي/.test(n))return 'نهائية';
+  return '';
+}
+function analyze(number,text){let n=norm(text),r=rules.find(x=>x[3].test(n));return{caseNumber:number,originalText:text,mainCategory:r?r[0]:'غير مصنف بدقة',subCategory:r?r[1]:'غير مصنف بدقة',caseType:r?r[2]:'غير محدد',tags:r?r[4]:[],confidence:r?86:24,isDeleted:false,caseStatus:detectCaseStatus(n)}}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function fmtDate(iso){if(!iso)return '—';try{const d=new Date(iso);return d.toLocaleDateString('ar-SA',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
 
@@ -80,6 +105,16 @@ function runAnalysis(){
         <div><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي</label><select class="editMain" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px">${mainOptionsHTML(x.mainCategory)}</select></div>
         <div><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي</label><select class="editSub" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px">${subOptionsHTML(x.mainCategory,x.subCategory)}</select></div>
       </div>
+      <div style="margin:10px 0"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px">حالة القضية${x.caseStatus?' <span style="color:var(--g)">— اكتُشفت تلقائيًا من النص ✓</span>':''}</label>
+        <div style="display:flex;gap:8px">
+          <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
+            <input type="radio" name="caseStatus${i}" class="caseStatusRadio" value="نهائية" ${x.caseStatus==='نهائية'?'checked':''}> نهائية
+          </label>
+          <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
+            <input type="radio" name="caseStatus${i}" class="caseStatusRadio" value="قابلة للاعتراض" ${x.caseStatus==='قابلة للاعتراض'?'checked':''}> قابلة للاعتراض
+          </label>
+        </div>
+      </div>
       <p>${esc(x.originalText)||'لا يوجد وصف'}</p><p style="font-size:11px;color:var(--muted)">درجة الثقة <b style="color:var(--g)">${x.confidence}%</b></p><div class="tags">${x.tags.map(t=>`<span>#${esc(t)}</span>`).join('')}</div><details style="margin-top:15px"><summary style="cursor:pointer;color:var(--g)">تفاصيل إضافية</summary><p>نوع القضية: <span class="typeShow">${esc(x.caseType)}</span></p><p>النص الأصلي: ${esc(x.originalText)||'غير مذكور'}</p></details></article>`).join('')+
     `<button class="primary save" id="btnSaveDraft" ${window.__authUid?'':'disabled'} onclick="saveDraft()">${window.__authUid?'اعتماد الاقتراح وحفظ سحابيًا ☁️':'سجّل الدخول أولًا لحفظ القضية سحابيًا'}</button>`;
   el.querySelectorAll('.review').forEach(card=>{
@@ -95,6 +130,9 @@ function runAnalysis(){
       draft[i].confidence=99;
       card.querySelector('.typeShow').textContent=draft[i].caseType;
     };
+    card.querySelectorAll('.caseStatusRadio').forEach(radio=>{
+      radio.onchange=()=>{ if(radio.checked) draft[i].caseStatus=radio.value; };
+    });
   });
 }
 
@@ -162,7 +200,7 @@ function renderCases(){
   rows.sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));
   document.getElementById('caseCounter').textContent=records.filter(x=>!x.isDeleted).length;
   const chip=activeSubFilter?`<div style="margin-bottom:10px"><span class="badge">مصفّى حسب: ${esc(activeSubFilter)} <a href="#" onclick="activeSubFilter=null;renderCases();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span></div>`:'';
-  document.getElementById('caseList').innerHTML=chip+(rows.length?`<div class="grid">${rows.map(x=>`<article class="card"><div class="card-head"><strong>#${esc(x.caseNumber)}</strong><span class="badge">${esc(x.caseType)}</span></div><h3>${esc(x.subCategory)}</h3><p>${esc(x.originalText)}</p><div class="meta">أُنشئت: ${fmtDate(x.createdAt)} — آخر تعديل: ${fmtDate(x.updatedAt)}</div><footer><span>${esc(x.mainCategory)}</span><button onclick="trash('${esc(x.caseNumber)}')">نقل إلى السلة</button></footer></article>`).join('')}</div>`:(window.__authUid?'<div class="empty">لا توجد قضايا مطابقة</div>':'<div class="empty">سجّل الدخول بحساب Google من الأعلى لعرض قضاياك المحفوظة سحابيًا</div>'));
+  document.getElementById('caseList').innerHTML=chip+(rows.length?`<div class="grid">${rows.map(x=>`<article class="card"><div class="card-head"><strong>#${esc(x.caseNumber)}</strong><span class="badge">${esc(x.caseType)}</span></div><h3>${esc(x.subCategory)}</h3><p>${esc(x.originalText)}</p><div class="meta">أُنشئت: ${fmtDate(x.createdAt)} — آخر تعديل: ${fmtDate(x.updatedAt)}${x.caseStatus?' — <span style="color:'+(x.caseStatus==='نهائية'?'#187346':'#a5761f')+'">'+esc(x.caseStatus)+'</span>':''}</div><footer><span>${esc(x.mainCategory)}</span><button onclick="trash('${esc(x.caseNumber)}')">نقل إلى السلة</button></footer></article>`).join('')}</div>`:(window.__authUid?'<div class="empty">لا توجد قضايا مطابقة</div>':'<div class="empty">سجّل الدخول بحساب Google من الأعلى لعرض قضاياك المحفوظة سحابيًا</div>'));
 }
 function renderTrash(){
   let rows=records.filter(x=>x.isDeleted);

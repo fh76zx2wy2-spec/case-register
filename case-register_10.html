@@ -1,0 +1,1009 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>سجل القضايا — أرشيفك الذكي للقضايا</title>
+<style>
+:root{--g:#17483b;--g2:#236554;--gold:#b58a48;--sand:#f5f0e6;--ivory:#fcfaf5;--line:#ded5c4;--muted:#6e746e}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 70% 10%,#b58a4817,transparent 28%),var(--ivory);color:#23332e;font-family:Tahoma,Arial,sans-serif}.app{min-height:100vh;display:grid;grid-template-columns:240px 1fr}.side{position:fixed;right:0;top:0;width:240px;height:100vh;padding:28px 18px;background:linear-gradient(#103b31,#0c2d26);color:#fff}.brand{display:flex;align-items:center;gap:12px}.mark{display:grid;place-items:center;width:44px;height:44px;border:1px solid #d8b978;border-radius:13px;color:#e1c486;font:700 23px Georgia}.brand small{display:block;color:#afc1ba;margin-top:3px}.side nav{display:grid;gap:7px;margin-top:50px}.side nav button{border:0;background:none;color:#c7d4cf;text-align:right;padding:13px;border-radius:11px;cursor:pointer}.side nav button.active{background:#ffffff18;color:#fff}.main{grid-column:2;padding:0 min(7vw,85px) 60px}.top{height:75px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:12px}.page{display:none;max-width:940px;margin:55px auto}.page.active{display:block}.hero{text-align:center;max-width:720px;margin:0 auto 30px}.hero small,.eyebrow{color:var(--gold);font-weight:700}.hero h1{font-size:48px;color:var(--g);margin:12px}.hero h1 span{color:var(--gold)}.hero p{color:var(--muted);line-height:1.8}.box{background:#fff;border:1px solid var(--line);border-radius:20px;padding:5px;box-shadow:0 20px 55px #273c3212}.box textarea{width:100%;height:190px;border:0;outline:0;resize:vertical;padding:25px;background:none;font:16px/1.9 Tahoma;color:var(--g)}.bar{border-top:1px solid #eee8dd;padding:12px;display:flex;align-items:center;justify-content:flex-end}.primary,.soft{border:0;border-radius:10px;padding:12px 19px;cursor:pointer;font-weight:700}.primary{background:linear-gradient(135deg,var(--g2),var(--g));color:#fff}.primary:disabled{opacity:.5;cursor:not-allowed}.soft{background:#f1ede5;color:var(--g)}.review,.card,.tree{margin-top:15px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}.review-head,.section-head,.card-head{display:flex;align-items:center;justify-content:space-between}.badge{background:#edf8f1;color:#187346;border:1px solid #cfe8d8;border-radius:20px;padding:6px 10px;font-size:11px}.classification{margin:18px 0;padding:14px;background:#f7f4ed;border-radius:11px;color:var(--g)}.classification b{color:var(--gold);padding:0 9px}.tags span{display:inline-block;margin:5px 0 0 6px;padding:5px 9px;background:#f7f0e3;color:#7d6948;border-radius:12px;font-size:10px}.save{display:block;margin:20px auto}.section-head h1{color:var(--g);font-size:38px}.search{width:100%;padding:15px;border:1px solid var(--line);border-radius:12px;background:#fff;outline:0}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.card h3{color:var(--g)}.card p{color:var(--muted);font-size:12px}.card footer{display:flex;justify-content:space-between;border-top:1px solid #eee;padding-top:12px;margin-top:15px}.card footer button{border:0;background:none;color:#985d4e;cursor:pointer}.card .meta{font-size:10.5px;color:#9aa39c;margin-top:6px}.tree details{border-bottom:1px solid #eee;padding:10px}.tree details:last-child{border:0}.tree summary{cursor:pointer;color:var(--g);font-weight:700}.tree li{margin:10px;color:var(--muted)}.empty{text-align:center;color:var(--muted);padding:55px}.note{margin-top:20px;text-align:center;color:var(--muted);font-size:11px}.mobile{display:none}
+.acct{display:flex;align-items:center;gap:8px}.acct img{width:28px;height:28px;border-radius:50%}.syncbadge{background:#eef1fb;color:#3b4c9e;border:1px solid #d6ddf5;border-radius:20px;padding:4px 9px;font-size:10.5px}
+@media(max-width:760px){.app{display:block}.side{display:none}.main{padding:0 15px 85px}.top{justify-content:center;flex-wrap:wrap;height:auto;padding:10px 0;gap:8px}.page{margin-top:20px}.hero h1{font-size:34px}.grid{grid-template-columns:1fr}.mobile{position:fixed;display:flex;bottom:0;left:0;right:0;height:65px;background:#fff;border-top:1px solid var(--line);justify-content:space-around;z-index:5}.mobile button{border:0;background:none;color:var(--muted)}.mobile button.active{color:var(--g)}}
+</style></head>
+<body><div class="app"><aside class="side"><div class="brand"><span class="mark">س</span><div><b>سجل القضايا</b><small>أرشيفك الذكي للقضايا</small></div></div><nav id="nav"></nav><p style="position:absolute;bottom:20px;color:#afc1ba;font-size:11px" id="storageLine">● جارٍ الاتصال بالسحابة…</p></aside><main class="main"><header class="top"><span id="syncLine">جارٍ التحقق من حالة الدخول…</span><div class="acct" id="acctArea"></div></header><section id="home" class="page active"><div class="hero"><small>مساعدك القانوني المنظّم</small><h1>أدخل القضية <span>بأي طريقة تريد</span></h1><p>اكتب رقم القضية ووصفًا مختصرًا بأي ترتيب، وسنرتبها ونصنفها لك دون افتراض أي واقعة لم تذكرها.</p></div><div class="box"><textarea id="input" placeholder="مثال:&#10;حادث&#10;8789797"></textarea><div class="bar"><button class="soft" onclick="document.getElementById('input').value='4870044548\nمطالبة المدعي المدعى عليه بمبلغ العقد لعدم إتمام العقد وحكم له'">استخدم مثالًا تجريبيًا</button><span style="flex:1"></span><button class="primary" onclick="runAnalysis()">تحليل القضية ←</button></div></div><div id="preview"></div><p class="note"><b style="color:var(--g)">خصوصيتك أولًا:</b> لا نضيف وقائع غير مذكورة، ويمكنك مراجعة كل اقتراح قبل حفظه.</p></section><section id="cases" class="page"><div class="section-head"><div><small class="eyebrow">أرشيفك</small><h1>قضاياك المحفوظة <span class="badge" id="caseCounter">0</span></h1></div><button class="primary" onclick="newCase()">+ إضافة قضية</button></div><input class="search" id="search" placeholder="ابحث بالرقم أو التصنيف أو النص أو الوسوم..." oninput="renderCases()"><div id="caseList"></div></section><section id="taxonomy" class="page"><div class="section-head"><div><small class="eyebrow">تصنيف رئيسي ← تصنيف فرعي ← القضايا</small><h1>دليل التصنيفات</h1></div></div><div id="tree" class="tree"></div></section><section id="trash" class="page"><div class="section-head"><div><small class="eyebrow">سلة المحذوفات</small><h1>القضايا المحذوفة</h1></div></div><div id="trashList"></div></section><section id="settings" class="page"><div class="section-head"><div><small class="eyebrow">الحساب والبيانات</small><h1>الإعدادات</h1></div></div><article class="card" id="acctCard"><h3>الحساب والمزامنة</h3><p>سجّل الدخول بحساب Google لحفظ قضاياك سحابيًا في Firestore ومزامنتها فورًا بين كل أجهزتك.</p><div id="acctSettingsArea"></div></article><article class="card"><h3>النسخة الاحتياطية</h3><p>صدّر جميع بياناتك أو استورد نسخة سابقة إلى حسابك السحابي. لن تتكرر أرقام القضايا الموجودة.</p><div style="display:flex;gap:8px;margin-top:15px"><button class="soft" onclick="exportData()">تصدير JSON</button><button class="primary" onclick="document.getElementById('importFile').click()">استيراد نسخة</button><input hidden id="importFile" type="file" accept="application/json" onchange="importData(event)"></div></article><article class="card"><h3>إعادة تحليل القضايا غير المصنفة</h3><p>بعد أي تحسين لمحرك التصنيف، استخدم هذا الزر لإعادة تصنيف القضايا التي وقعت سابقًا في "غير مصنف بدقة" فقط — دون حذف أي قضية أو تغيير رقمها أو نصها الأصلي. القضايا التي راجعتها يدويًا (manuallyReviewed) لن تُمس.</p><div style="margin-top:15px"><button class="primary" id="btnReanalyze" onclick="reanalyzeUnclassified()">إعادة تحليل القضايا غير المصنفة</button></div></article>
+      <article class="card"><h3>إصلاح نصوص قضايا قديمة (تعطّلت بسبب خلل قديم في القارئ)</h3><p>الصق هنا نفس القائمة الأصلية الصحيحة التي كتبتها سابقًا. سيطابق النظام كل رقم قضية مع قاعدة البيانات الحالية، ويقترح إصلاحًا فقط للقضايا التي نصها فارغ أو نصها الحالي هو كلمة الحالة نفسها ("نهائي"/"غير نهائي") بالخطأ. لن يُطبَّق أي تغيير قبل مراجعتك للمعاينة والموافقة عليها صراحة — ولن يُنشئ أي قضية جديدة أو يمس رقم القضية أو تاريخ الإنشاء أو حالة الحذف أو معرّف المستند.</p>
+        <textarea id="migrationInput" style="width:100%;min-height:140px;margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit" placeholder="الصق هنا القائمة الأصلية الكاملة بنفس صيغتك المعتادة..."></textarea>
+        <div style="margin-top:12px"><button class="soft" id="btnMigrationPreview" onclick="previewMigration()">معاينة الإصلاح (بدون أي تغيير فعلي)</button></div>
+      </article>
+      <article class="card"><h3>سياسة الحذف</h3><p>لا تحذف القضايا نهائيًا؛ تنتقل إلى السلة سحابيًا ويمكن استعادتها من أي جهاز في أي وقت.</p><span class="badge">حذف آمن</span></article></section></main><nav class="mobile" id="mobile"></nav></div>
+<div id="reportModal" style="display:none;position:fixed;inset:0;background:#0c2d2660;z-index:70;align-items:center;justify-content:center;padding:20px">
+  <div id="reportModalBox" style="background:#fff;border-radius:16px;padding:24px;max-width:680px;width:100%;max-height:86vh;overflow-y:auto"></div>
+</div>
+<script>
+const navItems=[['home','الرئيسية'],['cases','القضايا'],['taxonomy','التصنيفات'],['trash','المحذوفات'],['settings','الإعدادات']];
+let records=[],draft=[];
+/* =====================================================================
+   محرك تصنيف بالنقاط (Scoring) بدل أول تطابق (rules.find)
+   كل تصنيف فرعي (CATS) له:
+     tier    : 0 مخصّص من المستخدم (أعلى أولوية) | 1 موضوع أساسي | 2 دفع إجرائي | 3 يمين/بينة فقط (أدنى أولوية)
+     strong  : أنماط قوية الدلالة (وزن 5 لكل تطابق)
+     weak    : أنماط داعمة فقط (وزن 1 لكل تطابق)
+     requires: إن وُجدت، يجب تحقق واحد منها على الأقل وإلا استُبعد التصنيف
+     excludes: إن تحقق أي منها يُستبعد التصنيف فورًا
+   يُختار التصنيف من أعلى طبقة (tier) لديها مرشح، ثم الأعلى نقاطًا داخلها.
+   الهدف: لا يفوز اليمين/النكول بالتصنيف الرئيسي على حساب موضوع القضية،
+   ولا تكفي كلمة عامة واحدة (عقار/خبير) لتصنيف خاطئ محدد.
+   ===================================================================== */
+let CATS=[
+/* ===== المركبات والحوادث (tier 1) ===== */
+{main:'المركبات والحوادث',sub:'حادث مركبة دون تأمين',caseType:'حادث مركبة',tier:1,
+  strong:[/(حادث|حوادث|تصادم|صدم|دهس|اصطدام|ارتطام|انقلاب).{0,20}(بدون|عدم وجود|ما فيه|لا يوجد|منتهي).{0,10}تامين/,/تامين.{0,10}منتهي/]},
+{main:'المركبات والحوادث',sub:'تعويض عن حادث مروري',caseType:'حادث مروري',tier:1,
+  strong:[/تعويض.{0,15}حادث/,/حادث.{0,15}تعويض/,/تعويض.{0,15}اضرار.{0,15}(مركبه|سياره)/]},
+{main:'المركبات والحوادث',sub:'أرش إصابة في حادث مروري',caseType:'حادث مروري',tier:1,
+  requires:[/ارش/], strong:[/ارش.{0,10}اصابه/,/ارش/]},
+{main:'المركبات والحوادث',sub:'اعتراض على نسبة الخطأ في حادث مروري',caseType:'حادث مروري',tier:1,
+  strong:[/اعتراض.{0,15}نسبه.{0,15}الخطا/,/نسبه.{0,10}الخطا/]},
+{main:'المركبات والحوادث',sub:'تلفيات مركبة',caseType:'حادث مركبة',tier:1,
+  strong:[/تلفيات.{0,10}(مركبه|سياره)/,/تلفيات/]},
+{main:'المركبات والحوادث',sub:'أجرة زائدة لمركبة',caseType:'مركبات',tier:1,
+  strong:[/اجره.{0,10}زايده.{0,15}(مركبه|مركبات|سياره|سيارات)/,/زياده.{0,10}اجره.{0,15}(مركبه|مركبات|سياره|سيارات)/,/(مركبه|مركبات|سياره|سيارات).{0,15}اجره.{0,10}زايده/]},
+{main:'المركبات والحوادث',sub:'أجرة المثل للمركبة',caseType:'مركبات',tier:1,
+  strong:[/اجره.{0,10}المثل.{0,15}(مركبه|مركبات|سياره|سيارات)/,/اجره المثل/]},
+{main:'المركبات والحوادث',sub:'أجرة مركبة',caseType:'مركبات',tier:1,
+  strong:[/(اجره|أجرة|ايجار).{0,10}(مركبه|مركبات|سياره|سيارات)/,/(مركبه|مركبات|سياره|سيارات).{0,10}(اجره|أجرة|ايجار)/]},
+{main:'المركبات والحوادث',sub:'نقل مخالفات المركبة',caseType:'مركبات',tier:1,
+  strong:[/نقل.{0,10}مخالفات/,/مخالفات.{0,10}نقل/]},
+{main:'المركبات والحوادث',sub:'مطالبة بقيمة إصلاح مركبة',caseType:'حادث مركبة',tier:1,
+  strong:[/اصلاح.{0,15}(مركبه|سياره)/,/(مركبه|سياره).{0,15}اصلاح/]},
+{main:'المركبات والحوادث',sub:'عدم صفة قائد المركبة',caseType:'حادث مركبة',tier:1,
+  strong:[/(قايد|قايده).{0,25}(مو مالك|ليس مالك|ليست مالك|غير مالك|غير المالك|بدون تفويض|ما معه تفويض|غير مفوض|غير المفوض|لا يملك تفويض|بدون رخصه)/]},
+{main:'المركبات والحوادث',sub:'رد مركبة / استرداد عين مركبة',caseType:'مركبات',tier:1,
+  strong:[/استرداد.{0,10}(مركبه|سياره)/,/استرداد عين.{0,15}(مركبه|سياره)/,/رد.{0,10}(مركبه|سياره)/]},
+{main:'المركبات والحوادث',sub:'حادث مروري غير محدد',caseType:'حادث مروري',tier:1,
+  strong:[/حادث|حوادث|تصادم|اصطدام|صدم|دهس|دعس|انقلاب|ارتطام|صدمه/]},
+
+/* ===== أجرة نقل (خدمات) — تُفحص مبكرًا حتى لا تُبتلع بتصنيف الإيجار العام ===== */
+{main:'الشركات والخدمات',sub:'أجرة نقل',caseType:'خدمات',tier:1,
+  strong:[/اجره.{0,10}نقل/,/نقل.{0,10}اجره/]},
+
+/* ===== المرافق: الكهرباء والاتصالات (tier 1، قصيرة عمدًا) ===== */
+{main:'الكهرباء',sub:'مطالبة بفواتير كهرباء غير مسددة',caseType:'فواتير كهرباء',tier:1,
+  strong:[/كهرباء/]},
+{main:'الاتصالات',sub:'مطالبة بفواتير اتصالات غير مسددة',caseType:'فواتير اتصالات',tier:1,
+  strong:[/اتصالات|stc|موبايلي|زين/i]},
+
+/* ===== العقارات (tier 1) ===== */
+{main:'العقارات والملكية',sub:'رد ثمن العقار لعدم وجود صك ملكية',caseType:'عقار',tier:1,
+  strong:[/(ارض|عقار).{0,20}(ما لها صك|بدون صك).{0,20}(رد|استرجاع|رجع)/,/رد.{0,15}(ثمن|الفلوس|المبلغ).{0,15}(صك|عقار|ارض)/,/عدم وجود صك.{0,20}رد.{0,10}ثمن/]},
+{main:'العقارات والملكية',sub:'فسخ عقد بيع عقار ورد الثمن',caseType:'عقار',tier:1,
+  strong:[/فسخ.{0,15}بيع.{0,15}عقار/,/فسخ.{0,15}عقار.{0,15}(رد|ثمن)/]},
+{main:'العقارات والملكية',sub:'فسخ عقد متعلق بعقار غير مملوك للمدعى عليه',caseType:'عقار',tier:1,
+  strong:[/فسخ.{0,20}عقار.{0,20}غير مملوك/]},
+{main:'العقارات والملكية',sub:'نقل ملكية عقار',caseType:'عقار',tier:1,
+  strong:[/نقل.{0,10}ملكيه.{0,10}عقار/,/نقل ملكيه/]},
+{main:'العقارات والملكية',sub:'إخلاء عقار',caseType:'عقار',tier:1,
+  strong:[/اخلاء.{0,10}عقار/]},
+{main:'العقارات والملكية',sub:'إلزام بإفراغ جزء من عقار',caseType:'عقار',tier:1,
+  strong:[/افراغ.{0,15}عقار/,/الزام.{0,10}افراغ/]},
+{main:'العقارات والملكية',sub:'رفع يد عن عقار متداخل',caseType:'عقار',tier:1,
+  strong:[/رفع.{0,10}يد.{0,15}عقار/,/رفع اليد/]},
+{main:'العقارات والملكية',sub:'إصلاح عقار مستأجر من قبل المؤجر',caseType:'عقار',tier:1,
+  strong:[/اصلاح.{0,10}(عقار|ماجور).{0,15}مءجر/,/اصلاح.{0,10}الماجور/]},
+{main:'العقارات والملكية',sub:'مطالبة بنسبة من أرباح عقار',caseType:'عقار',tier:1,
+  strong:[/نسبه.{0,10}ارباح.{0,10}عقار/,/ارباح.{0,10}عقار/]},
+{main:'العقارات والملكية',sub:'نزاع على صك ملكية',caseType:'عقار',tier:1,
+  strong:[/نزاع.{0,15}صك/,/صك.{0,15}نزاع/]},
+{main:'العقارات والملكية',sub:'عدم وجود صك',caseType:'عقار',tier:1,
+  strong:[/(بدون|ما لها|لا يوجد|عدم وجود).{0,10}صك/]},
+{main:'العقارات والملكية',sub:'إثبات ملكية عقار',caseType:'عقار',tier:1,
+  requires:[/اثبات.{0,15}(ملكيه|ملك)/,/ملكيه.{0,15}عقار/,/اثبات.{0,10}الملكيه/],
+  strong:[/اثبات.{0,15}(ملكيه|ملك)/,/ملكيه.{0,15}عقار/,/اثبات.{0,10}الملكيه/]},
+
+/* ===== الإيجار (tier 1) ===== */
+{main:'الإيجار',sub:'مطالبة بأجرة متبقية من عقد إيجار',caseType:'إيجار',tier:1,
+  strong:[/اجره.{0,10}متبقيه/,/متبقي.{0,10}اجره/]},
+{main:'الإيجار',sub:'أجرة زائدة عن عقد إيجار',caseType:'إيجار',tier:1,
+  strong:[/اجره.{0,10}زايده/,/زياده.{0,10}اجره/]},
+{main:'الإيجار',sub:'فسخ وإخلاء',caseType:'إيجار',tier:1,
+  strong:[/فسخ.{0,15}اخلاء/,/اخلاء.{0,15}فسخ/]},
+{main:'الإيجار',sub:'فسخ عقد إيجار',caseType:'إيجار',tier:1,
+  strong:[/فسخ.{0,10}ايجار/]},
+{main:'الإيجار',sub:'إخلاء مأجور',caseType:'إيجار',tier:1,
+  strong:[/اخلاء/]},
+{main:'الإيجار',sub:'عدم سداد الأجرة',caseType:'إيجار',tier:1,
+  strong:[/عدم سداد.{0,10}اجره/,/اجره.{0,15}(ما سدد|لم يسدد|متاخره)/]},
+{main:'الإيجار',sub:'أجرة عقار',caseType:'إيجار',tier:1,
+  strong:[/اجره.{0,10}عقار/]},
+{main:'الإيجار',sub:'مطالبة بأجرة',caseType:'إيجار',tier:1,
+  strong:[/عقد ايجار|اجره|ايجار/]},
+
+/* ===== القروض والديون (tier 1) ===== */
+{main:'القروض والديون',sub:'قرض مع إنكار الاستلام',caseType:'قرض',tier:1,
+  strong:[/قرض.{0,15}انكار.{0,15}استلام/,/قرض.{0,10}(ما|لم).{0,10}استلم/]},
+{main:'القروض والديون',sub:'إقرار بالقرض',caseType:'قرض',tier:1,
+  strong:[/قرض.{0,25}اقرار/,/اقرار.{0,25}قرض/]},
+{main:'القروض والديون',sub:'إقرار بمديونية',caseType:'قرض',tier:1,
+  strong:[/اقرار.{0,25}مديونيه/,/اقرار.{0,15}(?<!م)دين/]},
+{main:'القروض والديون',sub:'مطالبة برد قرض',caseType:'قرض',tier:1,
+  strong:[/رد.{0,10}قرض/,/قرض.{0,10}رد/]},
+{main:'القروض والديون',sub:'منازعة في سبب المديونية',caseType:'قرض',tier:1,
+  strong:[/منازعه.{0,15}سبب.{0,15}مديونيه/,/منازعه.{0,10}مديونيه/,/منازعه.{0,10}سبب.{0,10}الدين/]},
+{main:'القروض والديون',sub:'إثبات قرض',caseType:'قرض',tier:1,
+  strong:[/اثبات.{0,10}قرض/]},
+{main:'القروض والديون',sub:'سلفة',caseType:'قرض',tier:1,
+  strong:[/سلفه/]},
+{main:'القروض والديون',sub:'سند لأمر',caseType:'قرض',tier:1,
+  strong:[/سند.{0,5}لامر/]},
+{main:'القروض والديون',sub:'مطالبة بسداد قرض',caseType:'قرض',tier:1,
+  strong:[/قرض/]},
+{main:'القروض والديون',sub:'مطالبة بدين',caseType:'دين',tier:1,
+  strong:[/(?<!م)دين(?!ونيه)/]},
+
+/* ===== الكفالة والضمان (tier 1) ===== */
+{main:'الكفالة والضمان',sub:'الحكم على الكفيل الغارم',caseType:'كفالة',tier:1,
+  strong:[/كفيل.{0,5}غارم/]},
+{main:'الكفالة والضمان',sub:'رجوع الكفيل على المدين',caseType:'كفالة',tier:1,
+  strong:[/رجوع.{0,10}كفيل/]},
+{main:'الكفالة والضمان',sub:'إنكار الكفالة',caseType:'كفالة',tier:1,
+  strong:[/انكار.{0,10}كفاله/,/انكار.{0,10}كفيل/]},
+{main:'الكفالة والضمان',sub:'مطالبة كفيل',caseType:'كفالة',tier:1,
+  strong:[/كفيل|كفاله/]},
+{main:'الكفالة والضمان',sub:'ضمان مالي',caseType:'كفالة',tier:1,
+  strong:[/ضمان/]},
+
+/* ===== الصلح والتنازل (tier 1) ===== */
+{main:'الصلح والتنازل',sub:'تنفيذ اتفاق صلح',caseType:'صلح',tier:1,
+  strong:[/تنفيذ.{0,10}صلح/,/اتفاق.{0,10}صلح/]},
+{main:'الصلح والتنازل',sub:'إثبات صلح',caseType:'صلح',tier:1,
+  strong:[/صلح/]},
+{main:'الصلح والتنازل',sub:'إثبات تنازل',caseType:'تنازل',tier:1,
+  strong:[/اثبات.{0,10}تنازل/]},
+{main:'الصلح والتنازل',sub:'تنازل عن الدعوى',caseType:'تنازل',tier:1,
+  strong:[/تنازل.{0,15}دعو/]},
+{main:'الصلح والتنازل',sub:'تنازل عن مطالبة',caseType:'تنازل',tier:1,
+  strong:[/تنازل/]},
+{main:'الصلح والتنازل',sub:'مخالصة',caseType:'تنازل',tier:1,
+  strong:[/مخالصه/]},
+
+/* ===== أتعاب المحاماة والخبرة (tier 1) — إصلاح: تتطلب تركيبة وليس كلمة مفردة ===== */
+{main:'أتعاب المحاماة والخبرة',sub:'رفض أتعاب محاماة',caseType:'أتعاب',tier:1,
+  requires:[/رفض.{0,15}اتعاب.{0,15}محام/], strong:[/رفض.{0,15}اتعاب.{0,15}محام/]},
+{main:'أتعاب المحاماة والخبرة',sub:'نزاع في مقدار الأتعاب',caseType:'أتعاب',tier:1,
+  requires:[/نزاع.{0,10}اتعاب/,/مقدار.{0,10}اتعاب/], strong:[/نزاع.{0,10}اتعاب/,/مقدار.{0,10}اتعاب/]},
+{main:'أتعاب المحاماة والخبرة',sub:'أتعاب خبير',caseType:'أتعاب',tier:1,
+  requires:[/اتعاب.{0,15}خبير/,/خبير.{0,15}اتعاب/],
+  strong:[/اتعاب.{0,15}خبير/,/خبير.{0,15}اتعاب/]},
+{main:'أتعاب المحاماة والخبرة',sub:'مطالبة بأتعاب محاماة',caseType:'أتعاب',tier:1,
+  requires:[/اتعاب.{0,15}محام/,/محاماه/], strong:[/اتعاب.{0,15}محام/,/محاماه/]},
+
+/* ===== البيع والمبيع (tier 1) ===== */
+{main:'البيع والمبيع',sub:'عيب مبيع',caseType:'بيع',tier:1,
+  strong:[/عيب.{0,10}(مبيع|بيع)/,/(مبيع|بيع).{0,10}عيب/,/اشتريت.{0,10}عيب/]},
+{main:'البيع والمبيع',sub:'مطالبة بثمن مبيع',caseType:'بيع',tier:1,
+  strong:[/ثمن.{0,10}(مبيع|بيع)/,/(مبيع|بيع).{0,10}ثمن/,/باقي.{0,10}ثمن/,/عدم سداد.{0,10}ثمن/,/لم يسدد.{0,10}ثمن/,/ما سدد.{0,10}ثمن/,/اشتري.{0,25}(لم|ما).{0,10}(يسدد|سدد)/]},
+{main:'البيع والمبيع',sub:'تسليم المبيع',caseType:'بيع',tier:1,
+  strong:[/تسليم.{0,10}مبيع/]},
+{main:'البيع والمبيع',sub:'فسخ عقد بيع',caseType:'بيع',tier:1,
+  strong:[/فسخ.{0,10}بيع/]},
+
+/* ===== الشركات والخدمات (tier 1) ===== */
+{main:'الشركات والخدمات',sub:'محاسبة بين الشركاء',caseType:'شركات',tier:1,
+  strong:[/محاسبه.{0,10}شركاء/,/تصفيه.{0,10}شركه/]},
+{main:'الشركات والخدمات',sub:'مستحقات شريك',caseType:'شركات',tier:1,
+  strong:[/شريك/]},
+{main:'الشركات والخدمات',sub:'مطالبة بموجب فواتير',caseType:'خدمات',tier:1,
+  strong:[/فواتير|فاتوره/]},
+{main:'الشركات والخدمات',sub:'عقد خدمات',caseType:'خدمات',tier:1,
+  strong:[/خدمه|خدمات/]},
+
+/* ===== العقود (tier 1، عام — يُفحص أخيرًا لأن كلمة "عقد" شائعة في تصنيفات أخرى) ===== */
+{main:'العقود والالتزامات',sub:'عدم إتمام العقد',caseType:'عقد',tier:1,
+  strong:[/عدم.{0,10}اتمام.{0,10}عقد/,/ما تم العقد/,/لم يتم العقد/]},
+{main:'العقود والالتزامات',sub:'عدم تنفيذ العقد',caseType:'عقد',tier:1,
+  strong:[/عدم تنفيذ العقد/,/ما نفذ العقد/]},
+{main:'العقود والالتزامات',sub:'فسخ العقد',caseType:'عقد',tier:1,
+  strong:[/فسخ.{0,10}عقد/]},
+{main:'العقود والالتزامات',sub:'تنفيذ الالتزام',caseType:'عقد',tier:1,
+  strong:[/تنفيذ.{0,10}التزام/,/الزام.{0,10}تنفيذ/]},
+{main:'العقود والالتزامات',sub:'التعويض عن الإخلال بالعقد',caseType:'عقد',tier:1,
+  strong:[/تعويض.{0,10}اخلال/,/اخلال.{0,10}عقد/]},
+{main:'العقود والالتزامات',sub:'مطالبة مالية ناشئة عن عقد',caseType:'عقد',tier:1,
+  strong:[/عقد/]},
+
+/* ===== المنقولات والودائع (tier 1) ===== */
+{main:'المنقولات والودائع',sub:'استرداد وديعة',caseType:'منقولات',tier:1,
+  strong:[/استرداد.{0,30}(منقول|ذهب).{0,20}(وديعه|مودع)/,/(وديعه|مودع).{0,20}استرداد/,/استرداد.{0,15}(وديعه|مودع)/]},
+{main:'المنقولات والودائع',sub:'استرداد منقول',caseType:'منقولات',tier:1,
+  strong:[/استرداد.{0,10}منقول/,/استرداد.{0,15}ذهب/,/ذهب/]},
+{main:'المنقولات والودائع',sub:'استرداد عين',caseType:'منقولات',tier:1,
+  strong:[/استرداد عين/]},
+
+/* ===== الالتزامات المالية العامة (tier 1) ===== */
+{main:'الالتزامات المالية',sub:'استرداد مبلغ',caseType:'التزامات مالية',tier:1,
+  strong:[/استرداد.{0,10}مبلغ/,/رد.{0,10}مبلغ/]},
+{main:'الالتزامات المالية',sub:'رد طلب التعويض المعنوي',caseType:'تعويض',tier:1,
+  strong:[/تعويض.{0,10}معنوي/,/رد.{0,15}تعويض.{0,15}معنوي/]},
+{main:'الالتزامات المالية',sub:'مطالبة بتعويض',caseType:'تعويض',tier:1,
+  weak:[/تعويض/]},
+
+/* ===== الدفوع الشكلية والإجرائية (tier 2 — بعد المواضيع الأساسية) ===== */
+{main:'الدفوع الشكلية والإجرائية',sub:'رد الدعوى لعدم سداد رسوم الخبير',caseType:'دفع إجرائي',tier:2,
+  strong:[/(رد|رفض).{0,15}(سداد|دفع).{0,15}(رسوم|اتعاب).{0,15}خبير/,/رسوم.{0,10}الخبير/]},
+{main:'الدفوع الشكلية والإجرائية',sub:'عدم اختصاص مكاني',caseType:'دفع إجرائي',tier:2,
+  strong:[/اختصاص.{0,10}مكاني/,/مكاني.{0,10}اختصاص/]},
+{main:'الدفوع الشكلية والإجرائية',sub:'سبق الفصل في الدعوى',caseType:'دفع إجرائي',tier:2,
+  strong:[/سبق.{0,10}فصل/]},
+{main:'الدفوع الشكلية والإجرائية',sub:'رفض التماس إعادة النظر',caseType:'دفع إجرائي',tier:2,
+  strong:[/التماس.{0,10}اعاده.{0,10}نظر/,/اعاده النظر/]},
+{main:'الدفوع الشكلية والإجرائية',sub:'صرف النظر عن دعوى مستعجلة',caseType:'دفع إجرائي',tier:2,
+  strong:[/صرف.{0,10}النظر.{0,15}مستعجله/,/صرف النظر/]},
+{main:'الدفوع الشكلية والإجرائية',sub:'عدم الاختصاص',caseType:'دفع إجرائي',tier:2,
+  strong:[/عدم اختصاص|غير مختصه|اختصاص/]},
+{main:'الدفوع الشكلية والإجرائية',sub:'عدم القبول',caseType:'دفع إجرائي',tier:2,
+  strong:[/عدم.{0,10}قبول/]},
+{main:'الدفوع الشكلية والإجرائية',sub:'عدم الصفة',caseType:'دفع إجرائي',tier:2,
+  strong:[/عدم.{0,10}صفه/,/الدفع.{0,10}صفه/]},
+
+/* ===== الأيمان والبينة (tier 3 — تفاصيل/بينة، لا تسرق التصنيف الرئيسي من الموضوع) ===== */
+{main:'الأيمان والبينة',sub:'نكول المدعى عليه بسبب غيابه',caseType:'يمين',tier:3,
+  strong:[/(غياب|غايب|غاب).{0,20}نكول/,/نكول.{0,20}(غياب|غايب|غاب)/,/(غياب|غايب|غاب).{0,20}(ما ادي اليمين|لم يود اليمين)/]},
+{main:'الأيمان والبينة',sub:'نكول عن اليمين',caseType:'يمين',tier:3,
+  strong:[/نكول|نكل/]},
+{main:'الأيمان والبينة',sub:'توجيه اليمين',caseType:'يمين',tier:3,
+  strong:[/توجيه.{0,10}يمين/,/يمين حاسمه/,/يمين متممه/,/يمين/]},
+{main:'الأيمان والبينة',sub:'شهادة شاهد',caseType:'بينة',tier:3,
+  strong:[/شاهد|شهاده/]},
+{main:'الأيمان والبينة',sub:'عدم تقديم بينة',caseType:'بينة',tier:3,
+  strong:[/عدم.{0,10}(تقديم.{0,10})?بينه/,/عدم وجود بينه/]}
+];
+
+/* دليل التصنيفات (نفس بنية الواجهة القديمة: كائن main → [subs]) يُبنى تلقائيًا من CATS
+   حتى لا يظهر أي تصنيف بالواجهة إلا وله قاعدة تحليل فعلية. */
+function buildCatalog(cats){
+  const map={};
+  cats.forEach(c=>{ (map[c.main]=map[c.main]||[]); if(!map[c.main].includes(c.sub))map[c.main].push(c.sub); });
+  map['غير مصنف بدقة']=['يحتاج مراجعة يدوية'];
+  return map;
+}
+let catalog=buildCatalog(CATS);
+let customCategories=[]; // {id, main, sub, caseType, pattern, tags} — مخزّنة سحابيًا لكل مستخدم
+
+function caseTypeForSub(sub){const c=CATS.find(x=>x.sub===sub);return c?c.caseType:'';}
+function isCustomCategory(main,sub){return customCategories.some(c=>c.main===main&&c.sub===sub);}
+function addCustomCategoryRuntime(entry){
+  if(!catalog[entry.main])catalog[entry.main]=[];
+  if(!catalog[entry.main].includes(entry.sub))catalog[entry.main].push(entry.sub);
+  const parts=(entry.pattern||'').split(',').map(s=>norm(s.trim())).filter(Boolean).map(s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+  const re=parts.length?new RegExp(parts.join('|')):/$^/;
+  CATS.unshift({id:entry.id,main:entry.main,sub:entry.sub,caseType:entry.caseType||entry.main,tier:0,strong:[re]});
+}
+function removeCustomCategoryRuntime(id){
+  const entry=customCategories.find(c=>c.id===id);
+  if(!entry)return;
+  CATS=CATS.filter(c=>!(c.id===id));
+  if(catalog[entry.main])catalog[entry.main]=catalog[entry.main].filter(s=>s!==entry.sub);
+  customCategories=customCategories.filter(c=>c.id!==id);
+}
+
+function norm(s){return s.normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/ة/g,'ه').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\s+/g,' ').trim()}
+/* ===== كاشف كلمة الحالة (نهائي/غير نهائي) عندما تكون النص بأكمله كلمة الحالة فقط ===== */
+function detectStatusWord(text){
+  const n=norm(text);
+  if(/^غير\s*نهاي/.test(n))return 'قابلة للاعتراض';
+  if(/^قابل(ه|ة)?\s*للاعتراض/.test(n))return 'قابلة للاعتراض';
+  if(/^نهاي/.test(n))return 'نهائية';
+  return null;
+}
+
+/* ===== محلل الإدخال المتعدد (parser) =====
+   يدعم: أرقام ثم وصف / وصف ثم أرقام / رقم+حالة على نفس السطر (11111 نهائي) /
+   وصف ثم أرقام مع حالة / أكثر من رقم يتقاسمون نفس الوصف — بأي ترتيب،
+   ولا تُنهي الأسطر الفارغة العلاقة بين الرقم والوصف إلا عند اكتمال مجموعة فعلية. */
+function parse(s){
+  const lines=s.split(/\n/).map(x=>x.trim());
+  let pendingNums=[];       // [{num, status}]
+  let pendingDesc=[];       // [line, line, ...]
+  let descCameFirst=false;  // هل تصدَّر الوصف الأرقام في هذه المجموعة؟
+  let pendingGroupStatus=null; // حالة وردت ضمن سطر وصف (مثل "تلفيات مركبة نهائي") تسري كحالة افتراضية لكل أرقام المجموعة التي لم تُحدَّد حالتها صراحة برقمها
+  const out=[];
+
+  function flush(){
+    if(pendingNums.length){
+      const joined=pendingDesc.join(' ').trim();
+      pendingNums.forEach(entry=>out.push({num:entry.num,text:joined,status:entry.status||pendingGroupStatus||null}));
+    }
+    pendingNums=[];pendingDesc=[];descCameFirst=false;pendingGroupStatus=null;
+  }
+  function addNumber(num,status){
+    if(pendingDesc.length===0){
+      pendingNums.push({num,status});
+    } else if(pendingNums.length===0){
+      descCameFirst=true;
+      pendingNums.push({num,status});
+    } else if(descCameFirst){
+      pendingNums.push({num,status});
+    } else {
+      flush();
+      pendingNums.push({num,status});
+    }
+  }
+  function addDescLine(rawLine){
+    // سطر وصف قد ينتهي أو يتضمّن كلمة حالة ملحقة بنص حقيقي (مثل "تلفيات مركبة نهائي" أو
+    // "جميع دعاوى الاتصالات السعودية نهائية") — استخرج الحالة ونظّف السطر منها قبل اعتباره وصفًا،
+    // واحتفظ بها كحالة افتراضية للمجموعة الحالية (تُستخدم فقط للأرقام التي لم تُحدَّد حالتها بنفسها).
+    const foundStatus=detectCaseStatus(norm(rawLine));
+    const line=foundStatus?stripStatusWords(rawLine):rawLine;
+    if(foundStatus)pendingGroupStatus=foundStatus;
+    if(!line)return; // كان السطر بأكمله كلمة حالة (حالة نادرة، متكفَّل بها أصلًا في مكان آخر)
+    if(pendingNums.length===0){
+      pendingDesc.push(line);
+    } else if(pendingDesc.length===0){
+      descCameFirst=false;
+      pendingDesc.push(line);
+    } else if(!descCameFirst){
+      pendingDesc.push(line);
+    } else {
+      flush();
+      pendingDesc.push(line);
+    }
+  }
+
+  for(const l of lines){
+    if(!l){
+      // سطر فارغ: لا يُنهي العلاقة إلا إذا كانت المجموعة الحالية مكتملة فعلاً (أرقام + وصف معًا)
+      if(pendingNums.length&&pendingDesc.length)flush();
+      continue;
+    }
+    const same=l.match(/^([0-9٠-٩]{4,20})\s+(.+)$/);
+    if(same){
+      const num=norm(same[1]);
+      const rest=same[2].trim();
+      const statusOnly=detectStatusWord(rest);
+      if(statusOnly){
+        // رقم + حالة فقط بنفس السطر (مثل "11111 نهائي") — ليست وصفًا، بل حالة تُلحق بالرقم
+        addNumber(num,statusOnly);
+      } else {
+        // رقم ووصف حقيقي معًا في نفس السطر: بيانات مكتملة ومستقلة
+        flush();
+        out.push({num,text:rest,status:null});
+      }
+      continue;
+    }
+    const n=norm(l);
+    if(/^\d{4,20}$/.test(n)){
+      addNumber(n,null);
+      continue;
+    }
+    const statusOnlyLine=detectStatusWord(l);
+    if(statusOnlyLine&&pendingNums.length&&!pendingDesc.length){
+      // سطر حالة مستقل (بدون رقم) يخص كل الأرقام المعلّقة التي لم تُحدَّد حالتها بعد
+      pendingNums.forEach(e=>{ if(!e.status)e.status=statusOnlyLine; });
+      continue;
+    }
+    addDescLine(l);
+  }
+  flush();
+  return out;
+}
+
+/* إزالة كلمة الحالة من نص الوصف نفسه عندما تكون واردة ضمن سطر الوصف (لا تصبح جزءًا من originalText) */
+function stripStatusWords(text){
+  return String(text||'')
+    .replace(/غير\s*نهائي[ةه]?/g,'')
+    .replace(/قابل[ةه]?\s*للاعتراض/g,'')
+    .replace(/نهائي[ةه]?/g,'')
+    .replace(/\s{2,}/g,' ')
+    .replace(/^[\s,،\-–]+|[\s,،\-–]+$/g,'')
+    .trim();
+}
+function detectCaseStatus(n){
+  if(/غير\s*نهاي/.test(n))return 'قابلة للاعتراض';
+  if(/قابل(ه|ة)?\s*للاعتراض/.test(n))return 'قابلة للاعتراض';
+  if(/نهاي/.test(n))return 'نهائية';
+  return '';
+}
+
+/* ===== استخراج حقول إضافية صريحة فقط (بلا افتراض) ===== */
+function extractJudgmentResult(n){
+  if(/رد.{0,10}دعوي|رفض.{0,10}دعوي|رد.{0,10}طلب|رفض.{0,10}طلب/.test(n))return 'رد الدعوى';
+  if(/للمدعي عليه|حكم.{0,15}المدعي عليه/.test(n))return 'للمدعى عليه';
+  if(/حكم.{0,10}للمدعي(?!.{0,8}عليه)|حكم.{0,10}لصالح.{0,10}المدعي(?!.{0,8}عليه)|حكم له/.test(n))return 'للمدعي';
+  if(/حكم عليه/.test(n))return 'للمدعى عليه';
+  return '';
+}
+function extractReason(n){
+  const m=n.match(/(?:بسبب|نتيجه|لعدم|بدعوي|لرفض)\s+([^,.]{3,45})/);
+  return m?m[0].trim():'';
+}
+function extractEvidenceType(n){
+  if(/شاهد|شهاده/.test(n))return 'شهادة شهود';
+  if(/عدم.{0,10}بينه|عدم وجود بينه/.test(n))return 'عدم تقديم بينة';
+  if(/صك|مستند|سند/.test(n))return 'بينة كتابية';
+  if(/يمين|حلف|نكول|نكل/.test(n))return 'يمين';
+  return '';
+}
+function extractOathType(n){
+  if(/نكول.{0,15}حاسمه|حاسمه.{0,15}نكول|نكل.{0,15}حاسمه/.test(n))return 'نكول عن اليمين الحاسمة';
+  if(/نكول.{0,15}متممه|متممه.{0,15}نكول|نكل.{0,15}متممه/.test(n))return 'نكول عن اليمين المتممة';
+  if(/نكول|نكل/.test(n))return 'نكول عن اليمين';
+  if(/يمين حاسمه/.test(n))return 'يمين حاسمة';
+  if(/يمين متممه/.test(n))return 'يمين متممة';
+  if(/ادي.{0,10}اليمين|اداء.{0,10}اليمين|ادى اليمين/.test(n))return 'أداء اليمين';
+  if(/يمين/.test(n))return 'يمين';
+  return '';
+}
+function extractPartyStatus(n){
+  if(/غياب|غايب|غاب/.test(n))return 'غياب المدعى عليه';
+  if(/انكار/.test(n))return 'إنكار';
+  if(/اقرار/.test(n))return 'إقرار';
+  return '';
+}
+
+/* ===== محرك التسجيل بالنقاط ===== */
+function scoreCategory(cat,n){
+  if(cat.excludes&&cat.excludes.some(re=>re.test(n)))return null;
+  if(cat.requires&&cat.requires.length&&!cat.requires.some(re=>re.test(n)))return null;
+  // كل عنصر في strong هو صياغة بديلة لنفس الإشارة، وليس دليلاً إضافيًا مستقلاً؛
+  // لذلك النقاط "مسطّحة" (٥ كحد أقصى لوجود أي تطابق قوي) بدل جمع كل الصياغات المتطابقة.
+  const hasStrong=(cat.strong||[]).some(re=>re.test(n));
+  const weakHits=(cat.weak||[]).filter(re=>re.test(n)).length;
+  const raw=(hasStrong?5:0)+Math.min(weakHits,2);
+  return raw>0?raw:null;
+}
+function classifyScored(text){
+  const n=norm(text);
+  const candidates=[];
+  CATS.forEach(cat=>{ const score=scoreCategory(cat,n); if(score!=null)candidates.push({cat,score}); });
+  if(!candidates.length)return{mainCategory:'غير مصنف بدقة',subCategory:'يحتاج مراجعة يدوية',caseType:'غير محدد',confidence:0};
+  candidates.sort((a,b)=> (a.cat.tier-b.cat.tier) || (b.score-a.score) );
+  const best=candidates[0].cat, bestScore=candidates[0].score;
+  const confidence=Math.min(97,Math.round((bestScore/(bestScore+3))*100));
+  return{mainCategory:best.main,subCategory:best.sub,caseType:best.caseType,confidence};
+}
+
+function analyze(number,text,statusHint){
+  let finalText=text;
+  let caseStatus;
+  if(statusHint){
+    caseStatus=statusHint; // وردت الحالة من parser (سطر/إلحاق منفصل) — النص أصلًا نظيف منها
+  } else {
+    caseStatus=detectCaseStatus(norm(text));
+    if(caseStatus)finalText=stripStatusWords(text); // أزل كلمة الحالة من الوصف المخزَّن
+  }
+  const n=norm(finalText);
+  const c=classifyScored(finalText);
+  const oathType=extractOathType(n);
+  const partyStatus=extractPartyStatus(n);
+  const tags=[c.caseType,caseStatus,oathType,partyStatus].filter(Boolean);
+  return{caseNumber:number,originalText:finalText,mainCategory:c.mainCategory,subCategory:c.subCategory,caseType:c.caseType,
+    tags,confidence:c.confidence,isDeleted:false,caseStatus,
+    judgmentResult:extractJudgmentResult(n),judgmentReason:extractReason(n),
+    evidenceType:extractEvidenceType(n),oathType,partyStatus};
+}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fmtDate(iso){if(!iso)return '—';try{const d=new Date(iso);return d.toLocaleDateString('ar-SA',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
+
+function mainOptionsHTML(selected){return Object.keys(catalog).map(m=>`<option value="${esc(m)}" ${m===selected?'selected':''}>${esc(m)}</option>`).join('');}
+function subOptionsHTML(main,selected){return (catalog[main]||[]).map(s=>`<option value="${esc(s)}" ${s===selected?'selected':''}>${esc(s)}</option>`).join('');}
+
+function runAnalysis(){
+  draft=parse(document.getElementById('input').value).map(x=>analyze(x.num,x.text,x.status));
+  let el=document.getElementById('preview');
+  if(!draft.length){el.innerHTML='<div class="empty">أضف رقم قضية من 4 أرقام على الأقل.</div>';return}
+  el.innerHTML='<div class="section-head"><div><small class="eyebrow">نتيجة التحليل</small><h2>راجع الاقتراح قبل الحفظ</h2></div></div>'+
+    draft.map((x,i)=>`<article class="review" data-i="${i}"><div class="review-head"><div><small style="color:var(--muted)">رقم القضية</small><br><strong>#${esc(x.caseNumber)}</strong></div><span class="badge">${x.confidence>60?'جديدة':'تحتاج مراجعة'}</span></div>
+      <div class="fields" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0">
+        <div><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي</label><select class="editMain" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px">${mainOptionsHTML(x.mainCategory)}</select></div>
+        <div><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي</label><select class="editSub" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px">${subOptionsHTML(x.mainCategory,x.subCategory)}</select></div>
+      </div>
+      <div style="margin:10px 0"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px">حالة القضية${x.caseStatus?' <span style="color:var(--g)">— اكتُشفت تلقائيًا من النص ✓</span>':''}</label>
+        <div style="display:flex;gap:8px">
+          <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
+            <input type="radio" name="caseStatus${i}" class="caseStatusRadio" value="نهائية" ${x.caseStatus==='نهائية'?'checked':''}> نهائية
+          </label>
+          <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
+            <input type="radio" name="caseStatus${i}" class="caseStatusRadio" value="قابلة للاعتراض" ${x.caseStatus==='قابلة للاعتراض'?'checked':''}> قابلة للاعتراض
+          </label>
+        </div>
+      </div>
+      <p>${esc(x.originalText)||'لا يوجد وصف'}</p><p style="font-size:11px;color:var(--muted)">درجة الثقة <b style="color:var(--g)">${x.confidence}%</b></p><div class="tags">${x.tags.map(t=>`<span>#${esc(t)}</span>`).join('')}</div><details style="margin-top:15px"><summary style="cursor:pointer;color:var(--g)">تفاصيل إضافية</summary><p>نوع القضية: <span class="typeShow">${esc(x.caseType)}</span></p><p>النص الأصلي: ${esc(x.originalText)||'غير مذكور'}</p></details></article>`).join('')+
+    `<button class="primary save" id="btnSaveDraft" ${window.__authUid?'':'disabled'} onclick="saveDraft()">${window.__authUid?'اعتماد الاقتراح وحفظ سحابيًا ☁️':'سجّل الدخول أولًا لحفظ القضية سحابيًا'}</button>`;
+  el.querySelectorAll('.review').forEach(card=>{
+    const i=+card.dataset.i, mainSel=card.querySelector('.editMain'), subSel=card.querySelector('.editSub');
+    mainSel.onchange=()=>{
+      draft[i].mainCategory=mainSel.value;
+      subSel.innerHTML=subOptionsHTML(mainSel.value,(catalog[mainSel.value]||[])[0]);
+      subSel.dispatchEvent(new Event('change'));
+    };
+    subSel.onchange=()=>{
+      draft[i].subCategory=subSel.value;
+      draft[i].caseType=caseTypeForSub(subSel.value)||mainSel.value;
+      draft[i].confidence=99;
+      card.querySelector('.typeShow').textContent=draft[i].caseType;
+    };
+    card.querySelectorAll('.caseStatusRadio').forEach(radio=>{
+      radio.onchange=()=>{ if(radio.checked) draft[i].caseStatus=radio.value; };
+    });
+  });
+}
+
+/* ============================= حفظ/تعديل/حذف — كل شيء يكتب مباشرة إلى Firestore (autosave، لا يوجد تخزين محلي) ============================= */
+async function saveDraft(){
+  if(!window.__authUid){alert('سجّل الدخول بحساب Google أولًا لحفظ القضية.');return}
+  const btn=document.getElementById('btnSaveDraft');
+  if(btn){btn.disabled=true;btn.textContent='جارٍ الحفظ سحابيًا... ☁️';}
+  setSync('جارٍ الحفظ ☁️');
+  const existing=new Set(records.map(x=>String(x.caseNumber)));
+  const toSave=draft.filter(x=>!existing.has(String(x.caseNumber)));
+  try{
+    const now=new Date().toISOString();
+    for(const c of toSave){
+      c.createdAt=now;c.updatedAt=now;
+      await window.__cloudSetCase(c);
+    }
+    setSync('تم الحفظ ☁️');
+  }catch(err){
+    console.error(err);setSync('تعذّر الحفظ ⚠️');alert('تعذّر الحفظ سحابيًا: '+(err.message||err));
+  }
+  draft=[];document.getElementById('input').value='';document.getElementById('preview').innerHTML='';document.getElementById('search').value='';show('cases');
+}
+function exportData(){let blob=new Blob([JSON.stringify({schemaVersion:1,exportedAt:new Date().toISOString(),cases:records},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='case-register-backup.json';a.click();URL.revokeObjectURL(a.href)}
+async function importData(e){
+  if(!window.__authUid){alert('سجّل الدخول أولًا لاستيراد نسخة إلى حسابك السحابي.');e.target.value='';return}
+  try{
+    let data=JSON.parse(await e.target.files[0].text()),rows=Array.isArray(data)?data:data.cases;
+    if(!Array.isArray(rows))throw new Error('بنية غير متوقعة');
+    let existing=new Set(records.map(x=>String(x.caseNumber)));
+    let added=0;
+    setSync('جارٍ استيراد النسخة الاحتياطية ☁️');
+    for(const row of rows){
+      if(!row||!row.caseNumber||existing.has(String(row.caseNumber)))continue;
+      const now=new Date().toISOString();
+      await window.__cloudSetCase({
+        caseNumber:String(row.caseNumber),originalText:String(row.originalText||''),
+        mainCategory:row.mainCategory||'غير مصنف بدقة',subCategory:row.subCategory||'غير مصنف بدقة',
+        caseType:row.caseType||'غير محدد',tags:Array.isArray(row.tags)?row.tags:[],
+        confidence:row.confidence||0,isDeleted:!!row.isDeleted,
+        createdAt:row.createdAt||now,updatedAt:now
+      });
+      added++;
+    }
+    setSync('تم الحفظ ☁️');
+    alert('تم استيراد '+added+' قضية جديدة بنجاح إلى حسابك السحابي');
+  }catch(err){console.error(err);alert('ملف النسخة الاحتياطية غير صالح: '+(err.message||err))}
+  e.target.value='';
+}
+async function trash(n,restore=false){
+  if(!window.__authUid)return;
+  setSync('جارٍ الحفظ ☁️');
+  try{
+    await window.__cloudUpdateCase(n,{isDeleted:!restore,updatedAt:new Date().toISOString()});
+    setSync('تم الحفظ ☁️');
+  }catch(err){console.error(err);setSync('تعذّر الحفظ ⚠️');}
+}
+
+/* ============================= إعادة تحليل القضايا غير المصنفة (ميزة صيانة، لا تمس رقم القضية/النص الأصلي/تاريخ الإنشاء/حالة الحذف/معرّف المستند) ============================= */
+
+/* يعيد فقط الحقول الناتجة عن محرك التصنيف — لا caseStatus ولا originalText ولا أي حقل آخر */
+function reanalyzeFields(originalText){
+  const n=norm(originalText||'');
+  const c=classifyScored(originalText||'');
+  const oathType=extractOathType(n);
+  const partyStatus=extractPartyStatus(n);
+  const tags=[c.caseType,oathType,partyStatus].filter(Boolean);
+  return{
+    mainCategory:c.mainCategory,subCategory:c.subCategory,caseType:c.caseType,
+    tags,confidence:c.confidence,
+    judgmentResult:extractJudgmentResult(n),judgmentReason:extractReason(n),
+    evidenceType:extractEvidenceType(n),oathType,partyStatus
+  };
+}
+
+/* استخراج الكلمات العربية (٣ أحرف فأكثر) من مصدر تعبيرات تصنيف معيّن، لأغراض تشخيص "أقرب تصنيف" فقط */
+function extractPatternWords(cat){
+  const all=[...(cat.strong||[]),...(cat.weak||[]),...(cat.requires||[])];
+  const words=new Set();
+  all.forEach(re=>{ (re.source.match(/[\u0600-\u06FF]{3,}/g)||[]).forEach(w=>words.add(w)); });
+  return[...words];
+}
+
+/* لماذا بقيت القضية غير مصنفة، وما أقرب تصنيف محتمل، وما الكلمة/القاعدة الناقصة */
+function diagnoseWhyUnclassified(text){
+  const n=norm(text||'');
+  const words=[...new Set(n.split(/\s+/).filter(w=>w.length>=3))];
+  if(!words.length)return{reason:'لا يوجد نص وصفي كافٍ لتحليله',closest:'—',missingRule:'أضف وصفًا للقضية أولًا'};
+  let candidates=[];
+  CATS.forEach(cat=>{
+    const patternWords=extractPatternWords(cat);
+    const overlap=words.filter(w=>patternWords.some(pw=>w.includes(pw)||pw.includes(w)));
+    if(overlap.length)candidates.push({main:cat.main,sub:cat.sub,overlap:[...new Set(overlap)]});
+  });
+  candidates.sort((a,b)=>b.overlap.length-a.overlap.length);
+  if(!candidates.length){
+    return{reason:'لا تحتوي القضية أي كلمة دالة معروفة لدى محرك التصنيف الحالي',closest:'لا يوجد',missingRule:'أضف تصنيفًا فرعيًا جديدًا وكلمات دالة تصف موضوع هذه القضية (من صفحة التصنيفات)'};
+  }
+  const top=candidates[0];
+  return{
+    reason:'يوجد تشابه جزئي فقط في الكلمات، غير كافٍ لتجاوز حد الثقة الأدنى لأي تصنيف',
+    closest:top.main+' ← '+top.sub,
+    missingRule:'وسّع قاعدة "'+top.sub+'" لتشمل الكلمات: '+top.overlap.join('، ')
+  };
+}
+
+async function reanalyzeUnclassified(){
+  if(!window.__authUid){alert('سجّل الدخول بحساب Google أولًا لتشغيل إعادة التحليل السحابية.');return}
+  const targets=records.filter(r=>!r.isDeleted&&r.mainCategory==='غير مصنف بدقة'&&!r.manuallyReviewed);
+  if(!targets.length){alert('لا توجد قضايا غير مصنفة بحاجة لإعادة التحليل حاليًا 🎉');return}
+
+  const btn=document.getElementById('btnReanalyze');
+  if(btn){btn.disabled=true;btn.textContent='جارٍ إعادة تحليل '+targets.length+' قضية... ☁️';}
+  setSync('جارٍ إعادة التحليل ☁️');
+
+  let reanalyzedCount=0,becameClassified=0,stillUnclassified=0;
+  const stillUnclassifiedDetails=[];
+
+  for(const r of targets){
+    const fields=reanalyzeFields(r.originalText);
+    fields.updatedAt=new Date().toISOString();
+    try{
+      // updateDoc يحدّث الحقول المذكورة فقط؛ لا يمس caseNumber ولا originalText ولا createdAt
+      // ولا isDeleted ولا معرّف المستند نفسه (doc id) بأي شكل.
+      await window.__cloudUpdateCase(r.caseNumber,fields);
+      Object.assign(r,fields); // تحديث النسخة المحلية فورًا لتفادي أي وميض قبل وصول onSnapshot
+      reanalyzedCount++;
+      if(fields.mainCategory!=='غير مصنف بدقة'){
+        becameClassified++;
+      } else {
+        stillUnclassified++;
+        const diag=diagnoseWhyUnclassified(r.originalText);
+        stillUnclassifiedDetails.push({caseNumber:r.caseNumber,text:r.originalText,...diag});
+      }
+    }catch(err){
+      console.error('تعذّر إعادة تحليل القضية #'+r.caseNumber,err);
+    }
+  }
+
+  if(btn){btn.disabled=false;btn.textContent='إعادة تحليل القضايا غير المصنفة';}
+  setSync('تم الحفظ ☁️');
+  renderCases();renderTrash();renderTree();
+
+  showReanalyzeReport(reanalyzedCount,becameClassified,stillUnclassified,stillUnclassifiedDetails);
+}
+
+function showReanalyzeReport(reanalyzed,became,stillUn,details){
+  const box=document.getElementById('reportModalBox');
+  let html='<h3 style="color:var(--g);margin-top:0">تقرير إعادة التحليل</h3>'+
+    '<div class="grid" style="margin:16px 0">'+
+      '<div class="card" style="margin:0"><div style="font-size:26px;color:var(--g);font-weight:700">'+reanalyzed+'</div><div style="font-size:12px;color:var(--muted)">تمت إعادة تحليلها</div></div>'+
+      '<div class="card" style="margin:0"><div style="font-size:26px;color:#187346;font-weight:700">'+became+'</div><div style="font-size:12px;color:var(--muted)">أصبحت مصنَّفة</div></div>'+
+    '</div>'+
+    '<div class="card" style="margin:0 0 16px"><div style="font-size:26px;color:#a5761f;font-weight:700">'+stillUn+'</div><div style="font-size:12px;color:var(--muted)">بقيت غير مصنفة</div></div>';
+
+  if(details.length){
+    html+='<h4 style="color:var(--g)">القضايا التي بقيت غير مصنفة</h4>';
+    details.forEach(d=>{
+      html+='<div class="card" style="margin-top:10px">'+
+        '<strong>#'+esc(d.caseNumber)+'</strong>'+
+        '<p style="font-size:12px;color:var(--muted);margin:6px 0">'+esc(d.text||'(بلا نص)')+'</p>'+
+        '<p style="font-size:12px"><b>السبب:</b> '+esc(d.reason)+'</p>'+
+        '<p style="font-size:12px"><b>أقرب تصنيف محتمل:</b> '+esc(d.closest)+'</p>'+
+        '<p style="font-size:12px"><b>ما الناقص:</b> '+esc(d.missingRule)+'</p>'+
+      '</div>';
+    });
+  }
+  html+='<div style="text-align:left;margin-top:18px"><button class="primary" onclick="closeReport()">إغلاق</button></div>';
+  box.innerHTML=html;
+  document.getElementById('reportModal').style.display='flex';
+}
+function closeReport(){document.getElementById('reportModal').style.display='none';}
+
+/* ============================= إصلاح نصوص قضايا قديمة (Migration) — معاينة إلزامية قبل أي كتابة، لا حذف ولا نسخ جديدة ============================= */
+
+/* نص "تالف" = فارغ، أو يساوي حرفيًا كلمة الحالة نفسها (بقايا الخلل القديم في parser) */
+function isBrokenText(text){
+  const t=String(text||'').trim();
+  if(!t)return true;
+  const n=norm(t);
+  if(/^غير\s*نهايي?ه?$/.test(n))return true;
+  if(/^نهايي?ه?$/.test(n))return true;
+  if(/^قابله?\s*للاعتراض$/.test(n))return true;
+  return false;
+}
+
+let migrationPreviewData=[]; // محفوظة بين خطوة المعاينة وخطوة التنفيذ
+
+function previewMigration(){
+  const raw=document.getElementById('migrationInput').value;
+  const parsed=parse(raw);
+  if(!parsed.length){alert('الصق نص القائمة الأصلية أولًا.');return}
+
+  const preview=[];
+  parsed.forEach(p=>{
+    const existing=records.find(r=>String(r.caseNumber)===String(p.num));
+    if(!existing)return;              // رقم غير موجود أصلًا في قاعدتك — لا نُنشئ قضية جديدة هنا إطلاقًا
+    if(existing.manuallyReviewed)return; // قضية راجعتها يدويًا — لا تُمس
+    if(!isBrokenText(existing.originalText))return; // نصها سليم أصلًا — لا حاجة لإصلاح
+    const fields=reanalyzeFields(p.text);
+    preview.push({
+      caseNumber:p.num,
+      oldText:existing.originalText||'(بلا نص)',
+      newText:p.text,
+      newStatus:p.status||'',
+      ...fields
+    });
+  });
+
+  migrationPreviewData.length=0;
+  migrationPreviewData.push(...preview);
+  renderMigrationPreview(preview);
+}
+
+function renderMigrationPreview(preview){
+  const box=document.getElementById('reportModalBox');
+  let html='<h3 style="color:var(--g);margin-top:0">معاينة إصلاح النصوص (لم يُطبَّق أي تغيير بعد)</h3>';
+  if(!preview.length){
+    html+='<p style="color:var(--muted)">لم يتم العثور على أي قضية تحتاج إصلاحًا مطابقة لهذه القائمة — إما أن الأرقام غير موجودة في قاعدتك، أو نصوصها سليمة أصلًا، أو رُوجعت يدويًا من قبل.</p>'+
+      '<div style="text-align:left;margin-top:16px"><button class="soft" onclick="closeReport()">إغلاق</button></div>';
+    box.innerHTML=html;
+    document.getElementById('reportModal').style.display='flex';
+    return;
+  }
+  html+='<p style="color:var(--muted);font-size:12px">سيتم إصلاح <b style="color:var(--g)">'+preview.length+'</b> قضية. راجع الجدول ثم اضغط "تأكيد وتنفيذ" للمتابعة، أو "إلغاء" للتراجع دون أي تغيير.</p>'+
+    '<div style="overflow-x:auto;margin-top:12px"><table style="width:100%;border-collapse:collapse;font-size:12px">'+
+    '<thead><tr style="text-align:right;color:var(--muted)"><th style="padding:8px">رقم القضية</th><th style="padding:8px">النص الحالي</th><th style="padding:8px">النص المصحح</th><th style="padding:8px">التصنيف المتوقع</th></tr></thead><tbody>';
+  preview.forEach(p=>{
+    html+='<tr style="border-top:1px solid #eee8dd"><td style="padding:8px">#'+esc(p.caseNumber)+'</td>'+
+      '<td style="padding:8px;color:#a1443a">'+esc(p.oldText)+'</td>'+
+      '<td style="padding:8px;color:#187346">'+esc(p.newText)+(p.newStatus?' <span class="badge" style="margin-inline-start:4px">'+esc(p.newStatus)+'</span>':'')+'</td>'+
+      '<td style="padding:8px">'+esc(p.mainCategory)+' ← '+esc(p.subCategory)+'</td></tr>';
+  });
+  html+='</tbody></table></div>'+
+    '<div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end">'+
+      '<button class="soft" onclick="closeReport()">إلغاء</button>'+
+      '<button class="primary" id="btnConfirmMigration" onclick="applyMigration()">تأكيد وتنفيذ الإصلاح ☁️</button>'+
+    '</div>';
+  box.innerHTML=html;
+  document.getElementById('reportModal').style.display='flex';
+}
+
+async function applyMigration(){
+  if(!window.__authUid){alert('سجّل الدخول أولًا.');return}
+  const preview=migrationPreviewData;
+  if(!preview.length)return;
+  const btn=document.getElementById('btnConfirmMigration');
+  if(btn){btn.disabled=true;btn.textContent='جارٍ الإصلاح... ☁️';}
+  setSync('جارٍ إصلاح النصوص ☁️');
+
+  let fixedCount=0,becameClassified=0,stillNeedsReview=0;
+  for(const p of preview){
+    const patch={
+      originalText:p.newText,
+      caseStatus:p.newStatus,
+      mainCategory:p.mainCategory,subCategory:p.subCategory,caseType:p.caseType,
+      tags:p.tags,confidence:p.confidence,
+      judgmentResult:p.judgmentResult,judgmentReason:p.judgmentReason,
+      evidenceType:p.evidenceType,oathType:p.oathType,partyStatus:p.partyStatus,
+      updatedAt:new Date().toISOString()
+    };
+    try{
+      // updateDoc: تحديث جزئي فقط — لا يمس caseNumber ولا createdAt ولا isDeleted ولا معرّف المستند
+      await window.__cloudUpdateCase(p.caseNumber,patch);
+      const local=records.find(r=>String(r.caseNumber)===String(p.caseNumber));
+      if(local)Object.assign(local,patch);
+      fixedCount++;
+      if(p.mainCategory!=='غير مصنف بدقة')becameClassified++; else stillNeedsReview++;
+    }catch(err){
+      console.error('تعذّر إصلاح القضية #'+p.caseNumber,err);
+    }
+  }
+
+  setSync('تم الحفظ ☁️');
+  renderCases();renderTrash();renderTree();
+  migrationPreviewData.length=0;
+
+  const box=document.getElementById('reportModalBox');
+  box.innerHTML='<h3 style="color:var(--g);margin-top:0">تقرير إصلاح النصوص</h3>'+
+    '<div class="grid" style="margin:16px 0">'+
+      '<div class="card" style="margin:0"><div style="font-size:26px;color:var(--g);font-weight:700">'+fixedCount+'</div><div style="font-size:12px;color:var(--muted)">تم إصلاح نصها</div></div>'+
+      '<div class="card" style="margin:0"><div style="font-size:26px;color:#187346;font-weight:700">'+becameClassified+'</div><div style="font-size:12px;color:var(--muted)">أصبحت مصنَّفة</div></div>'+
+    '</div>'+
+    '<div class="card" style="margin:0 0 16px"><div style="font-size:26px;color:#a5761f;font-weight:700">'+stillNeedsReview+'</div><div style="font-size:12px;color:var(--muted)">بقيت تحتاج مراجعة</div></div>'+
+    '<div style="text-align:left"><button class="primary" onclick="closeReport()">إغلاق</button></div>';
+}
+
+/* ============================= العرض ============================= */
+let activeSubFilter=null; // عند الضغط على تصنيف فرعي من الدليل
+function renderCases(){
+  let q=document.getElementById('search').value,
+      rows=records.filter(x=>!x.isDeleted&&JSON.stringify(x).includes(q));
+  if(activeSubFilter)rows=rows.filter(x=>x.subCategory===activeSubFilter);
+  rows.sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));
+  document.getElementById('caseCounter').textContent=records.filter(x=>!x.isDeleted).length;
+  const chip=activeSubFilter?`<div style="margin-bottom:10px"><span class="badge">مصفّى حسب: ${esc(activeSubFilter)} <a href="#" onclick="activeSubFilter=null;renderCases();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span></div>`:'';
+  document.getElementById('caseList').innerHTML=chip+(rows.length?`<div class="grid">${rows.map(x=>`<article class="card"><div class="card-head"><strong>#${esc(x.caseNumber)}</strong><span class="badge">${esc(x.caseType)}</span></div><h3>${esc(x.subCategory)}</h3><p>${esc(x.originalText)}</p><div class="meta">أُنشئت: ${fmtDate(x.createdAt)} — آخر تعديل: ${fmtDate(x.updatedAt)}${x.caseStatus?' — <span style="color:'+(x.caseStatus==='نهائية'?'#187346':'#a5761f')+'">'+esc(x.caseStatus)+'</span>':''}</div><footer><span>${esc(x.mainCategory)}</span><button onclick="trash('${esc(x.caseNumber)}')">نقل إلى السلة</button></footer></article>`).join('')}</div>`:(window.__authUid?'<div class="empty">لا توجد قضايا مطابقة</div>':'<div class="empty">سجّل الدخول بحساب Google من الأعلى لعرض قضاياك المحفوظة سحابيًا</div>'));
+}
+function renderTrash(){
+  let rows=records.filter(x=>x.isDeleted);
+  document.getElementById('trashList').innerHTML=rows.length?rows.map(x=>`<article class="card"><strong>#${esc(x.caseNumber)}</strong><h3>${esc(x.subCategory)}</h3><div class="meta">حُذفت: ${fmtDate(x.updatedAt)}</div><footer><span>${esc(x.mainCategory)}</span><button onclick="trash('${esc(x.caseNumber)}',true)">استعادة</button></footer></article>`).join(''):'<div class="empty">السلة فارغة</div>';
+}
+function goToSub(sub){activeSubFilter=sub;show('cases');}
+function renderTree(){
+  let rows=records.filter(x=>!x.isDeleted);
+  document.getElementById('tree').innerHTML=
+    `<div style="margin-bottom:14px"><button class="soft" onclick="toggleAddCategoryForm()">+ إضافة تصنيف فرعي جديد</button></div>`+
+    `<div id="addCategoryForm" style="display:none;background:#f7f4ed;border-radius:12px;padding:14px;margin-bottom:16px">
+      <div class="fields" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي</label><select id="newCatMain" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px">${mainOptionsHTML()}</select></div>
+        <div><label style="font-size:11px;color:var(--muted)">اسم التصنيف الفرعي الجديد</label><input id="newCatSub" placeholder="مثال: أجرة مركبات" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px"></div>
+        <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">كلمات دالة (مفصولة بفاصلة) — تُستخدم للتعرّف على هذا التصنيف تلقائيًا مستقبلًا</label><input id="newCatKeywords" placeholder="مثال: اجرة مركبة, ايجار سياره" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px"></div>
+        <div><label style="font-size:11px;color:var(--muted)">نوع القضية (اختياري)</label><input id="newCatType" placeholder="مثال: مركبات" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px"></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px"><button class="primary" onclick="submitAddCategory()">إضافة</button><button class="soft" onclick="toggleAddCategoryForm()">إلغاء</button></div>
+    </div>`+
+    Object.entries(catalog).map(([m,subs])=>{
+      let count=rows.filter(x=>x.mainCategory===m).length;
+      return `<details><summary>${esc(m)} <span class="badge" style="float:left">${count}</span></summary><ul>${subs.map(s=>{
+        const n=rows.filter(x=>x.subCategory===s).length;
+        const del=isCustomCategory(m,s)?` <a href="#" onclick="event.stopPropagation();deleteCustomCategory('${esc(m)}','${esc(s)}');return false" style="color:#a1443a;text-decoration:none;font-weight:700;margin-inline-start:6px">حذف</a>`:'';
+        return `<li style="cursor:pointer" onclick="goToSub('${esc(s)}')">${esc(s)} — ${n} قضية${del}</li>`;
+      }).join('')}</ul></details>`;
+    }).join('');
+}
+function toggleAddCategoryForm(){
+  const f=document.getElementById('addCategoryForm');
+  if(f)f.style.display=f.style.display==='none'?'block':'none';
+}
+function submitAddCategory(){
+  const main=document.getElementById('newCatMain').value.trim();
+  const sub=document.getElementById('newCatSub').value.trim();
+  const keywords=document.getElementById('newCatKeywords').value.trim();
+  const caseType=document.getElementById('newCatType').value.trim();
+  if(!sub){alert('اكتب اسم التصنيف الفرعي الجديد');return}
+  if(!window.__authUid){alert('سجّل الدخول أولًا لحفظ التصنيفات الجديدة سحابيًا');return}
+  const entry={id:'cat_'+Date.now().toString(36),main,sub,caseType,pattern:keywords,tags:[]};
+  addCustomCategoryRuntime(entry);
+  customCategories.push(entry);
+  if(window.__cloudSaveCustomCategories)window.__cloudSaveCustomCategories(customCategories);
+  renderTree();
+}
+function deleteCustomCategory(main,sub){
+  const entry=customCategories.find(c=>c.main===main&&c.sub===sub);
+  if(!entry)return;
+  if(!confirm('حذف تصنيف "'+sub+'"؟ لن يتم حذف القضايا المصنفة سابقًا تحته، لكن لن يُقترح تلقائيًا بعد الآن.'))return;
+  removeCustomCategoryRuntime(entry.id);
+  if(window.__cloudSaveCustomCategories)window.__cloudSaveCustomCategories(customCategories);
+  renderTree();
+}
+function newCase(){document.getElementById('search').value='';draft=[];document.getElementById('preview').innerHTML='';show('home')}
+function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===id));if(id==='cases')renderCases();if(id==='trash')renderTrash();if(id==='taxonomy')renderTree()}
+function initNav(where){document.getElementById(where).innerHTML=navItems.map(x=>`<button data-page="${x[0]}" onclick="show('${x[0]}')">${x[1]}</button>`).join('')}
+function setSync(text){const l=document.getElementById('syncLine');if(l)l.textContent=text;}
+initNav('nav');initNav('mobile');show('home');
+window.records=records; // تعريض للاختبار الآلي فقط (let لا يُضاف تلقائيًا إلى window)
+window.migrationPreviewData=migrationPreviewData;
+</script>
+
+<!-- ====================== Firebase: تسجيل دخول Google + Firestore بديلاً كاملاً عن localStorage ======================
+     عدّل القيم بين FIREBASE_CONFIG_START و FIREBASE_CONFIG_END بإعدادات مشروعك الحقيقية
+     (Firebase Console → Project settings → Your apps → Web app → SDK setup and configuration). -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, updateDoc, collection, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+// FIREBASE_CONFIG_START
+const firebaseConfig = {
+  apiKey: "AIzaSyDZ4TdRkD4JNoQsyl_f4Io4qSne1zikIbQ",
+  authDomain: "case-register.firebaseapp.com",
+  projectId: "case-register",
+  storageBucket: "case-register.firebasestorage.app",
+  messagingSenderId: "289439690308",
+  appId: "1:289439690308:web:07f7a23646460334679611"
+};
+// FIREBASE_CONFIG_END
+
+const configLooksReal = firebaseConfig.apiKey && !firebaseConfig.apiKey.includes('ضع-قيمتك-هنا');
+const acctArea = document.getElementById('acctArea');
+const acctSettingsArea = document.getElementById('acctSettingsArea');
+const storageLine = document.getElementById('storageLine');
+const syncLine = document.getElementById('syncLine');
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function renderSignedOutUI(){
+  const btnHtml = '<button class="soft" id="btnGoogleIn">تسجيل الدخول بحساب Google</button>';
+  acctArea.innerHTML = btnHtml;
+  acctSettingsArea.innerHTML = btnHtml;
+  storageLine.textContent='● سجّل الدخول لعرض قضاياك السحابية';
+  syncLine.textContent='غير مسجَّل الدخول';
+  window.__authUid = null;
+  if(typeof records!=='undefined'){records.length=0;}
+  if(typeof renderCases==='function'){renderCases();renderTrash();renderTree();}
+}
+function renderSignedInUI(user){
+  const html = '<div class="acct">'+(user.photoURL?'<img src="'+user.photoURL+'">':'')+
+    '<span>'+esc(user.displayName||user.email)+'</span>'+
+    '<button class="soft" id="btnGoogleOut">خروج</button></div>';
+  acctArea.innerHTML = html;
+  acctSettingsArea.innerHTML = '<div class="acct">'+(user.photoURL?'<img src="'+user.photoURL+'">':'')+
+    '<span><strong>'+esc(user.displayName||'')+'</strong><br><small>'+esc(user.email||'')+'</small></span>'+
+    '<span style="flex:1"></span><button class="soft" id="btnGoogleOut2">تسجيل الخروج</button></div>';
+  storageLine.textContent='● مزامنة سحابية فعّالة (Firestore)';
+}
+
+if(!configLooksReal){
+  acctArea.innerHTML='<span class="syncbadge">لم يتم ضبط Firebase بعد</span>';
+  acctSettingsArea.innerHTML='<p style="font-size:11px;color:var(--muted)">ضع إعدادات مشروعك الحقيقية داخل الملف بين FIREBASE_CONFIG_START وFIREBASE_CONFIG_END لتفعيل تسجيل الدخول والمزامنة السحابية.</p>';
+  storageLine.textContent='● لم يتم ضبط Firebase — لا يمكن الحفظ حاليًا';
+  syncLine.textContent='إعداد Firebase غير مكتمل';
+} else {
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+  let unsub = null;
+
+  async function doSignIn(){
+    try{ await signInWithPopup(auth, provider); }
+    catch(err){ console.error(err); alert('تعذّر تسجيل الدخول: '+(err.code||err.message)); }
+  }
+  async function doSignOut(){
+    if(unsub){unsub();unsub=null;}
+    await signOut(auth);
+  }
+
+  window.__cloudSetCase = async (caseObj) => {
+    if(!window.__authUid) throw new Error('غير مسجَّل الدخول');
+    await setDoc(doc(db,'users',window.__authUid,'cases',String(caseObj.caseNumber)), caseObj, {merge:true});
+  };
+  window.__cloudUpdateCase = async (caseNumber, patch) => {
+    if(!window.__authUid) throw new Error('غير مسجَّل الدخول');
+    await updateDoc(doc(db,'users',window.__authUid,'cases',String(caseNumber)), patch);
+  };
+  window.__cloudSaveCustomCategories = async (list) => {
+    if(!window.__authUid) return;
+    try{ await setDoc(doc(db,'users',window.__authUid,'settings','customCategories'), {list}); }
+    catch(err){ console.error('تعذّر حفظ التصنيفات المخصصة:', err); }
+  };
+
+  let unsubCats = null;
+  onAuthStateChanged(auth, user => {
+    if(unsub){unsub();unsub=null;}
+    if(unsubCats){unsubCats();unsubCats=null;}
+    if(user){
+      window.__authUid = user.uid;
+      renderSignedInUI(user);
+      unsub = onSnapshot(collection(db,'users',user.uid,'cases'), snap => {
+        const list = snap.docs.map(d=>d.data());
+        if(typeof records!=='undefined'){records.length=0;records.push(...list);}
+        if(typeof renderCases==='function'){renderCases();renderTrash();renderTree();}
+        syncLine.textContent='تم الحفظ ☁️ — آخر مزامنة الآن';
+      }, err => { console.error(err); syncLine.textContent='تعذّر تحميل القضايا ⚠️'; });
+      unsubCats = onSnapshot(doc(db,'users',user.uid,'settings','customCategories'), snap => {
+        const data = snap.exists() ? snap.data() : {list:[]};
+        const remoteList = Array.isArray(data.list) ? data.list : [];
+        if(typeof customCategories!=='undefined' && typeof addCustomCategoryRuntime==='function'){
+          // إعادة بناء التصنيفات المخصصة من الصفر لتفادي التكرار عند كل مزامنة
+          customCategories.forEach(c=>removeCustomCategoryRuntime(c.id));
+          customCategories.length = 0;
+          remoteList.forEach(entry=>{ addCustomCategoryRuntime(entry); customCategories.push(entry); });
+          if(document.getElementById('taxonomy').classList.contains('active') && typeof renderTree==='function') renderTree();
+        }
+      }, err => console.error('تعذّر تحميل التصنيفات المخصصة:', err));
+    } else {
+      window.__authUid = null;
+      renderSignedOutUI();
+    }
+  });
+
+  // تفويض النقر لأزرار الدخول/الخروج (تُنشأ ديناميكيًا)
+  document.addEventListener('click', e=>{
+    if(e.target && e.target.id==='btnGoogleIn') doSignIn();
+    if(e.target && (e.target.id==='btnGoogleOut'||e.target.id==='btnGoogleOut2')) doSignOut();
+  });
+}
+</script>
+</body></html>

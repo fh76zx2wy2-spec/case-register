@@ -9,6 +9,10 @@
 @media(max-width:760px){.app{display:block}.side{display:none}.main{padding:0 15px 85px}.top{justify-content:center;flex-wrap:wrap;height:auto;padding:10px 0;gap:8px}.page{margin-top:20px}.hero h1{font-size:34px}.grid{grid-template-columns:1fr}.mobile{position:fixed;display:flex;bottom:0;left:0;right:0;height:65px;background:#fff;border-top:1px solid var(--line);justify-content:space-around;z-index:5}.mobile button{border:0;background:none;color:var(--muted)}.mobile button.active{color:var(--g)}}
 </style></head>
 <body><div class="app"><aside class="side"><div class="brand"><span class="mark">س</span><div><b>سجل القضايا</b><small>أرشيفك الذكي للقضايا</small></div></div><nav id="nav"></nav><p style="position:absolute;bottom:20px;color:#afc1ba;font-size:11px" id="storageLine">● جارٍ الاتصال بالسحابة…</p></aside><main class="main"><header class="top"><span id="syncLine">جارٍ التحقق من حالة الدخول…</span><div class="acct" id="acctArea"></div></header><section id="home" class="page active"><div class="hero"><small>مساعدك القانوني المنظّم</small><h1>أدخل القضية <span>بأي طريقة تريد</span></h1><p>اكتب رقم القضية ووصفًا مختصرًا بأي ترتيب، وسنرتبها ونصنفها لك دون افتراض أي واقعة لم تذكرها.</p></div><div class="box"><textarea id="input" placeholder="مثال:&#10;حادث&#10;8789797"></textarea><div class="bar"><button class="soft" onclick="document.getElementById('input').value='4870044548\nمطالبة المدعي المدعى عليه بمبلغ العقد لعدم إتمام العقد وحكم له'">استخدم مثالًا تجريبيًا</button><span style="flex:1"></span><button class="primary" onclick="runAnalysis()">تحليل القضية ←</button></div></div><div id="preview"></div><p class="note"><b style="color:var(--g)">خصوصيتك أولًا:</b> لا نضيف وقائع غير مذكورة، ويمكنك مراجعة كل اقتراح قبل حفظه.</p></section><section id="cases" class="page"><div class="section-head"><div><small class="eyebrow">أرشيفك</small><h1>قضاياك المحفوظة <span class="badge" id="caseCounter">0</span></h1></div><button class="primary" onclick="newCase()">+ إضافة قضية</button></div><input class="search" id="search" placeholder="ابحث بالرقم أو التصنيف أو النص أو الوسوم..." oninput="renderCases()"><div id="caseList"></div></section><section id="taxonomy" class="page"><div class="section-head"><div><small class="eyebrow">تصنيف رئيسي ← تصنيف فرعي ← القضايا</small><h1>دليل التصنيفات</h1></div></div><div id="tree" class="tree"></div></section><section id="trash" class="page"><div class="section-head"><div><small class="eyebrow">سلة المحذوفات</small><h1>القضايا المحذوفة</h1></div></div><div id="trashList"></div></section><section id="settings" class="page"><div class="section-head"><div><small class="eyebrow">الحساب والبيانات</small><h1>الإعدادات</h1></div></div><article class="card" id="acctCard"><h3>الحساب والمزامنة</h3><p>سجّل الدخول بحساب Google لحفظ قضاياك سحابيًا في Firestore ومزامنتها فورًا بين كل أجهزتك.</p><div id="acctSettingsArea"></div></article><article class="card"><h3>النسخة الاحتياطية</h3><p>صدّر جميع بياناتك أو استورد نسخة سابقة إلى حسابك السحابي. لن تتكرر أرقام القضايا الموجودة.</p><div style="display:flex;gap:8px;margin-top:15px"><button class="soft" onclick="exportData()">تصدير JSON</button><button class="primary" onclick="document.getElementById('importFile').click()">استيراد نسخة</button><input hidden id="importFile" type="file" accept="application/json" onchange="importData(event)"></div></article><article class="card"><h3>إعادة تحليل القضايا غير المصنفة</h3><p>بعد أي تحسين لمحرك التصنيف، استخدم هذا الزر لإعادة تصنيف القضايا التي وقعت سابقًا في "غير مصنف بدقة" فقط — دون حذف أي قضية أو تغيير رقمها أو نصها الأصلي. القضايا التي راجعتها يدويًا (manuallyReviewed) لن تُمس.</p><div style="margin-top:15px"><button class="primary" id="btnReanalyze" onclick="reanalyzeUnclassified()">إعادة تحليل القضايا غير المصنفة</button></div></article>
+      <article class="card"><h3>إصلاح نصوص قضايا قديمة (تعطّلت بسبب خلل قديم في القارئ)</h3><p>الصق هنا نفس القائمة الأصلية الصحيحة التي كتبتها سابقًا. سيطابق النظام كل رقم قضية مع قاعدة البيانات الحالية، ويقترح إصلاحًا فقط للقضايا التي نصها فارغ أو نصها الحالي هو كلمة الحالة نفسها ("نهائي"/"غير نهائي") بالخطأ. لن يُطبَّق أي تغيير قبل مراجعتك للمعاينة والموافقة عليها صراحة — ولن يُنشئ أي قضية جديدة أو يمس رقم القضية أو تاريخ الإنشاء أو حالة الحذف أو معرّف المستند.</p>
+        <textarea id="migrationInput" style="width:100%;min-height:140px;margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit" placeholder="الصق هنا القائمة الأصلية الكاملة بنفس صيغتك المعتادة..."></textarea>
+        <div style="margin-top:12px"><button class="soft" id="btnMigrationPreview" onclick="previewMigration()">معاينة الإصلاح (بدون أي تغيير فعلي)</button></div>
+      </article>
       <article class="card"><h3>سياسة الحذف</h3><p>لا تحذف القضايا نهائيًا؛ تنتقل إلى السلة سحابيًا ويمكن استعادتها من أي جهاز في أي وقت.</p><span class="badge">حذف آمن</span></article></section></main><nav class="mobile" id="mobile"></nav></div>
 <div id="reportModal" style="display:none;position:fixed;inset:0;background:#0c2d2660;z-index:70;align-items:center;justify-content:center;padding:20px">
   <div id="reportModalBox" style="background:#fff;border-radius:16px;padding:24px;max-width:680px;width:100%;max-height:86vh;overflow-y:auto"></div>
@@ -299,14 +303,15 @@ function parse(s){
   let pendingNums=[];       // [{num, status}]
   let pendingDesc=[];       // [line, line, ...]
   let descCameFirst=false;  // هل تصدَّر الوصف الأرقام في هذه المجموعة؟
+  let pendingGroupStatus=null; // حالة وردت ضمن سطر وصف (مثل "تلفيات مركبة نهائي") تسري كحالة افتراضية لكل أرقام المجموعة التي لم تُحدَّد حالتها صراحة برقمها
   const out=[];
 
   function flush(){
     if(pendingNums.length){
       const joined=pendingDesc.join(' ').trim();
-      pendingNums.forEach(entry=>out.push({num:entry.num,text:joined,status:entry.status}));
+      pendingNums.forEach(entry=>out.push({num:entry.num,text:joined,status:entry.status||pendingGroupStatus||null}));
     }
-    pendingNums=[];pendingDesc=[];descCameFirst=false;
+    pendingNums=[];pendingDesc=[];descCameFirst=false;pendingGroupStatus=null;
   }
   function addNumber(num,status){
     if(pendingDesc.length===0){
@@ -321,7 +326,14 @@ function parse(s){
       pendingNums.push({num,status});
     }
   }
-  function addDescLine(line){
+  function addDescLine(rawLine){
+    // سطر وصف قد ينتهي أو يتضمّن كلمة حالة ملحقة بنص حقيقي (مثل "تلفيات مركبة نهائي" أو
+    // "جميع دعاوى الاتصالات السعودية نهائية") — استخرج الحالة ونظّف السطر منها قبل اعتباره وصفًا،
+    // واحتفظ بها كحالة افتراضية للمجموعة الحالية (تُستخدم فقط للأرقام التي لم تُحدَّد حالتها بنفسها).
+    const foundStatus=detectCaseStatus(norm(rawLine));
+    const line=foundStatus?stripStatusWords(rawLine):rawLine;
+    if(foundStatus)pendingGroupStatus=foundStatus;
+    if(!line)return; // كان السطر بأكمله كلمة حالة (حالة نادرة، متكفَّل بها أصلًا في مكان آخر)
     if(pendingNums.length===0){
       pendingDesc.push(line);
     } else if(pendingDesc.length===0){
@@ -684,6 +696,120 @@ function showReanalyzeReport(reanalyzed,became,stillUn,details){
 }
 function closeReport(){document.getElementById('reportModal').style.display='none';}
 
+/* ============================= إصلاح نصوص قضايا قديمة (Migration) — معاينة إلزامية قبل أي كتابة، لا حذف ولا نسخ جديدة ============================= */
+
+/* نص "تالف" = فارغ، أو يساوي حرفيًا كلمة الحالة نفسها (بقايا الخلل القديم في parser) */
+function isBrokenText(text){
+  const t=String(text||'').trim();
+  if(!t)return true;
+  const n=norm(t);
+  if(/^غير\s*نهايي?ه?$/.test(n))return true;
+  if(/^نهايي?ه?$/.test(n))return true;
+  if(/^قابله?\s*للاعتراض$/.test(n))return true;
+  return false;
+}
+
+let migrationPreviewData=[]; // محفوظة بين خطوة المعاينة وخطوة التنفيذ
+
+function previewMigration(){
+  const raw=document.getElementById('migrationInput').value;
+  const parsed=parse(raw);
+  if(!parsed.length){alert('الصق نص القائمة الأصلية أولًا.');return}
+
+  const preview=[];
+  parsed.forEach(p=>{
+    const existing=records.find(r=>String(r.caseNumber)===String(p.num));
+    if(!existing)return;              // رقم غير موجود أصلًا في قاعدتك — لا نُنشئ قضية جديدة هنا إطلاقًا
+    if(existing.manuallyReviewed)return; // قضية راجعتها يدويًا — لا تُمس
+    if(!isBrokenText(existing.originalText))return; // نصها سليم أصلًا — لا حاجة لإصلاح
+    const fields=reanalyzeFields(p.text);
+    preview.push({
+      caseNumber:p.num,
+      oldText:existing.originalText||'(بلا نص)',
+      newText:p.text,
+      newStatus:p.status||'',
+      ...fields
+    });
+  });
+
+  migrationPreviewData.length=0;
+  migrationPreviewData.push(...preview);
+  renderMigrationPreview(preview);
+}
+
+function renderMigrationPreview(preview){
+  const box=document.getElementById('reportModalBox');
+  let html='<h3 style="color:var(--g);margin-top:0">معاينة إصلاح النصوص (لم يُطبَّق أي تغيير بعد)</h3>';
+  if(!preview.length){
+    html+='<p style="color:var(--muted)">لم يتم العثور على أي قضية تحتاج إصلاحًا مطابقة لهذه القائمة — إما أن الأرقام غير موجودة في قاعدتك، أو نصوصها سليمة أصلًا، أو رُوجعت يدويًا من قبل.</p>'+
+      '<div style="text-align:left;margin-top:16px"><button class="soft" onclick="closeReport()">إغلاق</button></div>';
+    box.innerHTML=html;
+    document.getElementById('reportModal').style.display='flex';
+    return;
+  }
+  html+='<p style="color:var(--muted);font-size:12px">سيتم إصلاح <b style="color:var(--g)">'+preview.length+'</b> قضية. راجع الجدول ثم اضغط "تأكيد وتنفيذ" للمتابعة، أو "إلغاء" للتراجع دون أي تغيير.</p>'+
+    '<div style="overflow-x:auto;margin-top:12px"><table style="width:100%;border-collapse:collapse;font-size:12px">'+
+    '<thead><tr style="text-align:right;color:var(--muted)"><th style="padding:8px">رقم القضية</th><th style="padding:8px">النص الحالي</th><th style="padding:8px">النص المصحح</th><th style="padding:8px">التصنيف المتوقع</th></tr></thead><tbody>';
+  preview.forEach(p=>{
+    html+='<tr style="border-top:1px solid #eee8dd"><td style="padding:8px">#'+esc(p.caseNumber)+'</td>'+
+      '<td style="padding:8px;color:#a1443a">'+esc(p.oldText)+'</td>'+
+      '<td style="padding:8px;color:#187346">'+esc(p.newText)+(p.newStatus?' <span class="badge" style="margin-inline-start:4px">'+esc(p.newStatus)+'</span>':'')+'</td>'+
+      '<td style="padding:8px">'+esc(p.mainCategory)+' ← '+esc(p.subCategory)+'</td></tr>';
+  });
+  html+='</tbody></table></div>'+
+    '<div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end">'+
+      '<button class="soft" onclick="closeReport()">إلغاء</button>'+
+      '<button class="primary" id="btnConfirmMigration" onclick="applyMigration()">تأكيد وتنفيذ الإصلاح ☁️</button>'+
+    '</div>';
+  box.innerHTML=html;
+  document.getElementById('reportModal').style.display='flex';
+}
+
+async function applyMigration(){
+  if(!window.__authUid){alert('سجّل الدخول أولًا.');return}
+  const preview=migrationPreviewData;
+  if(!preview.length)return;
+  const btn=document.getElementById('btnConfirmMigration');
+  if(btn){btn.disabled=true;btn.textContent='جارٍ الإصلاح... ☁️';}
+  setSync('جارٍ إصلاح النصوص ☁️');
+
+  let fixedCount=0,becameClassified=0,stillNeedsReview=0;
+  for(const p of preview){
+    const patch={
+      originalText:p.newText,
+      caseStatus:p.newStatus,
+      mainCategory:p.mainCategory,subCategory:p.subCategory,caseType:p.caseType,
+      tags:p.tags,confidence:p.confidence,
+      judgmentResult:p.judgmentResult,judgmentReason:p.judgmentReason,
+      evidenceType:p.evidenceType,oathType:p.oathType,partyStatus:p.partyStatus,
+      updatedAt:new Date().toISOString()
+    };
+    try{
+      // updateDoc: تحديث جزئي فقط — لا يمس caseNumber ولا createdAt ولا isDeleted ولا معرّف المستند
+      await window.__cloudUpdateCase(p.caseNumber,patch);
+      const local=records.find(r=>String(r.caseNumber)===String(p.caseNumber));
+      if(local)Object.assign(local,patch);
+      fixedCount++;
+      if(p.mainCategory!=='غير مصنف بدقة')becameClassified++; else stillNeedsReview++;
+    }catch(err){
+      console.error('تعذّر إصلاح القضية #'+p.caseNumber,err);
+    }
+  }
+
+  setSync('تم الحفظ ☁️');
+  renderCases();renderTrash();renderTree();
+  migrationPreviewData.length=0;
+
+  const box=document.getElementById('reportModalBox');
+  box.innerHTML='<h3 style="color:var(--g);margin-top:0">تقرير إصلاح النصوص</h3>'+
+    '<div class="grid" style="margin:16px 0">'+
+      '<div class="card" style="margin:0"><div style="font-size:26px;color:var(--g);font-weight:700">'+fixedCount+'</div><div style="font-size:12px;color:var(--muted)">تم إصلاح نصها</div></div>'+
+      '<div class="card" style="margin:0"><div style="font-size:26px;color:#187346;font-weight:700">'+becameClassified+'</div><div style="font-size:12px;color:var(--muted)">أصبحت مصنَّفة</div></div>'+
+    '</div>'+
+    '<div class="card" style="margin:0 0 16px"><div style="font-size:26px;color:#a5761f;font-weight:700">'+stillNeedsReview+'</div><div style="font-size:12px;color:var(--muted)">بقيت تحتاج مراجعة</div></div>'+
+    '<div style="text-align:left"><button class="primary" onclick="closeReport()">إغلاق</button></div>';
+}
+
 /* ============================= العرض ============================= */
 let activeSubFilter=null; // عند الضغط على تصنيف فرعي من الدليل
 function renderCases(){
@@ -753,6 +879,7 @@ function initNav(where){document.getElementById(where).innerHTML=navItems.map(x=
 function setSync(text){const l=document.getElementById('syncLine');if(l)l.textContent=text;}
 initNav('nav');initNav('mobile');show('home');
 window.records=records; // تعريض للاختبار الآلي فقط (let لا يُضاف تلقائيًا إلى window)
+window.migrationPreviewData=migrationPreviewData;
 </script>
 
 <!-- ====================== Firebase: تسجيل دخول Google + Firestore بديلاً كاملاً عن localStorage ======================

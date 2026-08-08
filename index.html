@@ -8,7 +8,11 @@
 .acct{display:flex;align-items:center;gap:8px}.acct img{width:28px;height:28px;border-radius:50%}.syncbadge{background:#eef1fb;color:#3b4c9e;border:1px solid #d6ddf5;border-radius:20px;padding:4px 9px;font-size:10.5px}
 @media(max-width:760px){.app{display:block}.side{display:none}.main{padding:0 15px 85px}.top{justify-content:center;flex-wrap:wrap;height:auto;padding:10px 0;gap:8px}.page{margin-top:20px}.hero h1{font-size:34px}.grid{grid-template-columns:1fr}.mobile{position:fixed;display:flex;bottom:0;left:0;right:0;height:65px;background:#fff;border-top:1px solid var(--line);justify-content:space-around;z-index:5}.mobile button{border:0;background:none;color:var(--muted)}.mobile button.active{color:var(--g)}}
 </style></head>
-<body><div class="app"><aside class="side"><div class="brand"><span class="mark">س</span><div><b>سجل القضايا</b><small>أرشيفك الذكي للقضايا</small></div></div><nav id="nav"></nav><p style="position:absolute;bottom:20px;color:#afc1ba;font-size:11px" id="storageLine">● جارٍ الاتصال بالسحابة…</p></aside><main class="main"><header class="top"><span id="syncLine">جارٍ التحقق من حالة الدخول…</span><div class="acct" id="acctArea"></div></header><section id="home" class="page active"><div class="hero"><small>مساعدك القانوني المنظّم</small><h1>أدخل القضية <span>بأي طريقة تريد</span></h1><p>اكتب رقم القضية ووصفًا مختصرًا بأي ترتيب، وسنرتبها ونصنفها لك دون افتراض أي واقعة لم تذكرها.</p></div><div class="box"><textarea id="input" placeholder="مثال:&#10;حادث&#10;8789797"></textarea><div class="bar"><button class="soft" onclick="document.getElementById('input').value='4870044548\nمطالبة المدعي المدعى عليه بمبلغ العقد لعدم إتمام العقد وحكم له'">استخدم مثالًا تجريبيًا</button><span style="flex:1"></span><button class="primary" onclick="runAnalysis()">تحليل القضية ←</button></div></div><div id="preview"></div><p class="note"><b style="color:var(--g)">خصوصيتك أولًا:</b> لا نضيف وقائع غير مذكورة، ويمكنك مراجعة كل اقتراح قبل حفظه.</p></section><section id="cases" class="page"><div class="section-head"><div><small class="eyebrow">أرشيفك</small><h1>قضاياك المحفوظة <span class="badge" id="caseCounter">0</span></h1></div><button class="primary" onclick="newCase()">+ إضافة قضية</button></div><input class="search" id="search" placeholder="ابحث بالرقم أو التصنيف أو النص أو الوسوم..." oninput="renderCases()"><div id="caseList"></div></section><section id="taxonomy" class="page"><div class="section-head"><div><small class="eyebrow">تصنيف رئيسي ← تصنيف فرعي ← القضايا</small><h1>دليل التصنيفات</h1></div></div><div id="tree" class="tree"></div></section><section id="trash" class="page"><div class="section-head"><div><small class="eyebrow">سلة المحذوفات</small><h1>القضايا المحذوفة</h1></div></div><div id="trashList"></div></section><section id="settings" class="page"><div class="section-head"><div><small class="eyebrow">الحساب والبيانات</small><h1>الإعدادات</h1></div></div><article class="card" id="acctCard"><h3>الحساب والمزامنة</h3><p>سجّل الدخول بحساب Google لحفظ قضاياك سحابيًا في Firestore ومزامنتها فورًا بين كل أجهزتك.</p><div id="acctSettingsArea"></div></article><article class="card"><h3>النسخة الاحتياطية</h3><p>صدّر جميع بياناتك أو استورد نسخة سابقة إلى حسابك السحابي. لن تتكرر أرقام القضايا الموجودة.</p><div style="display:flex;gap:8px;margin-top:15px"><button class="soft" onclick="exportData()">تصدير JSON</button><button class="primary" onclick="document.getElementById('importFile').click()">استيراد نسخة</button><input hidden id="importFile" type="file" accept="application/json" onchange="importData(event)"></div></article><article class="card"><h3>سياسة الحذف</h3><p>لا تحذف القضايا نهائيًا؛ تنتقل إلى السلة سحابيًا ويمكن استعادتها من أي جهاز في أي وقت.</p><span class="badge">حذف آمن</span></article></section></main><nav class="mobile" id="mobile"></nav></div>
+<body><div class="app"><aside class="side"><div class="brand"><span class="mark">س</span><div><b>سجل القضايا</b><small>أرشيفك الذكي للقضايا</small></div></div><nav id="nav"></nav><p style="position:absolute;bottom:20px;color:#afc1ba;font-size:11px" id="storageLine">● جارٍ الاتصال بالسحابة…</p></aside><main class="main"><header class="top"><span id="syncLine">جارٍ التحقق من حالة الدخول…</span><div class="acct" id="acctArea"></div></header><section id="home" class="page active"><div class="hero"><small>مساعدك القانوني المنظّم</small><h1>أدخل القضية <span>بأي طريقة تريد</span></h1><p>اكتب رقم القضية ووصفًا مختصرًا بأي ترتيب، وسنرتبها ونصنفها لك دون افتراض أي واقعة لم تذكرها.</p></div><div class="box"><textarea id="input" placeholder="مثال:&#10;حادث&#10;8789797"></textarea><div class="bar"><button class="soft" onclick="document.getElementById('input').value='4870044548\nمطالبة المدعي المدعى عليه بمبلغ العقد لعدم إتمام العقد وحكم له'">استخدم مثالًا تجريبيًا</button><span style="flex:1"></span><button class="primary" onclick="runAnalysis()">تحليل القضية ←</button></div></div><div id="preview"></div><p class="note"><b style="color:var(--g)">خصوصيتك أولًا:</b> لا نضيف وقائع غير مذكورة، ويمكنك مراجعة كل اقتراح قبل حفظه.</p></section><section id="cases" class="page"><div class="section-head"><div><small class="eyebrow">أرشيفك</small><h1>قضاياك المحفوظة <span class="badge" id="caseCounter">0</span></h1></div><button class="primary" onclick="newCase()">+ إضافة قضية</button></div><input class="search" id="search" placeholder="ابحث بالرقم أو التصنيف أو النص أو الوسوم..." oninput="renderCases()"><div id="caseList"></div></section><section id="taxonomy" class="page"><div class="section-head"><div><small class="eyebrow">تصنيف رئيسي ← تصنيف فرعي ← القضايا</small><h1>دليل التصنيفات</h1></div></div><div id="tree" class="tree"></div></section><section id="trash" class="page"><div class="section-head"><div><small class="eyebrow">سلة المحذوفات</small><h1>القضايا المحذوفة</h1></div></div><div id="trashList"></div></section><section id="settings" class="page"><div class="section-head"><div><small class="eyebrow">الحساب والبيانات</small><h1>الإعدادات</h1></div></div><article class="card" id="acctCard"><h3>الحساب والمزامنة</h3><p>سجّل الدخول بحساب Google لحفظ قضاياك سحابيًا في Firestore ومزامنتها فورًا بين كل أجهزتك.</p><div id="acctSettingsArea"></div></article><article class="card"><h3>النسخة الاحتياطية</h3><p>صدّر جميع بياناتك أو استورد نسخة سابقة إلى حسابك السحابي. لن تتكرر أرقام القضايا الموجودة.</p><div style="display:flex;gap:8px;margin-top:15px"><button class="soft" onclick="exportData()">تصدير JSON</button><button class="primary" onclick="document.getElementById('importFile').click()">استيراد نسخة</button><input hidden id="importFile" type="file" accept="application/json" onchange="importData(event)"></div></article><article class="card"><h3>إعادة تحليل القضايا غير المصنفة</h3><p>بعد أي تحسين لمحرك التصنيف، استخدم هذا الزر لإعادة تصنيف القضايا التي وقعت سابقًا في "غير مصنف بدقة" فقط — دون حذف أي قضية أو تغيير رقمها أو نصها الأصلي. القضايا التي راجعتها يدويًا (manuallyReviewed) لن تُمس.</p><div style="margin-top:15px"><button class="primary" id="btnReanalyze" onclick="reanalyzeUnclassified()">إعادة تحليل القضايا غير المصنفة</button></div></article>
+      <article class="card"><h3>سياسة الحذف</h3><p>لا تحذف القضايا نهائيًا؛ تنتقل إلى السلة سحابيًا ويمكن استعادتها من أي جهاز في أي وقت.</p><span class="badge">حذف آمن</span></article></section></main><nav class="mobile" id="mobile"></nav></div>
+<div id="reportModal" style="display:none;position:fixed;inset:0;background:#0c2d2660;z-index:70;align-items:center;justify-content:center;padding:20px">
+  <div id="reportModalBox" style="background:#fff;border-radius:16px;padding:24px;max-width:680px;width:100%;max-height:86vh;overflow-y:auto"></div>
+</div>
 <script>
 const navItems=[['home','الرئيسية'],['cases','القضايا'],['taxonomy','التصنيفات'],['trash','المحذوفات'],['settings','الإعدادات']];
 let records=[],draft=[];
@@ -277,25 +281,107 @@ function removeCustomCategoryRuntime(id){
 }
 
 function norm(s){return s.normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/ة/g,'ه').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\s+/g,' ').trim()}
+/* ===== كاشف كلمة الحالة (نهائي/غير نهائي) عندما تكون النص بأكمله كلمة الحالة فقط ===== */
+function detectStatusWord(text){
+  const n=norm(text);
+  if(/^غير\s*نهاي/.test(n))return 'قابلة للاعتراض';
+  if(/^قابل(ه|ة)?\s*للاعتراض/.test(n))return 'قابلة للاعتراض';
+  if(/^نهاي/.test(n))return 'نهائية';
+  return null;
+}
+
+/* ===== محلل الإدخال المتعدد (parser) =====
+   يدعم: أرقام ثم وصف / وصف ثم أرقام / رقم+حالة على نفس السطر (11111 نهائي) /
+   وصف ثم أرقام مع حالة / أكثر من رقم يتقاسمون نفس الوصف — بأي ترتيب،
+   ولا تُنهي الأسطر الفارغة العلاقة بين الرقم والوصف إلا عند اكتمال مجموعة فعلية. */
 function parse(s){
   const lines=s.split(/\n/).map(x=>x.trim());
-  let pendingNums=[],pendingDesc=[],out=[];
-  function flush(){ if(pendingNums.length){ const joined=pendingDesc.join(' ').trim(); pendingNums.forEach(num=>out.push([num,joined])); } pendingNums=[];pendingDesc=[]; }
+  let pendingNums=[];       // [{num, status}]
+  let pendingDesc=[];       // [line, line, ...]
+  let descCameFirst=false;  // هل تصدَّر الوصف الأرقام في هذه المجموعة؟
+  const out=[];
+
+  function flush(){
+    if(pendingNums.length){
+      const joined=pendingDesc.join(' ').trim();
+      pendingNums.forEach(entry=>out.push({num:entry.num,text:joined,status:entry.status}));
+    }
+    pendingNums=[];pendingDesc=[];descCameFirst=false;
+  }
+  function addNumber(num,status){
+    if(pendingDesc.length===0){
+      pendingNums.push({num,status});
+    } else if(pendingNums.length===0){
+      descCameFirst=true;
+      pendingNums.push({num,status});
+    } else if(descCameFirst){
+      pendingNums.push({num,status});
+    } else {
+      flush();
+      pendingNums.push({num,status});
+    }
+  }
+  function addDescLine(line){
+    if(pendingNums.length===0){
+      pendingDesc.push(line);
+    } else if(pendingDesc.length===0){
+      descCameFirst=false;
+      pendingDesc.push(line);
+    } else if(!descCameFirst){
+      pendingDesc.push(line);
+    } else {
+      flush();
+      pendingDesc.push(line);
+    }
+  }
+
   for(const l of lines){
-    if(!l){ flush(); continue; }
-    const n=norm(l);
-    const same=l.match(/^([0-9٠-٩]{4,20})\s+(.+)$/);
-    if(same){ flush(); out.push([norm(same[1]),same[2]]); continue; }
-    if(/^\d{4,20}$/.test(n)){
-      if(pendingNums.length&&pendingDesc.length){ flush(); pendingNums=[n]; }
-      else if(pendingDesc.length){ out.push([n,pendingDesc.join(' ').trim()]); pendingDesc=[]; }
-      else{ pendingNums.push(n); }
+    if(!l){
+      // سطر فارغ: لا يُنهي العلاقة إلا إذا كانت المجموعة الحالية مكتملة فعلاً (أرقام + وصف معًا)
+      if(pendingNums.length&&pendingDesc.length)flush();
       continue;
     }
-    pendingDesc.push(l);
+    const same=l.match(/^([0-9٠-٩]{4,20})\s+(.+)$/);
+    if(same){
+      const num=norm(same[1]);
+      const rest=same[2].trim();
+      const statusOnly=detectStatusWord(rest);
+      if(statusOnly){
+        // رقم + حالة فقط بنفس السطر (مثل "11111 نهائي") — ليست وصفًا، بل حالة تُلحق بالرقم
+        addNumber(num,statusOnly);
+      } else {
+        // رقم ووصف حقيقي معًا في نفس السطر: بيانات مكتملة ومستقلة
+        flush();
+        out.push({num,text:rest,status:null});
+      }
+      continue;
+    }
+    const n=norm(l);
+    if(/^\d{4,20}$/.test(n)){
+      addNumber(n,null);
+      continue;
+    }
+    const statusOnlyLine=detectStatusWord(l);
+    if(statusOnlyLine&&pendingNums.length&&!pendingDesc.length){
+      // سطر حالة مستقل (بدون رقم) يخص كل الأرقام المعلّقة التي لم تُحدَّد حالتها بعد
+      pendingNums.forEach(e=>{ if(!e.status)e.status=statusOnlyLine; });
+      continue;
+    }
+    addDescLine(l);
   }
   flush();
   return out;
+}
+
+/* إزالة كلمة الحالة من نص الوصف نفسه عندما تكون واردة ضمن سطر الوصف (لا تصبح جزءًا من originalText) */
+function stripStatusWords(text){
+  return String(text||'')
+    .replace(/غير\s*نهائي[ةه]?/g,'')
+    .replace(/قابل[ةه]?\s*للاعتراض/g,'')
+    .replace(/نهائي[ةه]?/g,'')
+    .replace(/\s{2,}/g,' ')
+    .replace(/^[\s,،\-–]+|[\s,،\-–]+$/g,'')
+    .trim();
 }
 function detectCaseStatus(n){
   if(/غير\s*نهاي/.test(n))return 'قابلة للاعتراض';
@@ -306,7 +392,7 @@ function detectCaseStatus(n){
 
 /* ===== استخراج حقول إضافية صريحة فقط (بلا افتراض) ===== */
 function extractJudgmentResult(n){
-  if(/رد.{0,10}(الدعوي|طلب)|رفض.{0,10}(الدعوي|طلب)/.test(n))return 'رد الدعوى';
+  if(/رد.{0,10}دعوي|رفض.{0,10}دعوي|رد.{0,10}طلب|رفض.{0,10}طلب/.test(n))return 'رد الدعوى';
   if(/للمدعي عليه|حكم.{0,15}المدعي عليه/.test(n))return 'للمدعى عليه';
   if(/حكم.{0,10}للمدعي(?!.{0,8}عليه)|حكم.{0,10}لصالح.{0,10}المدعي(?!.{0,8}عليه)|حكم له/.test(n))return 'للمدعي';
   if(/حكم عليه/.test(n))return 'للمدعى عليه';
@@ -362,14 +448,21 @@ function classifyScored(text){
   return{mainCategory:best.main,subCategory:best.sub,caseType:best.caseType,confidence};
 }
 
-function analyze(number,text){
-  const n=norm(text);
-  const c=classifyScored(text);
-  const caseStatus=detectCaseStatus(n);
+function analyze(number,text,statusHint){
+  let finalText=text;
+  let caseStatus;
+  if(statusHint){
+    caseStatus=statusHint; // وردت الحالة من parser (سطر/إلحاق منفصل) — النص أصلًا نظيف منها
+  } else {
+    caseStatus=detectCaseStatus(norm(text));
+    if(caseStatus)finalText=stripStatusWords(text); // أزل كلمة الحالة من الوصف المخزَّن
+  }
+  const n=norm(finalText);
+  const c=classifyScored(finalText);
   const oathType=extractOathType(n);
   const partyStatus=extractPartyStatus(n);
   const tags=[c.caseType,caseStatus,oathType,partyStatus].filter(Boolean);
-  return{caseNumber:number,originalText:text,mainCategory:c.mainCategory,subCategory:c.subCategory,caseType:c.caseType,
+  return{caseNumber:number,originalText:finalText,mainCategory:c.mainCategory,subCategory:c.subCategory,caseType:c.caseType,
     tags,confidence:c.confidence,isDeleted:false,caseStatus,
     judgmentResult:extractJudgmentResult(n),judgmentReason:extractReason(n),
     evidenceType:extractEvidenceType(n),oathType,partyStatus};
@@ -381,7 +474,7 @@ function mainOptionsHTML(selected){return Object.keys(catalog).map(m=>`<option v
 function subOptionsHTML(main,selected){return (catalog[main]||[]).map(s=>`<option value="${esc(s)}" ${s===selected?'selected':''}>${esc(s)}</option>`).join('');}
 
 function runAnalysis(){
-  draft=parse(document.getElementById('input').value).map(x=>analyze(x[0],x[1]));
+  draft=parse(document.getElementById('input').value).map(x=>analyze(x.num,x.text,x.status));
   let el=document.getElementById('preview');
   if(!draft.length){el.innerHTML='<div class="empty">أضف رقم قضية من 4 أرقام على الأقل.</div>';return}
   el.innerHTML='<div class="section-head"><div><small class="eyebrow">نتيجة التحليل</small><h2>راجع الاقتراح قبل الحفظ</h2></div></div>'+
@@ -476,6 +569,121 @@ async function trash(n,restore=false){
   }catch(err){console.error(err);setSync('تعذّر الحفظ ⚠️');}
 }
 
+/* ============================= إعادة تحليل القضايا غير المصنفة (ميزة صيانة، لا تمس رقم القضية/النص الأصلي/تاريخ الإنشاء/حالة الحذف/معرّف المستند) ============================= */
+
+/* يعيد فقط الحقول الناتجة عن محرك التصنيف — لا caseStatus ولا originalText ولا أي حقل آخر */
+function reanalyzeFields(originalText){
+  const n=norm(originalText||'');
+  const c=classifyScored(originalText||'');
+  const oathType=extractOathType(n);
+  const partyStatus=extractPartyStatus(n);
+  const tags=[c.caseType,oathType,partyStatus].filter(Boolean);
+  return{
+    mainCategory:c.mainCategory,subCategory:c.subCategory,caseType:c.caseType,
+    tags,confidence:c.confidence,
+    judgmentResult:extractJudgmentResult(n),judgmentReason:extractReason(n),
+    evidenceType:extractEvidenceType(n),oathType,partyStatus
+  };
+}
+
+/* استخراج الكلمات العربية (٣ أحرف فأكثر) من مصدر تعبيرات تصنيف معيّن، لأغراض تشخيص "أقرب تصنيف" فقط */
+function extractPatternWords(cat){
+  const all=[...(cat.strong||[]),...(cat.weak||[]),...(cat.requires||[])];
+  const words=new Set();
+  all.forEach(re=>{ (re.source.match(/[\u0600-\u06FF]{3,}/g)||[]).forEach(w=>words.add(w)); });
+  return[...words];
+}
+
+/* لماذا بقيت القضية غير مصنفة، وما أقرب تصنيف محتمل، وما الكلمة/القاعدة الناقصة */
+function diagnoseWhyUnclassified(text){
+  const n=norm(text||'');
+  const words=[...new Set(n.split(/\s+/).filter(w=>w.length>=3))];
+  if(!words.length)return{reason:'لا يوجد نص وصفي كافٍ لتحليله',closest:'—',missingRule:'أضف وصفًا للقضية أولًا'};
+  let candidates=[];
+  CATS.forEach(cat=>{
+    const patternWords=extractPatternWords(cat);
+    const overlap=words.filter(w=>patternWords.some(pw=>w.includes(pw)||pw.includes(w)));
+    if(overlap.length)candidates.push({main:cat.main,sub:cat.sub,overlap:[...new Set(overlap)]});
+  });
+  candidates.sort((a,b)=>b.overlap.length-a.overlap.length);
+  if(!candidates.length){
+    return{reason:'لا تحتوي القضية أي كلمة دالة معروفة لدى محرك التصنيف الحالي',closest:'لا يوجد',missingRule:'أضف تصنيفًا فرعيًا جديدًا وكلمات دالة تصف موضوع هذه القضية (من صفحة التصنيفات)'};
+  }
+  const top=candidates[0];
+  return{
+    reason:'يوجد تشابه جزئي فقط في الكلمات، غير كافٍ لتجاوز حد الثقة الأدنى لأي تصنيف',
+    closest:top.main+' ← '+top.sub,
+    missingRule:'وسّع قاعدة "'+top.sub+'" لتشمل الكلمات: '+top.overlap.join('، ')
+  };
+}
+
+async function reanalyzeUnclassified(){
+  if(!window.__authUid){alert('سجّل الدخول بحساب Google أولًا لتشغيل إعادة التحليل السحابية.');return}
+  const targets=records.filter(r=>!r.isDeleted&&r.mainCategory==='غير مصنف بدقة'&&!r.manuallyReviewed);
+  if(!targets.length){alert('لا توجد قضايا غير مصنفة بحاجة لإعادة التحليل حاليًا 🎉');return}
+
+  const btn=document.getElementById('btnReanalyze');
+  if(btn){btn.disabled=true;btn.textContent='جارٍ إعادة تحليل '+targets.length+' قضية... ☁️';}
+  setSync('جارٍ إعادة التحليل ☁️');
+
+  let reanalyzedCount=0,becameClassified=0,stillUnclassified=0;
+  const stillUnclassifiedDetails=[];
+
+  for(const r of targets){
+    const fields=reanalyzeFields(r.originalText);
+    fields.updatedAt=new Date().toISOString();
+    try{
+      // updateDoc يحدّث الحقول المذكورة فقط؛ لا يمس caseNumber ولا originalText ولا createdAt
+      // ولا isDeleted ولا معرّف المستند نفسه (doc id) بأي شكل.
+      await window.__cloudUpdateCase(r.caseNumber,fields);
+      Object.assign(r,fields); // تحديث النسخة المحلية فورًا لتفادي أي وميض قبل وصول onSnapshot
+      reanalyzedCount++;
+      if(fields.mainCategory!=='غير مصنف بدقة'){
+        becameClassified++;
+      } else {
+        stillUnclassified++;
+        const diag=diagnoseWhyUnclassified(r.originalText);
+        stillUnclassifiedDetails.push({caseNumber:r.caseNumber,text:r.originalText,...diag});
+      }
+    }catch(err){
+      console.error('تعذّر إعادة تحليل القضية #'+r.caseNumber,err);
+    }
+  }
+
+  if(btn){btn.disabled=false;btn.textContent='إعادة تحليل القضايا غير المصنفة';}
+  setSync('تم الحفظ ☁️');
+  renderCases();renderTrash();renderTree();
+
+  showReanalyzeReport(reanalyzedCount,becameClassified,stillUnclassified,stillUnclassifiedDetails);
+}
+
+function showReanalyzeReport(reanalyzed,became,stillUn,details){
+  const box=document.getElementById('reportModalBox');
+  let html='<h3 style="color:var(--g);margin-top:0">تقرير إعادة التحليل</h3>'+
+    '<div class="grid" style="margin:16px 0">'+
+      '<div class="card" style="margin:0"><div style="font-size:26px;color:var(--g);font-weight:700">'+reanalyzed+'</div><div style="font-size:12px;color:var(--muted)">تمت إعادة تحليلها</div></div>'+
+      '<div class="card" style="margin:0"><div style="font-size:26px;color:#187346;font-weight:700">'+became+'</div><div style="font-size:12px;color:var(--muted)">أصبحت مصنَّفة</div></div>'+
+    '</div>'+
+    '<div class="card" style="margin:0 0 16px"><div style="font-size:26px;color:#a5761f;font-weight:700">'+stillUn+'</div><div style="font-size:12px;color:var(--muted)">بقيت غير مصنفة</div></div>';
+
+  if(details.length){
+    html+='<h4 style="color:var(--g)">القضايا التي بقيت غير مصنفة</h4>';
+    details.forEach(d=>{
+      html+='<div class="card" style="margin-top:10px">'+
+        '<strong>#'+esc(d.caseNumber)+'</strong>'+
+        '<p style="font-size:12px;color:var(--muted);margin:6px 0">'+esc(d.text||'(بلا نص)')+'</p>'+
+        '<p style="font-size:12px"><b>السبب:</b> '+esc(d.reason)+'</p>'+
+        '<p style="font-size:12px"><b>أقرب تصنيف محتمل:</b> '+esc(d.closest)+'</p>'+
+        '<p style="font-size:12px"><b>ما الناقص:</b> '+esc(d.missingRule)+'</p>'+
+      '</div>';
+    });
+  }
+  html+='<div style="text-align:left;margin-top:18px"><button class="primary" onclick="closeReport()">إغلاق</button></div>';
+  box.innerHTML=html;
+  document.getElementById('reportModal').style.display='flex';
+}
+function closeReport(){document.getElementById('reportModal').style.display='none';}
+
 /* ============================= العرض ============================= */
 let activeSubFilter=null; // عند الضغط على تصنيف فرعي من الدليل
 function renderCases(){
@@ -544,6 +752,7 @@ function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.togg
 function initNav(where){document.getElementById(where).innerHTML=navItems.map(x=>`<button data-page="${x[0]}" onclick="show('${x[0]}')">${x[1]}</button>`).join('')}
 function setSync(text){const l=document.getElementById('syncLine');if(l)l.textContent=text;}
 initNav('nav');initNav('mobile');show('home');
+window.records=records; // تعريض للاختبار الآلي فقط (let لا يُضاف تلقائيًا إلى window)
 </script>
 
 <!-- ====================== Firebase: تسجيل دخول Google + Firestore بديلاً كاملاً عن localStorage ======================

@@ -17,6 +17,9 @@
 <div id="reportModal" style="display:none;position:fixed;inset:0;background:#0c2d2660;z-index:70;align-items:center;justify-content:center;padding:20px">
   <div id="reportModalBox" style="background:#fff;border-radius:16px;padding:24px;max-width:680px;width:100%;max-height:86vh;overflow-y:auto"></div>
 </div>
+<div id="caseDetailModal" style="display:none;position:fixed;inset:0;background:#0c2d2660;z-index:75;align-items:center;justify-content:center;padding:20px">
+  <div id="caseDetailBox" style="background:#fff;border-radius:16px;padding:24px;max-width:640px;width:100%;max-height:90vh;overflow-y:auto"></div>
+</div>
 <script>
 const navItems=[['home','الرئيسية'],['cases','القضايا'],['taxonomy','التصنيفات'],['trash','المحذوفات'],['settings','الإعدادات']];
 let records=[],draft=[];
@@ -284,6 +287,31 @@ function removeCustomCategoryRuntime(id){
   customCategories=customCategories.filter(c=>c.id!==id);
 }
 
+/* ===== تصحيحات المستخدم اليدوية (classificationAliases) =====
+   مطابقة نصية دقيقة فقط (exact match على النص المطبَّع) — لا تتحول لقاعدة عامة تؤثر على نصوص أخرى مشابهة.
+   الهدف: إذا صحّح المستخدم تصنيف قضية معينة يدويًا، ونفس هذا النص بالحرف ورد لاحقًا (إعادة تحليل، أو قضية جديدة
+   بنفس الوصف)، يستفيد من تصحيحه دون تعميمه ككلمة دالة جديدة. */
+let classificationAliases=[]; // {normalizedText, mainCategory, subCategory, caseType, savedAt}
+function findAlias(text){
+  const n=norm(text||'');
+  if(!n)return null;
+  return classificationAliases.find(a=>a.normalizedText===n)||null;
+}
+function saveClassificationAlias(text,mainCategory,subCategory,caseType){
+  const n=norm(text||'');
+  if(!n)return;
+  const entry={normalizedText:n,mainCategory,subCategory,caseType,savedAt:new Date().toISOString()};
+  const i=classificationAliases.findIndex(a=>a.normalizedText===n);
+  if(i>-1)classificationAliases[i]=entry; else classificationAliases.push(entry);
+  if(window.__cloudSaveAlias)window.__cloudSaveAlias(entry);
+}
+/* بديل classifyScored يراعي تصحيحات المستخدم أولًا (مطابقة نصية دقيقة)، ثم يعود لمحرك النقاط كالمعتاد */
+function classifyWithAliases(text){
+  const alias=findAlias(text);
+  if(alias)return{mainCategory:alias.mainCategory,subCategory:alias.subCategory,caseType:alias.caseType,confidence:99};
+  return classifyScored(text);
+}
+
 function norm(s){return s.normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/ة/g,'ه').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\s+/g,' ').trim()}
 /* ===== كاشف كلمة الحالة (نهائي/غير نهائي) عندما تكون النص بأكمله كلمة الحالة فقط ===== */
 function detectStatusWord(text){
@@ -470,7 +498,7 @@ function analyze(number,text,statusHint){
     if(caseStatus)finalText=stripStatusWords(text); // أزل كلمة الحالة من الوصف المخزَّن
   }
   const n=norm(finalText);
-  const c=classifyScored(finalText);
+  const c=classifyWithAliases(finalText);
   const oathType=extractOathType(n);
   const partyStatus=extractPartyStatus(n);
   const tags=[c.caseType,caseStatus,oathType,partyStatus].filter(Boolean);
@@ -586,7 +614,7 @@ async function trash(n,restore=false){
 /* يعيد فقط الحقول الناتجة عن محرك التصنيف — لا caseStatus ولا originalText ولا أي حقل آخر */
 function reanalyzeFields(originalText){
   const n=norm(originalText||'');
-  const c=classifyScored(originalText||'');
+  const c=classifyWithAliases(originalText||'');
   const oathType=extractOathType(n);
   const partyStatus=extractPartyStatus(n);
   const tags=[c.caseType,oathType,partyStatus].filter(Boolean);
@@ -819,13 +847,181 @@ function renderCases(){
   rows.sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));
   document.getElementById('caseCounter').textContent=records.filter(x=>!x.isDeleted).length;
   const chip=activeSubFilter?`<div style="margin-bottom:10px"><span class="badge">مصفّى حسب: ${esc(activeSubFilter)} <a href="#" onclick="activeSubFilter=null;renderCases();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span></div>`:'';
-  document.getElementById('caseList').innerHTML=chip+(rows.length?`<div class="grid">${rows.map(x=>`<article class="card"><div class="card-head"><strong>#${esc(x.caseNumber)}</strong><span class="badge">${esc(x.caseType)}</span></div><h3>${esc(x.subCategory)}</h3><p>${esc(x.originalText)}</p><div class="meta">أُنشئت: ${fmtDate(x.createdAt)} — آخر تعديل: ${fmtDate(x.updatedAt)}${x.caseStatus?' — <span style="color:'+(x.caseStatus==='نهائية'?'#187346':'#a5761f')+'">'+esc(x.caseStatus)+'</span>':''}</div><footer><span>${esc(x.mainCategory)}</span><button onclick="trash('${esc(x.caseNumber)}')">نقل إلى السلة</button></footer></article>`).join('')}</div>`:(window.__authUid?'<div class="empty">لا توجد قضايا مطابقة</div>':'<div class="empty">سجّل الدخول بحساب Google من الأعلى لعرض قضاياك المحفوظة سحابيًا</div>'));
+  document.getElementById('caseList').innerHTML=chip+(rows.length?`<div class="grid">${rows.map(x=>`<article class="card" onclick="openCaseDetail('${esc(x.caseNumber)}')" style="cursor:pointer"><div class="card-head"><strong>#${esc(x.caseNumber)}</strong><span class="badge">${esc(x.caseType)}</span></div><h3>${esc(x.subCategory)}</h3><p>${esc(x.originalText)}</p><div class="meta">أُنشئت: ${fmtDate(x.createdAt)} — آخر تعديل: ${fmtDate(x.updatedAt)}${x.caseStatus?' — <span style="color:'+(x.caseStatus==='نهائية'?'#187346':'#a5761f')+'">'+esc(x.caseStatus)+'</span>':''}${x.manuallyReviewed?' — <span class="badge" style="padding:2px 7px">تمت المراجعة</span>':''}</div><footer><span>${esc(x.mainCategory)}</span><span style="color:var(--muted);font-size:11px">اضغط لفتح التفاصيل ←</span></footer></article>`).join('')}</div>`:(window.__authUid?'<div class="empty">لا توجد قضايا مطابقة</div>':'<div class="empty">سجّل الدخول بحساب Google من الأعلى لعرض قضاياك المحفوظة سحابيًا</div>'));
 }
 function renderTrash(){
   let rows=records.filter(x=>x.isDeleted);
   document.getElementById('trashList').innerHTML=rows.length?rows.map(x=>`<article class="card"><strong>#${esc(x.caseNumber)}</strong><h3>${esc(x.subCategory)}</h3><div class="meta">حُذفت: ${fmtDate(x.updatedAt)}</div><footer><span>${esc(x.mainCategory)}</span><button onclick="trash('${esc(x.caseNumber)}',true)">استعادة</button></footer></article>`).join(''):'<div class="empty">السلة فارغة</div>';
 }
 function goToSub(sub){activeSubFilter=sub;show('cases');}
+
+/* ============================= لوحة تفاصيل القضية: عرض / تعديل ومراجعة / إعادة تحليل فردية ============================= */
+let detailEditMode=false;
+let detailDraftFields=null; // نسخة عمل مؤقتة أثناء التعديل، لا تُكتب على السجل الفعلي إلا عند الحفظ
+let currentDetailCaseNumber=null;
+
+function openCaseDetail(caseNumber){
+  const r=records.find(x=>String(x.caseNumber)===String(caseNumber));
+  if(!r)return;
+  currentDetailCaseNumber=String(caseNumber);
+  detailEditMode=false;
+  detailDraftFields=null;
+  renderCaseDetail(r);
+  document.getElementById('caseDetailModal').style.display='flex';
+}
+function closeCaseDetail(){
+  document.getElementById('caseDetailModal').style.display='none';
+  detailEditMode=false;
+  detailDraftFields=null;
+  currentDetailCaseNumber=null;
+}
+
+function fieldRow(label,value){
+  return `<div style="padding:9px 0;border-bottom:1px solid #f1ede5"><div style="font-size:11px;color:var(--muted)">${esc(label)}</div><div style="font-size:13.5px;color:#23332e;margin-top:3px">${value||'<span style="color:#c8c2b4">—</span>'}</div></div>`;
+}
+
+function renderCaseDetail(r){
+  const box=document.getElementById('caseDetailBox');
+  if(!detailEditMode){
+    box.innerHTML=
+      `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+        <div><div style="font-size:11px;color:var(--muted)">رقم القضية</div><h3 style="margin:4px 0;color:var(--g)">#${esc(r.caseNumber)}</h3></div>
+        <button class="soft" onclick="closeCaseDetail()">إغلاق ✕</button>
+      </div>
+      <div class="classification" style="margin-top:12px">${esc(r.mainCategory)}<b>←</b>${esc(r.subCategory)}</div>
+      ${fieldRow('النص الأصلي',esc(r.originalText||''))}
+      ${fieldRow('نوع القضية',esc(r.caseType||''))}
+      ${fieldRow('الصياغة المنظمة',esc(norm(r.originalText||'')))}
+      ${fieldRow('السبب',esc(r.judgmentReason||''))}
+      ${fieldRow('نتيجة الحكم',esc(r.judgmentResult||''))}
+      ${fieldRow('البينة',esc(r.evidenceType||''))}
+      ${fieldRow('نوع اليمين',esc(r.oathType||''))}
+      ${fieldRow('حالة الأطراف',esc(r.partyStatus||''))}
+      ${fieldRow('الوسوم',(r.tags||[]).map(t=>esc(t)).join('، '))}
+      ${fieldRow('الحالة',r.caseStatus?esc(r.caseStatus):'')}
+      ${fieldRow('درجة الثقة',r.confidence!=null?r.confidence+'%':'')}
+      ${fieldRow('حالة المراجعة',r.manuallyReviewed?'<span class="badge">تمت المراجعة يدويًا</span>':'<span class="badge" style="background:#fdf6e3;color:#a5761f;border-color:#f0dfae">لم تُراجَع بعد</span>')}
+      <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
+        <button class="primary" onclick="enterCaseEditMode()">تعديل ومراجعة</button>
+        <button class="soft" onclick="trashFromDetail('${esc(r.caseNumber)}')" style="color:#a1443a">نقل إلى السلة</button>
+      </div>`;
+  } else {
+    const d=detailDraftFields;
+    box.innerHTML=
+      `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+        <div><div style="font-size:11px;color:var(--muted)">تعديل ومراجعة القضية</div><h3 style="margin:4px 0;color:var(--g)">#${esc(r.caseNumber)}</h3></div>
+        <button class="soft" onclick="exitCaseEditMode()">إلغاء التعديل ✕</button>
+      </div>
+      <div class="fields" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+        <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">النص/الوصف</label><textarea id="dfText" style="width:100%;min-height:90px;padding:9px;border:1px solid var(--line);border-radius:8px;font:inherit">${esc(d.originalText)}</textarea></div>
+        <div><button class="soft" type="button" onclick="reanalyzeSingleCase()">إعادة التحليل (على النص أعلاه فقط)</button></div>
+        <div></div>
+        <div><label style="font-size:11px;color:var(--muted)">نوع القضية</label><input id="dfType" value="${esc(d.caseType)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
+        <div><label style="font-size:11px;color:var(--muted)">حالة الحكم</label><select id="dfStatus" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px">
+          <option value="" ${!d.caseStatus?'selected':''}>غير محددة</option>
+          <option value="نهائية" ${d.caseStatus==='نهائية'?'selected':''}>نهائية</option>
+          <option value="قابلة للاعتراض" ${d.caseStatus==='قابلة للاعتراض'?'selected':''}>غير نهائية / قابلة للاعتراض</option>
+        </select></div>
+        <div><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي</label><select id="dfMain" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px">${mainOptionsHTML(d.mainCategory)}</select></div>
+        <div><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي</label><select id="dfSub" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px">${subOptionsHTML(d.mainCategory,d.subCategory)}</select></div>
+        <div><label style="font-size:11px;color:var(--muted)">نتيجة الحكم</label><input id="dfJudgResult" value="${esc(d.judgmentResult)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
+        <div><label style="font-size:11px;color:var(--muted)">السبب</label><input id="dfJudgReason" value="${esc(d.judgmentReason)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
+        <div><label style="font-size:11px;color:var(--muted)">البينة</label><input id="dfEvidence" value="${esc(d.evidenceType)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
+        <div><label style="font-size:11px;color:var(--muted)">نوع اليمين</label><input id="dfOath" value="${esc(d.oathType)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
+        <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">حالة الأطراف</label><input id="dfParty" value="${esc(d.partyStatus)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
+      </div>
+      <div id="reanalyzeSuggestionBox"></div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="primary" onclick="saveCaseReview('${esc(r.caseNumber)}')">حفظ المراجعة</button>
+        <button class="soft" onclick="exitCaseEditMode()">إلغاء</button>
+      </div>`;
+    document.getElementById('dfMain').onchange=(e)=>{
+      document.getElementById('dfSub').innerHTML=subOptionsHTML(e.target.value,(catalog[e.target.value]||[])[0]);
+    };
+  }
+}
+
+function enterCaseEditMode(){
+  const r=records.find(x=>String(x.caseNumber)===String(currentDetailCaseNumber));
+  if(!r)return;
+  detailDraftFields={
+    originalText:r.originalText||'',caseType:r.caseType||'',mainCategory:r.mainCategory||'',subCategory:r.subCategory||'',
+    judgmentResult:r.judgmentResult||'',judgmentReason:r.judgmentReason||'',evidenceType:r.evidenceType||'',
+    oathType:r.oathType||'',partyStatus:r.partyStatus||'',caseStatus:r.caseStatus||''
+  };
+  detailEditMode=true;
+  renderCaseDetail(r);
+}
+function exitCaseEditMode(){
+  const r=records.find(x=>String(x.caseNumber)===String(currentDetailCaseNumber));
+  detailEditMode=false;
+  detailDraftFields=null;
+  if(r)renderCaseDetail(r);
+}
+
+/* إعادة تحليل قضية واحدة فقط: تعمل على نص textarea الحالي (وقد لا يزال غير محفوظ)، وتعرض اقتراحًا قبل الحفظ */
+function reanalyzeSingleCase(){
+  const text=document.getElementById('dfText').value;
+  const fields=reanalyzeFields(text);
+  const box=document.getElementById('reanalyzeSuggestionBox');
+  box.innerHTML=`<div class="classification" style="margin-top:12px">اقتراح إعادة التحليل: ${esc(fields.mainCategory)}<b>←</b>${esc(fields.subCategory)} — ثقة ${fields.confidence}%
+    <div style="margin-top:8px"><button class="soft" type="button" onclick="applyReanalyzeSuggestion()">اعتماد هذا الاقتراح في النموذج</button></div>
+  </div>`;
+  window.__lastReanalyzeSuggestion=fields;
+}
+function applyReanalyzeSuggestion(){
+  const fields=window.__lastReanalyzeSuggestion;
+  if(!fields)return;
+  document.getElementById('dfMain').value=fields.mainCategory;
+  document.getElementById('dfSub').innerHTML=subOptionsHTML(fields.mainCategory,fields.subCategory);
+  document.getElementById('dfType').value=fields.caseType||'';
+  document.getElementById('dfJudgResult').value=fields.judgmentResult||'';
+  document.getElementById('dfJudgReason').value=fields.judgmentReason||'';
+  document.getElementById('dfEvidence').value=fields.evidenceType||'';
+  document.getElementById('dfOath').value=fields.oathType||'';
+  document.getElementById('dfParty').value=fields.partyStatus||'';
+}
+
+async function saveCaseReview(caseNumber){
+  if(!window.__authUid){alert('سجّل الدخول أولًا لحفظ المراجعة سحابيًا.');return}
+  const patch={
+    originalText:document.getElementById('dfText').value,
+    caseType:document.getElementById('dfType').value,
+    mainCategory:document.getElementById('dfMain').value,
+    subCategory:document.getElementById('dfSub').value,
+    judgmentResult:document.getElementById('dfJudgResult').value,
+    judgmentReason:document.getElementById('dfJudgReason').value,
+    evidenceType:document.getElementById('dfEvidence').value,
+    oathType:document.getElementById('dfOath').value,
+    partyStatus:document.getElementById('dfParty').value,
+    caseStatus:document.getElementById('dfStatus').value,
+    manuallyReviewed:true,
+    updatedAt:new Date().toISOString()
+  };
+  setSync('جارٍ حفظ المراجعة ☁️');
+  try{
+    // updateDoc: تحديث جزئي — لا يمس caseNumber ولا createdAt ولا isDeleted ولا معرّف المستند
+    await window.__cloudUpdateCase(caseNumber,patch);
+    const local=records.find(x=>String(x.caseNumber)===String(caseNumber));
+    if(local)Object.assign(local,patch);
+    // حفظ التصحيح كـ classificationAlias (مطابقة نصية دقيقة فقط، لا قاعدة عامة)
+    saveClassificationAlias(patch.originalText,patch.mainCategory,patch.subCategory,patch.caseType);
+    setSync('تم الحفظ ☁️');
+    renderCases();renderTrash();renderTree();
+    detailEditMode=false;detailDraftFields=null;
+    if(local)renderCaseDetail(local);
+  }catch(err){
+    console.error(err);setSync('تعذّر الحفظ ⚠️');
+    alert('تعذّر حفظ المراجعة: '+(err.message||err));
+  }
+}
+
+async function trashFromDetail(caseNumber){
+  if(!confirm('نقل القضية #'+caseNumber+' إلى السلة؟'))return;
+  await trash(caseNumber);
+  closeCaseDetail();
+}
+
 function renderTree(){
   let rows=records.filter(x=>!x.isDeleted);
   document.getElementById('tree').innerHTML=
@@ -880,6 +1076,7 @@ function setSync(text){const l=document.getElementById('syncLine');if(l)l.textCo
 initNav('nav');initNav('mobile');show('home');
 window.records=records; // تعريض للاختبار الآلي فقط (let لا يُضاف تلقائيًا إلى window)
 window.migrationPreviewData=migrationPreviewData;
+window.classificationAliases=classificationAliases;
 </script>
 
 <!-- ====================== Firebase: تسجيل دخول Google + Firestore بديلاً كاملاً عن localStorage ======================
@@ -968,11 +1165,20 @@ if(!configLooksReal){
     try{ await setDoc(doc(db,'users',window.__authUid,'settings','customCategories'), {list}); }
     catch(err){ console.error('تعذّر حفظ التصنيفات المخصصة:', err); }
   };
+  window.__cloudSaveAlias = async (entry) => {
+    if(!window.__authUid) return;
+    try{
+      const merged=classificationAliases.slice();
+      await setDoc(doc(db,'users',window.__authUid,'settings','classificationAliases'), {list:merged});
+    }catch(err){ console.error('تعذّر حفظ تصحيح التصنيف:', err); }
+  };
 
   let unsubCats = null;
+  let unsubAliases = null;
   onAuthStateChanged(auth, user => {
     if(unsub){unsub();unsub=null;}
     if(unsubCats){unsubCats();unsubCats=null;}
+    if(unsubAliases){unsubAliases();unsubAliases=null;}
     if(user){
       window.__authUid = user.uid;
       renderSignedInUI(user);
@@ -993,6 +1199,14 @@ if(!configLooksReal){
           if(document.getElementById('taxonomy').classList.contains('active') && typeof renderTree==='function') renderTree();
         }
       }, err => console.error('تعذّر تحميل التصنيفات المخصصة:', err));
+      unsubAliases = onSnapshot(doc(db,'users',user.uid,'settings','classificationAliases'), snap => {
+        const data = snap.exists() ? snap.data() : {list:[]};
+        const remoteList = Array.isArray(data.list) ? data.list : [];
+        if(typeof classificationAliases!=='undefined'){
+          classificationAliases.length = 0;
+          classificationAliases.push(...remoteList);
+        }
+      }, err => console.error('تعذّر تحميل تصحيحات التصنيف:', err));
     } else {
       window.__authUid = null;
       renderSignedOutUI();

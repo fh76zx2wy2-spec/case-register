@@ -8,7 +8,11 @@
 .acct{display:flex;align-items:center;gap:8px}.acct img{width:28px;height:28px;border-radius:50%}.syncbadge{background:#eef1fb;color:#3b4c9e;border:1px solid #d6ddf5;border-radius:20px;padding:4px 9px;font-size:10.5px}
 @media(max-width:760px){.app{display:block}.side{display:none}.main{padding:0 15px 85px}.top{justify-content:center;flex-wrap:wrap;height:auto;padding:10px 0;gap:8px}.page{margin-top:20px}.hero h1{font-size:34px}.grid{grid-template-columns:1fr}.mobile{position:fixed;display:flex;bottom:0;left:0;right:0;height:65px;background:#fff;border-top:1px solid var(--line);justify-content:space-around;z-index:5}.mobile button{border:0;background:none;color:var(--muted)}.mobile button.active{color:var(--g)}}
 </style></head>
-<body><div class="app"><aside class="side"><div class="brand"><span class="mark">س</span><div><b>سجل القضايا</b><small>أرشيفك الذكي للقضايا</small></div></div><nav id="nav"></nav><p style="position:absolute;bottom:20px;color:#afc1ba;font-size:11px" id="storageLine">● جارٍ الاتصال بالسحابة…</p></aside><main class="main"><header class="top"><span id="syncLine">جارٍ التحقق من حالة الدخول…</span><div class="acct" id="acctArea"></div></header><section id="home" class="page active"><div class="hero"><small>مساعدك القانوني المنظّم</small><h1>أدخل القضية <span>بأي طريقة تريد</span></h1><p>اكتب رقم القضية ووصفًا مختصرًا بأي ترتيب، وسنرتبها ونصنفها لك دون افتراض أي واقعة لم تذكرها.</p></div><div class="box"><textarea id="input" placeholder="مثال:&#10;حادث&#10;8789797"></textarea><div class="bar"><button class="soft" onclick="document.getElementById('input').value='4870044548\nمطالبة المدعي المدعى عليه بمبلغ العقد لعدم إتمام العقد وحكم له'">استخدم مثالًا تجريبيًا</button><span style="flex:1"></span><button class="primary" onclick="runAnalysis()">تحليل القضية ←</button></div></div><div id="preview"></div><p class="note"><b style="color:var(--g)">خصوصيتك أولًا:</b> لا نضيف وقائع غير مذكورة، ويمكنك مراجعة كل اقتراح قبل حفظه.</p></section><section id="cases" class="page"><div class="section-head"><div><small class="eyebrow">أرشيفك</small><h1>قضاياك المحفوظة <span class="badge" id="caseCounter">0</span></h1></div><button class="primary" onclick="newCase()">+ إضافة قضية</button></div><input class="search" id="search" placeholder="ابحث بالرقم أو التصنيف أو النص أو الوسوم..." oninput="renderCases()"><div id="caseList"></div></section><section id="taxonomy" class="page"><div class="section-head"><div><small class="eyebrow">تصنيف رئيسي ← تصنيف فرعي ← القضايا</small><h1>دليل التصنيفات</h1></div></div><div id="tree" class="tree"></div></section><section id="trash" class="page"><div class="section-head"><div><small class="eyebrow">سلة المحذوفات</small><h1>القضايا المحذوفة</h1></div></div><div id="trashList"></div></section><section id="settings" class="page"><div class="section-head"><div><small class="eyebrow">الحساب والبيانات</small><h1>الإعدادات</h1></div></div><article class="card" id="acctCard"><h3>الحساب والمزامنة</h3><p>سجّل الدخول بحساب Google لحفظ قضاياك سحابيًا في Firestore ومزامنتها فورًا بين كل أجهزتك.</p><div id="acctSettingsArea"></div></article><article class="card"><h3>النسخة الاحتياطية</h3><p>صدّر جميع بياناتك أو استورد نسخة سابقة إلى حسابك السحابي. لن تتكرر أرقام القضايا الموجودة.</p><div style="display:flex;gap:8px;margin-top:15px"><button class="soft" onclick="exportData()">تصدير JSON</button><button class="primary" onclick="document.getElementById('importFile').click()">استيراد نسخة</button><input hidden id="importFile" type="file" accept="application/json" onchange="importData(event)"></div></article><article class="card"><h3>إعادة تحليل القضايا غير المصنفة</h3><p>بعد أي تحسين لمحرك التصنيف، استخدم هذا الزر لإعادة تصنيف القضايا التي وقعت سابقًا في "غير مصنف بدقة" فقط — دون حذف أي قضية أو تغيير رقمها أو نصها الأصلي. القضايا التي راجعتها يدويًا (manuallyReviewed) لن تُمس.</p><div style="margin-top:15px"><button class="primary" id="btnReanalyze" onclick="reanalyzeUnclassified()">إعادة تحليل القضايا غير المصنفة</button></div></article>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.11.0/mammoth.browser.min.js"></script>
+<body><div class="app"><aside class="side"><div class="brand"><span class="mark">س</span><div><b>سجل القضايا</b><small>أرشيفك الذكي للقضايا</small></div></div><nav id="nav"></nav><p style="position:absolute;bottom:20px;color:#afc1ba;font-size:11px" id="storageLine">● جارٍ الاتصال بالسحابة…</p></aside><main class="main"><header class="top"><span id="syncLine">جارٍ التحقق من حالة الدخول…</span><div class="acct" id="acctArea"></div></header><section id="home" class="page active"><div class="hero"><small>مساعدك القانوني المنظّم</small><h1>أدخل القضية <span>بأي طريقة تريد</span></h1><p>اكتب رقم القضية ووصفًا مختصرًا بأي ترتيب، وسنرتبها ونصنفها لك دون افتراض أي واقعة لم تذكرها.</p></div><div class="box"><textarea id="input" placeholder="مثال:&#10;حادث&#10;8789797"></textarea><div class="bar"><button class="soft" onclick="document.getElementById('input').value='4870044548\nمطالبة المدعي المدعى عليه بمبلغ العقد لعدم إتمام العقد وحكم له'">استخدم مثالًا تجريبيًا</button><span style="flex:1"></span><button class="primary" onclick="runAnalysis()">تحليل القضية ←</button></div></div>
+<div class="card" style="margin-top:15px"><h3 style="margin-top:0">استيراد قضايا من Word</h3><p style="font-size:12px;color:var(--muted)">ملف .docx يحتوي جدولًا من ثلاثة أعمدة بهذا الترتيب: رقم القضية — نوع القضية/الوصف — نهائية أو غير نهائية. لن يُستورد شيء قبل مراجعتك للمعاينة.</p><button class="soft" onclick="document.getElementById('wordFile').click()">اختيار ملف Word</button><input hidden id="wordFile" type="file" accept=".docx" onchange="handleWordFile(event)"></div>
+<div id="preview"></div><p class="note"><b style="color:var(--g)">خصوصيتك أولًا:</b> لا نضيف وقائع غير مذكورة، ويمكنك مراجعة كل اقتراح قبل حفظه.</p></section><section id="cases" class="page"><div class="section-head"><div><small class="eyebrow">أرشيفك</small><h1>قضاياك المحفوظة <span class="badge" id="caseCounter">0</span></h1></div><button class="primary" onclick="newCase()">+ إضافة قضية</button></div><div style="display:flex;gap:8px"><input class="search" id="search" placeholder="ابحث بالرقم أو التصنيف أو النص أو الوسوم..." oninput="renderCases()" style="flex:1"><button class="soft" onclick="togglePeriodMenu()">الفترة</button></div><div id="periodMenu" style="display:none;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:8px"></div><div id="caseList"></div></section><section id="taxonomy" class="page"><div class="section-head"><div><small class="eyebrow">تصنيف رئيسي ← تصنيف فرعي ← القضايا</small><h1>دليل التصنيفات</h1></div></div><div id="tree" class="tree"></div></section><section id="trash" class="page"><div class="section-head"><div><small class="eyebrow">سلة المحذوفات</small><h1>القضايا المحذوفة</h1></div></div><div id="trashList"></div></section><section id="settings" class="page"><div class="section-head"><div><small class="eyebrow">الحساب والبيانات</small><h1>الإعدادات</h1></div></div><article class="card" id="acctCard"><h3>الحساب والمزامنة</h3><p>سجّل الدخول بحساب Google لحفظ قضاياك سحابيًا في Firestore ومزامنتها فورًا بين كل أجهزتك.</p><div id="acctSettingsArea"></div></article><article class="card"><h3>النسخة الاحتياطية</h3><p>صدّر جميع بياناتك أو استورد نسخة سابقة إلى حسابك السحابي. لن تتكرر أرقام القضايا الموجودة.</p><div style="display:flex;gap:8px;margin-top:15px"><button class="soft" onclick="exportData()">تصدير JSON</button><button class="primary" onclick="document.getElementById('importFile').click()">استيراد نسخة</button><input hidden id="importFile" type="file" accept="application/json" onchange="importData(event)"></div></article><article class="card"><h3>إعادة تحليل القضايا غير المصنفة</h3><p>بعد أي تحسين لمحرك التصنيف، استخدم هذا الزر لإعادة تصنيف القضايا التي وقعت سابقًا في "غير مصنف بدقة" فقط — دون حذف أي قضية أو تغيير رقمها أو نصها الأصلي. القضايا التي راجعتها يدويًا (manuallyReviewed) لن تُمس.</p><div style="margin-top:15px"><button class="primary" id="btnReanalyze" onclick="reanalyzeUnclassified()">إعادة تحليل القضايا غير المصنفة</button></div></article>
+      <article class="card"><h3>إضافة شهر الأرشفة الهجري للقضايا القديمة</h3><p>قضاياك المضافة قبل هذه الميزة ليس لها بعد شهر أرشفة هجري. هذا الترحيل يحسب الشهر الهجري (أم القرى) بناءً على تاريخ الإضافة الفعلي المحفوظ (createdAt) لكل قضية — دون تغيير رقمها أو وصفها أو تصنيفها أو تاريخ إنشائها. يعرض معاينة أولًا ولا ينفّذ شيئًا قبل موافقتك.</p><div style="margin-top:15px"><button class="soft" onclick="previewHijriMigration()">معاينة إضافة شهر الأرشفة</button></div></article>
       <article class="card"><h3>إصلاح نصوص قضايا قديمة (تعطّلت بسبب خلل قديم في القارئ)</h3><p>الصق هنا نفس القائمة الأصلية الصحيحة التي كتبتها سابقًا. سيطابق النظام كل رقم قضية مع قاعدة البيانات الحالية، ويقترح إصلاحًا فقط للقضايا التي نصها فارغ أو نصها الحالي هو كلمة الحالة نفسها ("نهائي"/"غير نهائي") بالخطأ. لن يُطبَّق أي تغيير قبل مراجعتك للمعاينة والموافقة عليها صراحة — ولن يُنشئ أي قضية جديدة أو يمس رقم القضية أو تاريخ الإنشاء أو حالة الحذف أو معرّف المستند.</p>
         <textarea id="migrationInput" style="width:100%;min-height:140px;margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit" placeholder="الصق هنا القائمة الأصلية الكاملة بنفس صيغتك المعتادة..."></textarea>
         <div style="margin-top:12px"><button class="soft" id="btnMigrationPreview" onclick="previewMigration()">معاينة الإصلاح (بدون أي تغيير فعلي)</button></div>
@@ -313,6 +317,22 @@ function classifyWithAliases(text){
 }
 
 function norm(s){return s.normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/ة/g,'ه').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\s+/g,' ').trim()}
+
+/* ===== التقويم الهجري (أم القرى) — عبر Intl المدعومة أصلًا في المتصفح، بلا حساب يدوي أو افتراض بداية الشهر ===== */
+const HIJRI_MONTH_NAMES=['محرم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
+const hijriFormatter=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{year:'numeric',month:'numeric',day:'numeric'});
+function gregorianToHijri(dateObj){
+  const parts=hijriFormatter.formatToParts(dateObj);
+  const year=parseInt(parts.find(p=>p.type==='year').value,10);
+  const month=parseInt(parts.find(p=>p.type==='month').value,10);
+  return{
+    hijriYear:year,
+    hijriMonthNumber:month,
+    hijriMonth:HIJRI_MONTH_NAMES[month-1],
+    hijriMonthKey:year+'-'+String(month).padStart(2,'0')
+  };
+}
+function hijriFieldsForNow(){return gregorianToHijri(new Date());}
 /* ===== كاشف كلمة الحالة (نهائي/غير نهائي) عندما تكون النص بأكمله كلمة الحالة فقط ===== */
 function detectStatusWord(text){
   const n=norm(text);
@@ -428,6 +448,56 @@ function detectCaseStatus(n){
   if(/قابل(ه|ة)?\s*للاعتراض/.test(n))return 'قابلة للاعتراض';
   if(/نهاي/.test(n))return 'نهائية';
   return '';
+}
+
+/* ===== استيراد Word: تفسير خلية "حالة القضية" المستقلة (وليست جزءًا من جملة وصفية) ===== */
+function parseImportStatus(text){
+  const t=String(text||'').trim();
+  if(!t)return '';
+  const n=norm(t);
+  if(/^غير\s*نهاي/.test(n))return 'قابلة للاعتراض';
+  if(/^قابله?\s*للاعتراض$/.test(n))return 'قابلة للاعتراض';
+  if(/^نهاي/.test(n))return 'نهائية';
+  return '';
+}
+/* استخراج جدول من HTML الناتج عن mammoth.convertToHtml — يتجاهل سطر العناوين والصفوف الفارغة بالكامل */
+function parseDocxTable(htmlString){
+  const parser=new DOMParser();
+  const docu=parser.parseFromString(htmlString,'text/html');
+  const table=docu.querySelector('table');
+  const result={rows:[],blankSkipped:0,headerSkipped:false};
+  if(!table)return result;
+  const trs=Array.from(table.querySelectorAll('tr'));
+  trs.forEach((tr,idx)=>{
+    const tds=Array.from(tr.querySelectorAll('td'));
+    const cellText=i=>(tds[i]?tds[i].textContent:'').trim();
+    const col0=norm(cellText(0)).replace(/[^\d]/g,''); // رقم القضية بعد تطبيع الأرقام العربية
+    const col1=cellText(1);
+    const col2=cellText(2);
+    if(idx===0&&!/^\d{4,20}$/.test(col0)){result.headerSkipped=true;return}
+    if(!col0&&!col1&&!col2){result.blankSkipped++;return}
+    result.rows.push({rawCaseNumber:col0,rawDesc:col1,rawStatus:col2});
+  });
+  return result;
+}
+/* بناء معاينة الاستيراد: نفس محرك التصنيف الحالي بالضبط (analyze)، لا محرك ثانٍ */
+function buildImportPreview(parsedRows){
+  const seenInFile=new Set();
+  const existingSet=new Set(records.filter(r=>!r.isDeleted).map(r=>String(r.caseNumber)));
+  const nowHijri=hijriFieldsForNow();
+  return parsedRows.map(row=>{
+    const num=row.rawCaseNumber;
+    let importRowStatus='ok',note='';
+    if(!/^\d{4,20}$/.test(num)){importRowStatus='error';note='رقم القضية غير صالح';}
+    else if(seenInFile.has(num)){importRowStatus='error';note='مكرر داخل الملف نفسه';}
+    else if(existingSet.has(num)){importRowStatus='exists';note='موجودة مسبقًا — لن تُستورد لتفادي التكرار';}
+    if(importRowStatus!=='error')seenInFile.add(num);
+
+    const a=analyze(num,row.rawDesc||'',null);
+    const wordStatus=parseImportStatus(row.rawStatus);
+    if(wordStatus)a.caseStatus=wordStatus;
+    return{...a,importRowStatus,note,hijriYear:nowHijri.hijriYear,hijriMonth:nowHijri.hijriMonth,hijriMonthNumber:nowHijri.hijriMonthNumber,hijriMonthKey:nowHijri.hijriMonthKey};
+  });
 }
 
 /* ===== استخراج حقول إضافية صريحة فقط (بلا افتراض) ===== */
@@ -564,8 +634,10 @@ async function saveDraft(){
   const toSave=draft.filter(x=>!existing.has(String(x.caseNumber)));
   try{
     const now=new Date().toISOString();
+    const hijri=gregorianToHijri(new Date(now));
     for(const c of toSave){
       c.createdAt=now;c.updatedAt=now;
+      c.hijriYear=hijri.hijriYear;c.hijriMonth=hijri.hijriMonth;c.hijriMonthNumber=hijri.hijriMonthNumber;c.hijriMonthKey=hijri.hijriMonthKey;
       await window.__cloudSetCase(c);
     }
     setSync('تم الحفظ ☁️');
@@ -838,17 +910,266 @@ async function applyMigration(){
     '<div style="text-align:left"><button class="primary" onclick="closeReport()">إغلاق</button></div>';
 }
 
+/* ============================= استيراد قضايا من Word (.docx) — معاينة إلزامية، ثم استيراد فقط بعد الموافقة ============================= */
+let wordImportPreviewData=[];
+
+async function handleWordFile(event){
+  const file=event.target.files[0];
+  event.target.value='';
+  if(!file)return;
+  if(typeof mammoth==='undefined'){alert('تعذّر تحميل مكتبة قراءة ملفات Word. تأكد من اتصالك بالإنترنت وأعد المحاولة.');return}
+  try{
+    const arrayBuffer=await file.arrayBuffer();
+    const result=await mammoth.convertToHtml({arrayBuffer});
+    const parsed=parseDocxTable(result.value);
+    if(!parsed.rows.length){alert('لم يتم العثور على جدول صالح داخل الملف، أو الجدول فارغ بالكامل.');return}
+    const preview=buildImportPreview(parsed.rows);
+    wordImportPreviewData.length=0;
+    wordImportPreviewData.push(...preview);
+    renderWordImportPreview(preview,parsed);
+  }catch(err){
+    console.error(err);
+    alert('تعذّرت قراءة الملف: '+(err.message||err));
+  }
+}
+
+function renderWordImportPreview(preview,parsedMeta){
+  const box=document.getElementById('reportModalBox');
+  const okCount=preview.filter(p=>p.importRowStatus==='ok').length;
+  const existsCount=preview.filter(p=>p.importRowStatus==='exists').length;
+  const errorCount=preview.filter(p=>p.importRowStatus==='error').length;
+
+  let html='<h3 style="color:var(--g);margin-top:0">معاينة استيراد Word</h3>'+
+    '<p style="font-size:12px;color:var(--muted)">'+preview.length+' صفًا في الجدول'+
+    (parsedMeta.blankSkipped?(' — تم تجاهل '+parsedMeta.blankSkipped+' صفًا فارغًا'):'')+
+    '. جاهزة للاستيراد: <b style="color:#187346">'+okCount+'</b> — موجودة مسبقًا: <b style="color:#a5761f">'+existsCount+'</b> — أخطاء: <b style="color:#a1443a">'+errorCount+'</b>.</p>'+
+    '<div style="overflow-x:auto;margin-top:10px;max-height:50vh;overflow-y:auto"><table style="width:100%;border-collapse:collapse;font-size:11.5px">'+
+    '<thead><tr style="text-align:right;color:var(--muted)"><th style="padding:6px">#</th><th style="padding:6px">الوصف</th><th style="padding:6px">التصنيف</th><th style="padding:6px">الحالة</th><th style="padding:6px">الشهر الهجري</th><th style="padding:6px">الوضع</th></tr></thead><tbody>';
+
+  preview.forEach((p,i)=>{
+    const badge=p.importRowStatus==='ok'?'<span class="badge">جديدة</span>':
+      p.importRowStatus==='exists'?'<span class="badge warn" style="background:#fdf6e3;color:#a5761f;border-color:#f0dfae">'+esc(p.note)+'</span>':
+      '<span class="badge" style="background:#fdecea;color:#a1443a;border-color:#f3cfc9">'+esc(p.note)+'</span>';
+    const disabled=p.importRowStatus!=='ok'?'disabled':'';
+    html+='<tr data-row="'+i+'" style="border-top:1px solid #eee8dd'+(p.importRowStatus!=='ok'?';opacity:.55':'')+'">'+
+      '<td style="padding:6px">'+esc(p.caseNumber)+'</td>'+
+      '<td style="padding:6px;max-width:160px">'+esc(p.originalText||'—')+'</td>'+
+      '<td style="padding:6px"><select class="wiMain" '+disabled+' style="font-size:11px;padding:4px;border:1px solid var(--line);border-radius:6px">'+mainOptionsHTML(p.mainCategory)+'</select><br><select class="wiSub" '+disabled+' style="font-size:11px;padding:4px;border:1px solid var(--line);border-radius:6px;margin-top:3px">'+subOptionsHTML(p.mainCategory,p.subCategory)+'</select></td>'+
+      '<td style="padding:6px"><select class="wiStatus" '+disabled+' style="font-size:11px;padding:4px;border:1px solid var(--line);border-radius:6px">'+
+        '<option value="" '+(!p.caseStatus?'selected':'')+'>—</option>'+
+        '<option value="نهائية" '+(p.caseStatus==='نهائية'?'selected':'')+'>نهائية</option>'+
+        '<option value="قابلة للاعتراض" '+(p.caseStatus==='قابلة للاعتراض'?'selected':'')+'>غير نهائية</option>'+
+      '</select></td>'+
+      '<td style="padding:6px">'+esc(p.hijriMonth)+' '+esc(p.hijriYear)+'هـ</td>'+
+      '<td style="padding:6px">'+badge+'</td>'+
+      '</tr>';
+  });
+  html+='</tbody></table></div>'+
+    '<div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">'+
+      '<button class="soft" onclick="closeReport()">إلغاء</button>'+
+      '<button class="primary" id="btnConfirmWordImport" '+(okCount?'':'disabled')+' onclick="confirmWordImport()">اعتماد واستيراد القضايا ('+okCount+')</button>'+
+    '</div>';
+  box.innerHTML=html;
+  // ربط تغيّر التصنيف الرئيسي بتحديث قائمة الفرعي لكل صف
+  box.querySelectorAll('tr[data-row] .wiMain').forEach(sel=>{
+    sel.onchange=()=>{
+      const subSel=sel.closest('td').querySelector('.wiSub');
+      subSel.innerHTML=subOptionsHTML(sel.value,(catalog[sel.value]||[])[0]);
+    };
+  });
+  document.getElementById('reportModal').style.display='flex';
+}
+
+async function confirmWordImport(){
+  if(!window.__authUid){alert('سجّل الدخول أولًا لاستيراد القضايا سحابيًا.');return}
+  const btn=document.getElementById('btnConfirmWordImport');
+  if(btn){btn.disabled=true;btn.textContent='جارٍ الاستيراد... ☁️';}
+  setSync('جارٍ استيراد قضايا Word ☁️');
+
+  const rows=document.querySelectorAll('#reportModalBox tr[data-row]');
+  let imported=0,skipped=0;
+  const now=new Date().toISOString();
+  for(const tr of rows){
+    const i=+tr.dataset.row;
+    const p=wordImportPreviewData[i];
+    if(!p||p.importRowStatus!=='ok'){skipped++;continue}
+    const mainCategory=tr.querySelector('.wiMain').value;
+    const subCategory=tr.querySelector('.wiSub').value;
+    const caseStatus=tr.querySelector('.wiStatus').value;
+    const caseType=caseTypeForSub(subCategory)||p.caseType;
+    const caseObj={
+      caseNumber:p.caseNumber,originalText:p.originalText,mainCategory,subCategory,caseType,
+      tags:[caseType,caseStatus,p.oathType,p.partyStatus].filter(Boolean),
+      confidence:p.confidence,isDeleted:false,caseStatus,
+      judgmentResult:p.judgmentResult,judgmentReason:p.judgmentReason,evidenceType:p.evidenceType,
+      oathType:p.oathType,partyStatus:p.partyStatus,
+      createdAt:now,updatedAt:now,manuallyReviewed:false,
+      hijriYear:p.hijriYear,hijriMonth:p.hijriMonth,hijriMonthNumber:p.hijriMonthNumber,hijriMonthKey:p.hijriMonthKey
+    };
+    try{
+      await window.__cloudSetCase(caseObj);
+      records.unshift(caseObj);
+      imported++;
+    }catch(err){
+      console.error('تعذّر استيراد القضية #'+p.caseNumber,err);
+      skipped++;
+    }
+  }
+
+  setSync('تم الحفظ ☁️');
+  renderCases();renderTrash();renderTree();
+  wordImportPreviewData.length=0;
+
+  const box=document.getElementById('reportModalBox');
+  box.innerHTML='<h3 style="color:var(--g);margin-top:0">تقرير استيراد Word</h3>'+
+    '<div class="grid" style="margin:16px 0">'+
+      '<div class="card" style="margin:0"><div style="font-size:26px;color:#187346;font-weight:700">'+imported+'</div><div style="font-size:12px;color:var(--muted)">قضية مستوردة بنجاح</div></div>'+
+      '<div class="card" style="margin:0"><div style="font-size:26px;color:var(--muted);font-weight:700">'+skipped+'</div><div style="font-size:12px;color:var(--muted)">تم تجاهلها</div></div>'+
+    '</div>'+
+    '<div style="text-align:left"><button class="primary" onclick="closeReport()">إغلاق</button></div>';
+}
+
+/* ============================= إضافة شهر الأرشفة الهجري للقضايا القديمة (ترحيل آمن، معاينة إلزامية) ============================= */
+let hijriMigrationPreviewData=[];
+function previewHijriMigration(){
+  const targets=records.filter(r=>!r.isDeleted&&!r.hijriMonthKey&&r.createdAt);
+  hijriMigrationPreviewData.length=0;
+  hijriMigrationPreviewData.push(...targets.map(r=>{
+    const h=gregorianToHijri(new Date(r.createdAt));
+    return{caseNumber:r.caseNumber,createdAt:r.createdAt,...h};
+  }));
+  const box=document.getElementById('reportModalBox');
+  if(!hijriMigrationPreviewData.length){
+    box.innerHTML='<h3 style="color:var(--g);margin-top:0">لا حاجة لأي ترحيل</h3><p style="color:var(--muted)">كل قضاياك لديها بالفعل شهر أرشفة هجري.</p><div style="text-align:left;margin-top:16px"><button class="soft" onclick="closeReport()">إغلاق</button></div>';
+    document.getElementById('reportModal').style.display='flex';
+    return;
+  }
+  // تجميع حسب الشهر لعرض ملخص واضح
+  const byMonth={};
+  hijriMigrationPreviewData.forEach(p=>{byMonth[p.hijriMonthKey]=byMonth[p.hijriMonthKey]||{label:p.hijriMonth+' '+p.hijriYear+'هـ',count:0};byMonth[p.hijriMonthKey].count++;});
+  let html='<h3 style="color:var(--g);margin-top:0">معاينة إضافة شهر الأرشفة الهجري</h3>'+
+    '<p style="font-size:12px;color:var(--muted)">سيُضاف شهر الأرشفة لـ<b style="color:var(--g)"> '+hijriMigrationPreviewData.length+' </b>قضية بناءً على تاريخ إضافتها الفعلي. لن يتغيّر رقم القضية أو وصفها أو تصنيفها أو تاريخ إنشائها.</p>'+
+    '<div style="margin-top:10px">'+Object.values(byMonth).map(m=>'<div class="card" style="margin-top:8px;padding:10px 14px;display:flex;justify-content:space-between"><span>'+esc(m.label)+'</span><b>'+m.count+' قضية</b></div>').join('')+'</div>'+
+    '<div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end">'+
+      '<button class="soft" onclick="closeReport()">إلغاء</button>'+
+      '<button class="primary" onclick="applyHijriMigration()">تأكيد وتنفيذ ☁️</button>'+
+    '</div>';
+  box.innerHTML=html;
+  document.getElementById('reportModal').style.display='flex';
+}
+async function applyHijriMigration(){
+  if(!window.__authUid){alert('سجّل الدخول أولًا.');return}
+  setSync('جارٍ إضافة شهر الأرشفة ☁️');
+  let done=0;
+  for(const p of hijriMigrationPreviewData){
+    const patch={hijriYear:p.hijriYear,hijriMonth:p.hijriMonth,hijriMonthNumber:p.hijriMonthNumber,hijriMonthKey:p.hijriMonthKey};
+    try{
+      await window.__cloudUpdateCase(p.caseNumber,patch);
+      const local=records.find(r=>String(r.caseNumber)===String(p.caseNumber));
+      if(local)Object.assign(local,patch);
+      done++;
+    }catch(err){console.error('تعذّر ترحيل القضية #'+p.caseNumber,err);}
+  }
+  setSync('تم الحفظ ☁️');
+  renderCases();renderTrash();renderTree();
+  hijriMigrationPreviewData.length=0;
+  const box=document.getElementById('reportModalBox');
+  box.innerHTML='<h3 style="color:var(--g);margin-top:0">تم إضافة شهر الأرشفة</h3><p><b style="color:#187346;font-size:22px">'+done+'</b> قضية أصبح لها الآن شهر أرشفة هجري.</p><div style="text-align:left;margin-top:16px"><button class="primary" onclick="closeReport()">إغلاق</button></div>';
+}
+
 /* ============================= العرض ============================= */
 let activeSubFilter=null; // عند الضغط على تصنيف فرعي من الدليل
-function renderCases(){
+let activeHijriMonthFilter=null; // مفتاح الشهر الهجري "1448-02" أو null لكل الفترات
+function togglePeriodMenu(){
+  const el=document.getElementById('periodMenu');
+  const open=el.style.display==='block';
+  if(open){el.style.display='none';return}
+  renderPeriodMenu();
+  el.style.display='block';
+}
+function renderPeriodMenu(){
+  const el=document.getElementById('periodMenu');
+  const rows=records.filter(x=>!x.isDeleted&&x.hijriMonthKey);
+  const counts={};
+  rows.forEach(r=>{counts[r.hijriMonthKey]=counts[r.hijriMonthKey]||{label:r.hijriMonth+' '+r.hijriYear+'هـ',count:0};counts[r.hijriMonthKey].count++;});
+  const keys=Object.keys(counts).sort().reverse(); // الأحدث أولًا (المفتاح "سنة-شهر" يُرتَّب زمنيًا نصيًا بأمان)
+  let html='<div style="cursor:pointer;padding:8px;border-radius:8px" onclick="setPeriodFilter(null)"><b>جميع الفترات</b></div>';
+  if(!keys.length){
+    html+='<div style="padding:8px;color:var(--muted);font-size:12px">لا توجد قضايا مؤرَّخة هجريًا بعد. استخدم "إضافة شهر الأرشفة الهجري" من الإعدادات للقضايا القديمة.</div>';
+  } else {
+    keys.forEach(k=>{
+      const active=activeHijriMonthFilter===k;
+      html+='<div style="cursor:pointer;padding:8px;border-radius:8px;display:flex;justify-content:space-between'+(active?';background:#f1ede5':'')+'" onclick="setPeriodFilter(\''+k+'\')"><span>'+esc(counts[k].label)+'</span><span class="badge">'+counts[k].count+' قضية</span></div>';
+    });
+  }
+  el.innerHTML=html;
+}
+function setPeriodFilter(key){
+  activeHijriMonthFilter=key;
+  document.getElementById('periodMenu').style.display='none';
+  renderCases();
+}
+/* الفلاتر الحالية بالضبط (بحث + تصنيف + فترة هجرية) — مصدر واحد للحقيقة يستخدمه العرض والتصدير معًا،
+   لضمان أن ما يُصدَّر مطابق تمامًا لما هو ظاهر على الشاشة. */
+function getVisibleCaseRows(){
   let q=document.getElementById('search').value,
       rows=records.filter(x=>!x.isDeleted&&JSON.stringify(x).includes(q));
   if(activeSubFilter)rows=rows.filter(x=>x.subCategory===activeSubFilter);
+  if(activeHijriMonthFilter)rows=rows.filter(x=>x.hijriMonthKey===activeHijriMonthFilter);
   rows.sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));
-  document.getElementById('caseCounter').textContent=records.filter(x=>!x.isDeleted).length;
-  const chip=activeSubFilter?`<div style="margin-bottom:10px"><span class="badge">مصفّى حسب: ${esc(activeSubFilter)} <a href="#" onclick="activeSubFilter=null;renderCases();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span></div>`:'';
-  document.getElementById('caseList').innerHTML=chip+(rows.length?`<div class="grid">${rows.map(x=>`<article class="card" onclick="openCaseDetail('${esc(x.caseNumber)}')" style="cursor:pointer"><div class="card-head"><strong>#${esc(x.caseNumber)}</strong><span class="badge">${esc(x.caseType)}</span></div><h3>${esc(x.subCategory)}</h3><p>${esc(x.originalText)}</p><div class="meta">أُنشئت: ${fmtDate(x.createdAt)} — آخر تعديل: ${fmtDate(x.updatedAt)}${x.caseStatus?' — <span style="color:'+(x.caseStatus==='نهائية'?'#187346':'#a5761f')+'">'+esc(x.caseStatus)+'</span>':''}${x.manuallyReviewed?' — <span class="badge" style="padding:2px 7px">تمت المراجعة</span>':''}</div><footer><span>${esc(x.mainCategory)}</span><span style="color:var(--muted);font-size:11px">اضغط لفتح التفاصيل ←</span></footer></article>`).join('')}</div>`:(window.__authUid?'<div class="empty">لا توجد قضايا مطابقة</div>':'<div class="empty">سجّل الدخول بحساب Google من الأعلى لعرض قضاياك المحفوظة سحابيًا</div>'));
+  return rows;
 }
+let selectionMode=false;
+let selectedCaseNumbers=new Set();
+function toggleSelectionMode(){
+  selectionMode=!selectionMode;
+  if(!selectionMode)selectedCaseNumbers.clear();
+  renderCases();
+}
+function toggleCaseSelection(num,checked){
+  if(checked)selectedCaseNumbers.add(String(num)); else selectedCaseNumbers.delete(String(num));
+  renderCases();
+}
+function renderCases(){
+  const rows=getVisibleCaseRows();
+  document.getElementById('caseCounter').textContent=records.filter(x=>!x.isDeleted).length;
+  const chips=[];
+  if(activeSubFilter)chips.push(`<span class="badge">تصنيف: ${esc(activeSubFilter)} <a href="#" onclick="activeSubFilter=null;renderCases();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span>`);
+  if(activeHijriMonthFilter){
+    const r0=records.find(x=>x.hijriMonthKey===activeHijriMonthFilter);
+    const label=r0?(r0.hijriMonth+' '+r0.hijriYear+'هـ'):activeHijriMonthFilter;
+    chips.push(`<span class="badge">الفترة: ${esc(label)} <a href="#" onclick="activeHijriMonthFilter=null;renderCases();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span>`);
+  }
+  const chip=chips.length?`<div style="margin-bottom:10px;display:flex;gap:6px;flex-wrap:wrap">${chips.join('')}</div>`:'';
+  const exportBar=`<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+    <button class="soft" onclick="exportVisibleCaseNumbers()">تصدير أرقام القضايا</button>
+    <button class="soft" onclick="toggleSelectionMode()">${selectionMode?'إلغاء التحديد':'تحديد قضايا معيّنة'}</button>
+    ${selectionMode&&selectedCaseNumbers.size?`<button class="primary" onclick="exportSelectedCaseNumbers()">تصدير المحددة (${selectedCaseNumbers.size})</button>`:''}
+  </div>`;
+  document.getElementById('caseList').innerHTML=chip+exportBar+(rows.length?`<div class="grid">${rows.map(x=>{
+    const dateLine=x.hijriMonthKey?`أضيفت في ${esc(x.hijriMonth)} ${esc(x.hijriYear)}هـ`:`أُنشئت: ${fmtDate(x.createdAt)}`;
+    const checkbox=selectionMode?`<input type="checkbox" onclick="event.stopPropagation();toggleCaseSelection('${esc(x.caseNumber)}',this.checked)" ${selectedCaseNumbers.has(String(x.caseNumber))?'checked':''} style="width:17px;height:17px;margin-inline-end:6px">`:'';
+    return `<article class="card" onclick="${selectionMode?'':`openCaseDetail('${esc(x.caseNumber)}')`}" style="cursor:pointer"><div class="card-head"><strong>${checkbox}#${esc(x.caseNumber)}</strong><span class="badge">${esc(x.caseType)}</span></div><h3>${esc(x.subCategory)}</h3><p>${esc(x.originalText)}</p><div class="meta">${dateLine}${x.caseStatus?' — <span style="color:'+(x.caseStatus==='نهائية'?'#187346':'#a5761f')+'">'+esc(x.caseStatus)+'</span>':''}${x.manuallyReviewed?' — <span class="badge" style="padding:2px 7px">تمت المراجعة</span>':''}</div><footer><span>${esc(x.mainCategory)}</span><span style="color:var(--muted);font-size:11px">${selectionMode?'اضغط المربع للتحديد':'اضغط لفتح التفاصيل ←'}</span></footer></article>`;
+  }).join('')}</div>`:(window.__authUid?'<div class="empty">لا توجد قضايا مطابقة</div>':'<div class="empty">سجّل الدخول بحساب Google من الأعلى لعرض قضاياك المحفوظة سحابيًا</div>'));
+}
+
+/* ============================= تصدير أرقام القضايا فقط (نص عادي، خصوصية كاملة — لا نص أصلي ولا تصنيف ولا أي بيانات أخرى) ============================= */
+function downloadCaseNumbersFile(numbers,filename){
+  const uniqueNums=[...new Set(numbers.map(String))];
+  if(!uniqueNums.length){alert('لا توجد قضايا لتصديرها بالفلتر الحالي.');return}
+  const blob=new Blob([uniqueNums.join('\n')+'\n'],{type:'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=filename;a.click();URL.revokeObjectURL(a.href);
+}
+function exportVisibleCaseNumbers(){
+  const rows=getVisibleCaseRows();
+  const filename=activeHijriMonthFilter?('case-numbers-'+activeHijriMonthFilter+'.txt'):'case-numbers.txt';
+  downloadCaseNumbersFile(rows.map(x=>x.caseNumber),filename);
+}
+function exportSelectedCaseNumbers(){
+  downloadCaseNumbersFile([...selectedCaseNumbers],'case-numbers-selected.txt');
+}
+
 function renderTrash(){
   let rows=records.filter(x=>x.isDeleted);
   document.getElementById('trashList').innerHTML=rows.length?rows.map(x=>`<article class="card"><strong>#${esc(x.caseNumber)}</strong><h3>${esc(x.subCategory)}</h3><div class="meta">حُذفت: ${fmtDate(x.updatedAt)}</div><footer><span>${esc(x.mainCategory)}</span><button onclick="trash('${esc(x.caseNumber)}',true)">استعادة</button></footer></article>`).join(''):'<div class="empty">السلة فارغة</div>';
@@ -889,6 +1210,7 @@ function renderCaseDetail(r){
         <button class="soft" onclick="closeCaseDetail()">إغلاق ✕</button>
       </div>
       <div class="classification" style="margin-top:12px">${esc(r.mainCategory)}<b>←</b>${esc(r.subCategory)}</div>
+      ${fieldRow('تاريخ الإضافة الكامل',esc(fmtDate(r.createdAt))+(r.hijriMonthKey?' — '+esc(r.hijriMonth)+' '+esc(r.hijriYear)+'هـ':''))}
       ${fieldRow('النص الأصلي',esc(r.originalText||''))}
       ${fieldRow('نوع القضية',esc(r.caseType||''))}
       ${fieldRow('الصياغة المنظمة',esc(norm(r.originalText||'')))}
@@ -1077,6 +1399,9 @@ initNav('nav');initNav('mobile');show('home');
 window.records=records; // تعريض للاختبار الآلي فقط (let لا يُضاف تلقائيًا إلى window)
 window.migrationPreviewData=migrationPreviewData;
 window.classificationAliases=classificationAliases;
+window.wordImportPreviewData=wordImportPreviewData;
+window.hijriMigrationPreviewData=hijriMigrationPreviewData;
+window.selectedCaseNumbers=selectedCaseNumbers;
 </script>
 
 <!-- ====================== Firebase: تسجيل دخول Google + Firestore بديلاً كاملاً عن localStorage ======================

@@ -5,13 +5,45 @@
 <title>سجل القضايا — أرشيفك الذكي للقضايا</title>
 <style>
 :root{--g:#17483b;--g2:#236554;--gold:#b58a48;--sand:#f5f0e6;--ivory:#fcfaf5;--line:#ded5c4;--muted:#6e746e}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 70% 10%,#b58a4817,transparent 28%),var(--ivory);color:#23332e;font-family:Tahoma,Arial,sans-serif}.app{min-height:100vh;display:grid;grid-template-columns:240px 1fr}.side{position:fixed;right:0;top:0;width:240px;height:100vh;padding:28px 18px;background:linear-gradient(#103b31,#0c2d26);color:#fff}.brand{display:flex;align-items:center;gap:12px}.mark{display:grid;place-items:center;width:44px;height:44px;border:1px solid #d8b978;border-radius:13px;color:#e1c486;font:700 23px Georgia}.brand small{display:block;color:#afc1ba;margin-top:3px}.side nav{display:grid;gap:7px;margin-top:50px}.side nav button{border:0;background:none;color:#c7d4cf;text-align:right;padding:13px;border-radius:11px;cursor:pointer}.side nav button.active{background:#ffffff18;color:#fff}.main{grid-column:2;padding:0 min(7vw,85px) 60px}.top{height:75px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:12px}.page{display:none;max-width:940px;margin:55px auto}.page.active{display:block}.hero{text-align:center;max-width:720px;margin:0 auto 30px}.hero small,.eyebrow{color:var(--gold);font-weight:700}.hero h1{font-size:48px;color:var(--g);margin:12px}.hero h1 span{color:var(--gold)}.hero p{color:var(--muted);line-height:1.8}.box{background:#fff;border:1px solid var(--line);border-radius:20px;padding:5px;box-shadow:0 20px 55px #273c3212}.box textarea{width:100%;height:190px;border:0;outline:0;resize:vertical;padding:25px;background:none;font:16px/1.9 Tahoma;color:var(--g)}.bar{border-top:1px solid #eee8dd;padding:12px;display:flex;align-items:center;justify-content:flex-end}.primary,.soft{border:0;border-radius:10px;padding:12px 19px;cursor:pointer;font-weight:700}.primary{background:linear-gradient(135deg,var(--g2),var(--g));color:#fff}.primary:disabled{opacity:.5;cursor:not-allowed}.soft{background:#f1ede5;color:var(--g)}.review,.card,.tree{margin-top:15px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}.review-head,.section-head,.card-head{display:flex;align-items:center;justify-content:space-between}.badge{background:#edf8f1;color:#187346;border:1px solid #cfe8d8;border-radius:20px;padding:6px 10px;font-size:11px}.classification{margin:18px 0;padding:14px;background:#f7f4ed;border-radius:11px;color:var(--g)}.classification b{color:var(--gold);padding:0 9px}.tags span{display:inline-block;margin:5px 0 0 6px;padding:5px 9px;background:#f7f0e3;color:#7d6948;border-radius:12px;font-size:10px}.save{display:block;margin:20px auto}.section-head h1{color:var(--g);font-size:38px}.search{width:100%;padding:15px;border:1px solid var(--line);border-radius:12px;background:#fff;outline:0}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.card h3{color:var(--g)}.card p{color:var(--muted);font-size:12px}.card footer{display:flex;justify-content:space-between;border-top:1px solid #eee;padding-top:12px;margin-top:15px}.card footer button{border:0;background:none;color:#985d4e;cursor:pointer}.card .meta{font-size:10.5px;color:#9aa39c;margin-top:6px}.tree details{border-bottom:1px solid #eee;padding:10px}.tree details:last-child{border:0}.tree summary{cursor:pointer;color:var(--g);font-weight:700}.tree li{margin:10px;color:var(--muted)}.empty{text-align:center;color:var(--muted);padding:55px}.note{margin-top:20px;text-align:center;color:var(--muted);font-size:11px}.mobile{display:none}
+.addCaseBtn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;border:1px dashed #d8b978;background:#ffffff12;color:#e1c486;font-weight:700;padding:13px;border-radius:12px;cursor:pointer;font-size:14px;margin:18px 0 6px}
+.addCaseBtn:hover{background:#ffffff1f}
+.statgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}
+.statcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center}
+.statcard b{display:block;font-size:26px;color:var(--g)}
+.statcard span{font-size:11px;color:var(--muted)}
+.bigsearch{width:100%;padding:18px 20px;border:1px solid var(--line);border-radius:16px;background:#fff;outline:0;font-size:16px;box-shadow:0 12px 30px #273c3212}
+.iconbtn{position:relative;border:1px solid var(--line);background:#fff;border-radius:10px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.iconbtn .dot{position:absolute;top:6px;left:6px;width:8px;height:8px;border-radius:50%;background:var(--gold);display:none}
+.iconbtn.hasFilter .dot{display:block}
+.filterpanel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.filterpanel label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:700}
+.filterpanel select{width:100%;padding:9px;border:1px solid var(--line);border-radius:8px}
+.exportMenuWrap{position:relative}
+.exportMenu{display:none;position:absolute;left:0;top:48px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 30px #273c3230;z-index:10;min-width:190px;overflow:hidden}
+.exportMenu.open{display:block}
+.exportMenu button{display:block;width:100%;text-align:right;border:0;background:none;padding:12px 14px;cursor:pointer;font:inherit;color:var(--g)}
+.exportMenu button:hover{background:#f7f4ed}
+.reviewbadge{background:#fdf6e3;color:#a5761f;border:1px solid #f0dfae;border-radius:20px;padding:5px 9px;font-size:11px}
 .acct{display:flex;align-items:center;gap:8px}.acct img{width:28px;height:28px;border-radius:50%}.syncbadge{background:#eef1fb;color:#3b4c9e;border:1px solid #d6ddf5;border-radius:20px;padding:4px 9px;font-size:10.5px}
 @media(max-width:760px){.app{display:block}.side{display:none}.main{padding:0 15px 85px}.top{justify-content:center;flex-wrap:wrap;height:auto;padding:10px 0;gap:8px}.page{margin-top:20px}.hero h1{font-size:34px}.grid{grid-template-columns:1fr}.mobile{position:fixed;display:flex;bottom:0;left:0;right:0;height:65px;background:#fff;border-top:1px solid var(--line);justify-content:space-around;z-index:5}.mobile button{border:0;background:none;color:var(--muted)}.mobile button.active{color:var(--g)}}
 </style></head>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.11.0/mammoth.browser.min.js"></script>
-<body><div class="app"><aside class="side"><div class="brand"><span class="mark">س</span><div><b>سجل القضايا</b><small>أرشيفك الذكي للقضايا</small></div></div><nav id="nav"></nav><p style="position:absolute;bottom:20px;color:#afc1ba;font-size:11px" id="storageLine">● جارٍ الاتصال بالسحابة…</p></aside><main class="main"><header class="top"><span id="syncLine">جارٍ التحقق من حالة الدخول…</span><div class="acct" id="acctArea"></div></header><section id="home" class="page active"><div class="hero"><small>مساعدك القانوني المنظّم</small><h1>أدخل القضية <span>بأي طريقة تريد</span></h1><p>اكتب رقم القضية ووصفًا مختصرًا بأي ترتيب، وسنرتبها ونصنفها لك دون افتراض أي واقعة لم تذكرها.</p></div><div class="box"><textarea id="input" placeholder="مثال:&#10;حادث&#10;8789797"></textarea><div class="bar"><button class="soft" onclick="document.getElementById('input').value='4870044548\nمطالبة المدعي المدعى عليه بمبلغ العقد لعدم إتمام العقد وحكم له'">استخدم مثالًا تجريبيًا</button><span style="flex:1"></span><button class="primary" onclick="runAnalysis()">تحليل القضية ←</button></div></div>
-<div class="card" style="margin-top:15px"><h3 style="margin-top:0">استيراد قضايا من Word</h3><p style="font-size:12px;color:var(--muted)">ملف .docx يحتوي جدولًا من ثلاثة أعمدة بهذا الترتيب: رقم القضية — نوع القضية/الوصف — نهائية أو غير نهائية. لن يُستورد شيء قبل مراجعتك للمعاينة.</p><button class="soft" onclick="document.getElementById('wordFile').click()">اختيار ملف Word</button><input hidden id="wordFile" type="file" accept=".docx" onchange="handleWordFile(event)"></div>
-<div id="preview"></div><p class="note"><b style="color:var(--g)">خصوصيتك أولًا:</b> لا نضيف وقائع غير مذكورة، ويمكنك مراجعة كل اقتراح قبل حفظه.</p></section><section id="cases" class="page"><div class="section-head"><div><small class="eyebrow">أرشيفك</small><h1>قضاياك المحفوظة <span class="badge" id="caseCounter">0</span></h1></div><button class="primary" onclick="newCase()">+ إضافة قضية</button></div><div style="display:flex;gap:8px"><input class="search" id="search" placeholder="ابحث بالرقم أو التصنيف أو النص أو الوسوم..." oninput="renderCases()" style="flex:1"><button class="soft" onclick="togglePeriodMenu()">الفترة</button></div><div id="periodMenu" style="display:none;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:8px"></div><div id="caseList"></div></section><section id="taxonomy" class="page"><div class="section-head"><div><small class="eyebrow">تصنيف رئيسي ← تصنيف فرعي ← القضايا</small><h1>دليل التصنيفات</h1></div></div><div id="tree" class="tree"></div></section><section id="trash" class="page"><div class="section-head"><div><small class="eyebrow">سلة المحذوفات</small><h1>القضايا المحذوفة</h1></div></div><div id="trashList"></div></section><section id="settings" class="page"><div class="section-head"><div><small class="eyebrow">الحساب والبيانات</small><h1>الإعدادات</h1></div></div><article class="card" id="acctCard"><h3>الحساب والمزامنة</h3><p>سجّل الدخول بحساب Google لحفظ قضاياك سحابيًا في Firestore ومزامنتها فورًا بين كل أجهزتك.</p><div id="acctSettingsArea"></div></article><article class="card"><h3>النسخة الاحتياطية</h3><p>صدّر جميع بياناتك أو استورد نسخة سابقة إلى حسابك السحابي. لن تتكرر أرقام القضايا الموجودة.</p><div style="display:flex;gap:8px;margin-top:15px"><button class="soft" onclick="exportData()">تصدير JSON</button><button class="primary" onclick="document.getElementById('importFile').click()">استيراد نسخة</button><input hidden id="importFile" type="file" accept="application/json" onchange="importData(event)"></div></article><article class="card"><h3>إعادة تحليل القضايا غير المصنفة</h3><p>بعد أي تحسين لمحرك التصنيف، استخدم هذا الزر لإعادة تصنيف القضايا التي وقعت سابقًا في "غير مصنف بدقة" فقط — دون حذف أي قضية أو تغيير رقمها أو نصها الأصلي. القضايا التي راجعتها يدويًا (manuallyReviewed) لن تُمس.</p><div style="margin-top:15px"><button class="primary" id="btnReanalyze" onclick="reanalyzeUnclassified()">إعادة تحليل القضايا غير المصنفة</button></div></article>
+<script src="https://cdn.jsdelivr.net/npm/docx@9.7.1/dist/index.umd.cjs"></script>
+<body><div class="app"><aside class="side"><div class="brand"><span class="mark">س</span><div><b>سجل القضايا</b><small>أرشيفك الذكي للقضايا</small></div></div><button class="addCaseBtn" onclick="show('home')">+ إضافة قضية</button><nav id="nav"></nav><p style="position:absolute;bottom:20px;color:#afc1ba;font-size:11px" id="storageLine">● جارٍ الاتصال بالسحابة…</p></aside><main class="main"><header class="top"><span id="syncLine">جارٍ التحقق من حالة الدخول…</span><div class="acct" id="acctArea"></div></header>
+<section id="dashboard" class="page active">
+  <div class="section-head"><div><small class="eyebrow">مرحبًا بعودتك</small><h1 style="color:var(--g);font-size:32px;margin:6px 0">أرشيف قضاياك</h1></div><button class="primary" onclick="show('home')">+ إضافة قضية</button></div>
+  <input class="bigsearch" id="dashSearch" placeholder="ابحث برقم القضية، النوع، الوصف، التصنيف، الوسوم، النتيجة أو السبب..." oninput="renderDashboard()">
+  <div class="statgrid">
+    <div class="statcard"><b id="statTotal">0</b><span>إجمالي القضايا</span></div>
+    <div class="statcard"><b id="statFinal">0</b><span>نهائية</span></div>
+    <div class="statcard"><b id="statAppeal">0</b><span>قابلة للاعتراض</span></div>
+    <div class="statcard"><b id="statReview">0</b><span>تحتاج مراجعة يدوية</span></div>
+  </div>
+  <div id="dashSearchResults"></div>
+  <div id="dashLists"></div>
+</section>
+<section id="home" class="page"><div class="hero"><small>مساعدك القانوني المنظّم</small><h1>أدخل القضية <span>بأي طريقة تريد</span></h1><p>اكتب رقم القضية ووصفًا مختصرًا بأي ترتيب، وسنرتبها ونصنفها لك دون افتراض أي واقعة لم تذكرها.</p></div><div class="box"><textarea id="input" placeholder="مثال:&#10;حادث&#10;8789797"></textarea><div class="bar"><button class="soft" onclick="document.getElementById('input').value='4870044548\nمطالبة المدعي المدعى عليه بمبلغ العقد لعدم إتمام العقد وحكم له'">استخدم مثالًا تجريبيًا</button><span style="flex:1"></span><button class="primary" onclick="runAnalysis()">تحليل القضية ←</button></div></div>
+<div id="preview"></div><p class="note"><b style="color:var(--g)">خصوصيتك أولًا:</b> لا نضيف وقائع غير مذكورة، ويمكنك مراجعة كل اقتراح قبل حفظه.</p></section><section id="cases" class="page"><div class="section-head"><div><small class="eyebrow">أرشيفك</small><h1>قضاياك المحفوظة <span class="badge" id="caseCounter">0</span></h1></div><button class="primary" onclick="newCase()">+ إضافة قضية</button></div><div style="display:flex;gap:8px"><input class="search" id="search" placeholder="ابحث بالرقم أو التصنيف أو النص أو الوسوم..." oninput="renderCases()" style="flex:1"><button class="iconbtn" id="filterIconBtn" onclick="toggleFilterPanel()" title="تصفية"><span class="dot"></span>⚲</button><div class="exportMenuWrap"><button class="iconbtn" onclick="toggleExportMenu()" title="تصدير">⭳</button><div class="exportMenu" id="exportMenu"><button onclick="closeExportMenu();exportToWord()">تصدير إلى Word</button><button onclick="closeExportMenu();exportCaseNumbersTxt()">تصدير أرقام القضايا TXT</button><button onclick="closeExportMenu();exportData()">نسخة احتياطية JSON</button></div></div></div><div id="filterPanel" class="filterpanel" style="display:none"></div><div id="caseList"></div></section><section id="taxonomy" class="page"><div class="section-head"><div><small class="eyebrow">تصنيف رئيسي ← تصنيف فرعي ← القضايا</small><h1>دليل التصنيفات</h1></div></div><div id="tree" class="tree"></div></section><section id="trash" class="page"><div class="section-head"><div><small class="eyebrow">سلة المحذوفات</small><h1>القضايا المحذوفة</h1></div></div><div id="trashList"></div></section><section id="settings" class="page"><div class="section-head"><div><small class="eyebrow">الحساب والبيانات</small><h1>الإعدادات</h1></div></div><article class="card" id="acctCard"><h3>الحساب والمزامنة</h3><p>سجّل الدخول بحساب Google لحفظ قضاياك سحابيًا في Firestore ومزامنتها فورًا بين كل أجهزتك.</p><div id="acctSettingsArea"></div></article><article class="card"><h3>النسخة الاحتياطية</h3><p>صدّر جميع بياناتك أو استورد نسخة سابقة إلى حسابك السحابي. لن تتكرر أرقام القضايا الموجودة.</p><div style="display:flex;gap:8px;margin-top:15px"><button class="soft" onclick="exportData()">تصدير JSON</button><button class="primary" onclick="document.getElementById('importFile').click()">استيراد نسخة</button><input hidden id="importFile" type="file" accept="application/json" onchange="importData(event)"></div></article><article class="card"><h3>إعادة تحليل القضايا غير المصنفة</h3><p>بعد أي تحسين لمحرك التصنيف، استخدم هذا الزر لإعادة تصنيف القضايا التي وقعت سابقًا في "غير مصنف بدقة" فقط — دون حذف أي قضية أو تغيير رقمها أو نصها الأصلي. القضايا التي راجعتها يدويًا (manuallyReviewed) لن تُمس.</p><div style="margin-top:15px"><button class="primary" id="btnReanalyze" onclick="reanalyzeUnclassified()">إعادة تحليل القضايا غير المصنفة</button></div></article>
       <article class="card"><h3>إضافة شهر الأرشفة الهجري للقضايا القديمة</h3><p>قضاياك المضافة قبل هذه الميزة ليس لها بعد شهر أرشفة هجري. هذا الترحيل يحسب الشهر الهجري (أم القرى) بناءً على تاريخ الإضافة الفعلي المحفوظ (createdAt) لكل قضية — دون تغيير رقمها أو وصفها أو تصنيفها أو تاريخ إنشائها. يعرض معاينة أولًا ولا ينفّذ شيئًا قبل موافقتك.</p><div style="margin-top:15px"><button class="soft" onclick="previewHijriMigration()">معاينة إضافة شهر الأرشفة</button></div></article>
       <article class="card"><h3>إصلاح نصوص قضايا قديمة (تعطّلت بسبب خلل قديم في القارئ)</h3><p>الصق هنا نفس القائمة الأصلية الصحيحة التي كتبتها سابقًا. سيطابق النظام كل رقم قضية مع قاعدة البيانات الحالية، ويقترح إصلاحًا فقط للقضايا التي نصها فارغ أو نصها الحالي هو كلمة الحالة نفسها ("نهائي"/"غير نهائي") بالخطأ. لن يُطبَّق أي تغيير قبل مراجعتك للمعاينة والموافقة عليها صراحة — ولن يُنشئ أي قضية جديدة أو يمس رقم القضية أو تاريخ الإنشاء أو حالة الحذف أو معرّف المستند.</p>
         <textarea id="migrationInput" style="width:100%;min-height:140px;margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit" placeholder="الصق هنا القائمة الأصلية الكاملة بنفس صيغتك المعتادة..."></textarea>
@@ -25,7 +57,7 @@
   <div id="caseDetailBox" style="background:#fff;border-radius:16px;padding:24px;max-width:640px;width:100%;max-height:90vh;overflow-y:auto"></div>
 </div>
 <script>
-const navItems=[['home','الرئيسية'],['cases','القضايا'],['taxonomy','التصنيفات'],['trash','المحذوفات'],['settings','الإعدادات']];
+const navItems=[['dashboard','الرئيسية'],['cases','القضايا'],['taxonomy','التصنيفات'],['trash','المحذوفات'],['settings','الإعدادات']];
 let records=[],draft=[];
 /* =====================================================================
    محرك تصنيف بالنقاط (Scoring) بدل أول تطابق (rules.find)
@@ -1031,6 +1063,29 @@ async function confirmWordImport(){
 
 /* ============================= إضافة شهر الأرشفة الهجري للقضايا القديمة (ترحيل آمن، معاينة إلزامية) ============================= */
 let hijriMigrationPreviewData=[];
+let hijriAutoMigrationRunning=false;
+/* نسخة صامتة تلقائية من ترحيل الشهر الهجري — تعمل مرة واحدة كلما وُجدت قضايا ناقصة الحقول الهجرية،
+   بلا حاجة لأي إجراء يدوي من المستخدم. تستخدم نفس القاعدة الآمنة: حساب الشهر من createdAt الفعلي
+   لكل قضية، ولا تغيّر أي حقل آخر إطلاقًا. */
+async function runHijriMigrationSilently(){
+  if(hijriAutoMigrationRunning||!window.__authUid)return;
+  const targets=records.filter(r=>!r.isDeleted&&!r.hijriMonthKey&&r.createdAt);
+  if(!targets.length)return;
+  hijriAutoMigrationRunning=true;
+  for(const r of targets){
+    const h=gregorianToHijri(new Date(r.createdAt));
+    const patch={hijriYear:h.hijriYear,hijriMonth:h.hijriMonth,hijriMonthNumber:h.hijriMonthNumber,hijriMonthKey:h.hijriMonthKey};
+    try{
+      await window.__cloudUpdateCase(r.caseNumber,patch);
+      Object.assign(r,patch);
+    }catch(err){console.error('تعذّر الترحيل التلقائي للشهر الهجري للقضية #'+r.caseNumber,err);}
+  }
+  hijriAutoMigrationRunning=false;
+  if(typeof renderCases==='function')renderCases();
+  if(typeof renderDashboard==='function')renderDashboard();
+  if(typeof renderTree==='function')renderTree();
+}
+
 function previewHijriMigration(){
   const targets=records.filter(r=>!r.isDeleted&&!r.hijriMonthKey&&r.createdAt);
   hijriMigrationPreviewData.length=0;
@@ -1078,44 +1133,81 @@ async function applyHijriMigration(){
 }
 
 /* ============================= العرض ============================= */
-let activeSubFilter=null; // عند الضغط على تصنيف فرعي من الدليل
+let activeSubFilter=null; // عند الضغط على تصنيف فرعي من الدليل، أو من لوحة الفلاتر
+let activeMainFilter=null;
 let activeHijriMonthFilter=null; // مفتاح الشهر الهجري "1448-02" أو null لكل الفترات
-function togglePeriodMenu(){
-  const el=document.getElementById('periodMenu');
-  const open=el.style.display==='block';
+let activeCaseStatusFilter=null; // 'نهائية' | 'قابلة للاعتراض' | null
+let activeNeedsReviewFilter=false; // القضايا "غير مصنف بدقة" فقط
+
+function hasActiveFilters(){
+  return !!(activeSubFilter||activeMainFilter||activeHijriMonthFilter||activeCaseStatusFilter||activeNeedsReviewFilter);
+}
+function clearAllFilters(){
+  activeSubFilter=null;activeMainFilter=null;activeHijriMonthFilter=null;activeCaseStatusFilter=null;activeNeedsReviewFilter=false;
+  renderFilterPanel();renderCases();updateFilterIndicator();
+}
+function toggleFilterPanel(){
+  const el=document.getElementById('filterPanel');
+  const open=el.style.display==='grid';
   if(open){el.style.display='none';return}
-  renderPeriodMenu();
-  el.style.display='block';
+  renderFilterPanel();
+  el.style.display='grid';
 }
-function renderPeriodMenu(){
-  const el=document.getElementById('periodMenu');
-  const rows=records.filter(x=>!x.isDeleted&&x.hijriMonthKey);
-  const counts={};
-  rows.forEach(r=>{counts[r.hijriMonthKey]=counts[r.hijriMonthKey]||{label:r.hijriMonth+' '+r.hijriYear+'هـ',count:0};counts[r.hijriMonthKey].count++;});
-  const keys=Object.keys(counts).sort().reverse(); // الأحدث أولًا (المفتاح "سنة-شهر" يُرتَّب زمنيًا نصيًا بأمان)
-  let html='<div style="cursor:pointer;padding:8px;border-radius:8px" onclick="setPeriodFilter(null)"><b>جميع الفترات</b></div>';
-  if(!keys.length){
-    html+='<div style="padding:8px;color:var(--muted);font-size:12px">لا توجد قضايا مؤرَّخة هجريًا بعد. استخدم "إضافة شهر الأرشفة الهجري" من الإعدادات للقضايا القديمة.</div>';
-  } else {
-    keys.forEach(k=>{
-      const active=activeHijriMonthFilter===k;
-      html+='<div style="cursor:pointer;padding:8px;border-radius:8px;display:flex;justify-content:space-between'+(active?';background:#f1ede5':'')+'" onclick="setPeriodFilter(\''+k+'\')"><span>'+esc(counts[k].label)+'</span><span class="badge">'+counts[k].count+' قضية</span></div>';
-    });
-  }
-  el.innerHTML=html;
+/* دوال تسمية صريحة لكل فلتر — تُستخدم من لوحة الفلاتر وقابلة لإعادة الاستخدام والاختبار مباشرة */
+function setHijriFilter(key){activeHijriMonthFilter=key||null;renderCases();updateFilterIndicator();}
+function setMainFilter(main){activeMainFilter=main||null;activeSubFilter=null;renderFilterPanel();renderCases();updateFilterIndicator();}
+function setSubFilter(sub){activeSubFilter=sub||null;renderCases();updateFilterIndicator();}
+function setCaseStatusFilter(status){activeCaseStatusFilter=status||null;renderCases();updateFilterIndicator();}
+function setNeedsReviewFilter(checked){activeNeedsReviewFilter=!!checked;renderCases();updateFilterIndicator();}
+function renderFilterPanel(){
+  const el=document.getElementById('filterPanel');
+  const activeRows=records.filter(x=>!x.isDeleted);
+  // الفترات الهجرية المتاحة فعليًا فقط
+  const monthCounts={};
+  activeRows.filter(r=>r.hijriMonthKey).forEach(r=>{monthCounts[r.hijriMonthKey]=monthCounts[r.hijriMonthKey]||{label:r.hijriMonth+' '+r.hijriYear+'هـ',count:0};monthCounts[r.hijriMonthKey].count++;});
+  const monthKeys=Object.keys(monthCounts).sort().reverse();
+  const mainOpts=Object.keys(catalog).filter(m=>m!=='غير مصنف بدقة');
+  const subOpts=(activeMainFilter?(catalog[activeMainFilter]||[]):Object.values(catalog).flat());
+
+  el.innerHTML=
+    `<div><label>الفترة (الشهر الهجري)</label><select id="fMonth" onchange="setHijriFilter(this.value)">
+      <option value="">كل الفترات</option>
+      ${monthKeys.map(k=>`<option value="${k}" ${activeHijriMonthFilter===k?'selected':''}>${esc(monthCounts[k].label)} — ${monthCounts[k].count} قضية</option>`).join('')}
+    </select></div>
+    <div><label>التصنيف الرئيسي</label><select id="fMain" onchange="setMainFilter(this.value)">
+      <option value="">كل التصنيفات</option>
+      ${mainOpts.map(m=>`<option value="${esc(m)}" ${activeMainFilter===m?'selected':''}>${esc(m)}</option>`).join('')}
+    </select></div>
+    <div><label>التصنيف الفرعي</label><select id="fSub" onchange="setSubFilter(this.value)">
+      <option value="">كل الفروع</option>
+      ${subOpts.map(s=>`<option value="${esc(s)}" ${activeSubFilter===s?'selected':''}>${esc(s)}</option>`).join('')}
+    </select></div>
+    <div><label>حالة القضية</label><select id="fStatus" onchange="setCaseStatusFilter(this.value)">
+      <option value="">الكل</option>
+      <option value="نهائية" ${activeCaseStatusFilter==='نهائية'?'selected':''}>نهائية</option>
+      <option value="قابلة للاعتراض" ${activeCaseStatusFilter==='قابلة للاعتراض'?'selected':''}>قابلة للاعتراض</option>
+    </select></div>
+    <div style="display:flex;align-items:flex-end;gap:8px">
+      <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:12px;color:#23332e"><input type="checkbox" id="fNeedsReview" ${activeNeedsReviewFilter?'checked':''} onchange="setNeedsReviewFilter(this.checked)"> تحتاج مراجعة يدوية</label>
+    </div>
+    <div style="display:flex;align-items:flex-end"><button class="ghost" onclick="clearAllFilters()" style="border:0;background:none;color:#a1443a;text-decoration:underline;cursor:pointer;font:inherit">مسح الفلاتر</button></div>`;
 }
-function setPeriodFilter(key){
-  activeHijriMonthFilter=key;
-  document.getElementById('periodMenu').style.display='none';
-  renderCases();
+function updateFilterIndicator(){
+  document.getElementById('filterIconBtn').classList.toggle('hasFilter',hasActiveFilters());
 }
-/* الفلاتر الحالية بالضبط (بحث + تصنيف + فترة هجرية) — مصدر واحد للحقيقة يستخدمه العرض والتصدير معًا،
-   لضمان أن ما يُصدَّر مطابق تمامًا لما هو ظاهر على الشاشة. */
+function toggleExportMenu(){document.getElementById('exportMenu').classList.toggle('open');}
+function closeExportMenu(){document.getElementById('exportMenu').classList.remove('open');}
+
+/* الفلاتر الحالية بالضبط (بحث + تصنيف رئيسي/فرعي + فترة هجرية + حالة + تحتاج مراجعة) — مصدر واحد للحقيقة
+   يستخدمه العرض والتصدير معًا، لضمان أن ما يُصدَّر مطابق تمامًا لما هو ظاهر على الشاشة. */
 function getVisibleCaseRows(){
   let q=document.getElementById('search').value,
       rows=records.filter(x=>!x.isDeleted&&JSON.stringify(x).includes(q));
+  if(activeMainFilter)rows=rows.filter(x=>x.mainCategory===activeMainFilter);
   if(activeSubFilter)rows=rows.filter(x=>x.subCategory===activeSubFilter);
   if(activeHijriMonthFilter)rows=rows.filter(x=>x.hijriMonthKey===activeHijriMonthFilter);
+  if(activeCaseStatusFilter)rows=rows.filter(x=>x.caseStatus===activeCaseStatusFilter);
+  if(activeNeedsReviewFilter)rows=rows.filter(x=>x.mainCategory==='غير مصنف بدقة');
   rows.sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));
   return rows;
 }
@@ -1134,7 +1226,10 @@ function renderCases(){
   const rows=getVisibleCaseRows();
   document.getElementById('caseCounter').textContent=records.filter(x=>!x.isDeleted).length;
   const chips=[];
-  if(activeSubFilter)chips.push(`<span class="badge">تصنيف: ${esc(activeSubFilter)} <a href="#" onclick="activeSubFilter=null;renderCases();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span>`);
+  if(activeMainFilter)chips.push(`<span class="badge">التصنيف: ${esc(activeMainFilter)} <a href="#" onclick="activeMainFilter=null;renderCases();updateFilterIndicator();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span>`);
+  if(activeSubFilter)chips.push(`<span class="badge">الفرع: ${esc(activeSubFilter)} <a href="#" onclick="activeSubFilter=null;renderCases();updateFilterIndicator();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span>`);
+  if(activeCaseStatusFilter)chips.push(`<span class="badge">الحالة: ${esc(activeCaseStatusFilter)} <a href="#" onclick="activeCaseStatusFilter=null;renderCases();updateFilterIndicator();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span>`);
+  if(activeNeedsReviewFilter)chips.push(`<span class="badge">تحتاج مراجعة يدوية <a href="#" onclick="activeNeedsReviewFilter=false;renderCases();updateFilterIndicator();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span>`);
   if(activeHijriMonthFilter){
     const r0=records.find(x=>x.hijriMonthKey===activeHijriMonthFilter);
     const label=r0?(r0.hijriMonth+' '+r0.hijriYear+'هـ'):activeHijriMonthFilter;
@@ -1142,9 +1237,8 @@ function renderCases(){
   }
   const chip=chips.length?`<div style="margin-bottom:10px;display:flex;gap:6px;flex-wrap:wrap">${chips.join('')}</div>`:'';
   const exportBar=`<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-    <button class="soft" onclick="exportVisibleCaseNumbers()">تصدير أرقام القضايا</button>
     <button class="soft" onclick="toggleSelectionMode()">${selectionMode?'إلغاء التحديد':'تحديد قضايا معيّنة'}</button>
-    ${selectionMode&&selectedCaseNumbers.size?`<button class="primary" onclick="exportSelectedCaseNumbers()">تصدير المحددة (${selectedCaseNumbers.size})</button>`:''}
+    ${selectionMode&&selectedCaseNumbers.size?`<span class="badge">محدَّد: ${selectedCaseNumbers.size} — استخدم زر التصدير أعلى الصفحة لتصديرها</span>`:''}
   </div>`;
   document.getElementById('caseList').innerHTML=chip+exportBar+(rows.length?`<div class="grid">${rows.map(x=>{
     const dateLine=x.hijriMonthKey?`أضيفت في ${esc(x.hijriMonth)} ${esc(x.hijriYear)}هـ`:`أُنشئت: ${fmtDate(x.createdAt)}`;
@@ -1169,12 +1263,79 @@ function exportVisibleCaseNumbers(){
 function exportSelectedCaseNumbers(){
   downloadCaseNumbersFile([...selectedCaseNumbers],'case-numbers-selected.txt');
 }
+/* نقطة الدخول الموحّدة من قائمة "تصدير": تعمل على التحديد إن وُجد، وإلا على القضايا الظاهرة حاليًا بعد الفلاتر والبحث */
+function getExportScopeRows(){
+  if(selectionMode&&selectedCaseNumbers.size){
+    return records.filter(r=>selectedCaseNumbers.has(String(r.caseNumber)));
+  }
+  return getVisibleCaseRows();
+}
+function exportCaseNumbersTxt(){
+  if(selectionMode&&selectedCaseNumbers.size){exportSelectedCaseNumbers();return}
+  exportVisibleCaseNumbers();
+}
+
+/* ============================= تصدير إلى Word (.docx) — يحترم البحث والفلاتر والتحديد ============================= */
+async function exportToWord(){
+  if(typeof docx==='undefined'){alert('تعذّر تحميل مكتبة إنشاء ملفات Word. تأكد من اتصالك بالإنترنت وأعد المحاولة.');return}
+  const rows=getExportScopeRows();
+  if(!rows.length){alert('لا توجد قضايا لتصديرها بالفلتر أو التحديد الحالي.');return}
+  const {Document,Packer,Paragraph,Table,TableRow,TableCell,TextRun,WidthType}=docx;
+  const headerRow=new TableRow({children:['رقم القضية','نوع/وصف القضية','الحالة','شهر الأرشفة'].map(h=>
+    new TableCell({children:[new Paragraph({children:[new TextRun({text:h,bold:true})]})]})
+  )});
+  const dataRows=rows.map(r=>{
+    const hijri=r.hijriMonthKey?(r.hijriMonth+' '+r.hijriYear+'هـ'):'';
+    return new TableRow({children:[r.caseNumber,r.originalText||'',r.caseStatus||'',hijri].map(v=>
+      new TableCell({children:[new Paragraph(String(v||''))]})
+    )});
+  });
+  const table=new Table({width:{size:100,type:WidthType.PERCENTAGE},rows:[headerRow,...dataRows]});
+  const doc=new Document({sections:[{children:[table]}]});
+  const blob=await Packer.toBlob(doc);
+  const filename=(selectionMode&&selectedCaseNumbers.size)?'cases-export-selected.docx':(activeHijriMonthFilter?('cases-export-'+activeHijriMonthFilter+'.docx'):'cases-export.docx');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=filename;a.click();URL.revokeObjectURL(a.href);
+}
 
 function renderTrash(){
   let rows=records.filter(x=>x.isDeleted);
   document.getElementById('trashList').innerHTML=rows.length?rows.map(x=>`<article class="card"><strong>#${esc(x.caseNumber)}</strong><h3>${esc(x.subCategory)}</h3><div class="meta">حُذفت: ${fmtDate(x.updatedAt)}</div><footer><span>${esc(x.mainCategory)}</span><button onclick="trash('${esc(x.caseNumber)}',true)">استعادة</button></footer></article>`).join(''):'<div class="empty">السلة فارغة</div>';
 }
 function goToSub(sub){activeSubFilter=sub;show('cases');}
+
+/* ============================= الرئيسية (لوحة المعلومات) ============================= */
+function miniCaseCard(x){
+  const dateLine=x.hijriMonthKey?`${esc(x.hijriMonth)} ${esc(x.hijriYear)}هـ`:fmtDate(x.createdAt);
+  return `<article class="card" onclick="openCaseDetail('${esc(x.caseNumber)}')" style="cursor:pointer;margin-top:10px"><div class="card-head"><strong>#${esc(x.caseNumber)}</strong><span class="badge">${esc(x.caseType||'')}</span></div><h3 style="font-size:15px">${esc(x.subCategory)}</h3><p>${esc((x.originalText||'').slice(0,80))}</p><div class="meta">${dateLine}${x.caseStatus?' — <span style="color:'+(x.caseStatus==='نهائية'?'#187346':'#a5761f')+'">'+esc(x.caseStatus)+'</span>':''}</div></article>`;
+}
+function renderDashboard(){
+  const active=records.filter(x=>!x.isDeleted);
+  document.getElementById('statTotal').textContent=active.length;
+  document.getElementById('statFinal').textContent=active.filter(x=>x.caseStatus==='نهائية').length;
+  document.getElementById('statAppeal').textContent=active.filter(x=>x.caseStatus==='قابلة للاعتراض').length;
+  document.getElementById('statReview').textContent=active.filter(x=>x.mainCategory==='غير مصنف بدقة').length;
+
+  const q=document.getElementById('dashSearch').value.trim();
+  const resultsBox=document.getElementById('dashSearchResults');
+  if(q){
+    const matches=active.filter(x=>JSON.stringify(x).includes(q)).slice(0,12);
+    resultsBox.innerHTML=`<h4 style="color:var(--g);margin-top:20px">نتائج البحث (${matches.length})</h4>`+
+      (matches.length?`<div class="grid">${matches.map(miniCaseCard).join('')}</div>`:'<div class="empty">لا توجد نتائج مطابقة</div>');
+    document.getElementById('dashLists').innerHTML='';
+    return;
+  }
+  resultsBox.innerHTML='';
+
+  const recent=active.slice().sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||'')).slice(0,5);
+  const needsReview=active.filter(x=>x.mainCategory==='غير مصنف بدقة').slice(0,5);
+
+  let html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:10px">';
+  html+='<div><h4 style="color:var(--g)">آخر القضايا المضافة</h4>'+(recent.length?recent.map(miniCaseCard).join(''):'<div class="empty">لا توجد قضايا بعد</div>')+'</div>';
+  html+='<div><h4 style="color:var(--g)">تحتاج مراجعة يدوية <span class="reviewbadge">'+needsReview.length+'</span></h4>'+(needsReview.length?needsReview.map(miniCaseCard).join(''):'<div class="empty">لا توجد قضايا بحاجة مراجعة 🎉</div>')+'</div>';
+  html+='</div>';
+  document.getElementById('dashLists').innerHTML=html;
+}
 
 /* ============================= لوحة تفاصيل القضية: عرض / تعديل ومراجعة / إعادة تحليل فردية ============================= */
 let detailEditMode=false;
@@ -1392,10 +1553,10 @@ function deleteCustomCategory(main,sub){
   renderTree();
 }
 function newCase(){document.getElementById('search').value='';draft=[];document.getElementById('preview').innerHTML='';show('home')}
-function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===id));if(id==='cases')renderCases();if(id==='trash')renderTrash();if(id==='taxonomy')renderTree()}
+function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===id));if(id==='cases')renderCases();if(id==='trash')renderTrash();if(id==='taxonomy')renderTree();if(id==='dashboard')renderDashboard()}
 function initNav(where){document.getElementById(where).innerHTML=navItems.map(x=>`<button data-page="${x[0]}" onclick="show('${x[0]}')">${x[1]}</button>`).join('')}
 function setSync(text){const l=document.getElementById('syncLine');if(l)l.textContent=text;}
-initNav('nav');initNav('mobile');show('home');
+initNav('nav');initNav('mobile');show('dashboard');
 window.records=records; // تعريض للاختبار الآلي فقط (let لا يُضاف تلقائيًا إلى window)
 window.migrationPreviewData=migrationPreviewData;
 window.classificationAliases=classificationAliases;
@@ -1511,6 +1672,8 @@ if(!configLooksReal){
         const list = snap.docs.map(d=>d.data());
         if(typeof records!=='undefined'){records.length=0;records.push(...list);}
         if(typeof renderCases==='function'){renderCases();renderTrash();renderTree();}
+        if(typeof renderDashboard==='function')renderDashboard();
+        if(typeof runHijriMigrationSilently==='function')runHijriMigrationSilently();
         syncLine.textContent='تم الحفظ ☁️ — آخر مزامنة الآن';
       }, err => { console.error(err); syncLine.textContent='تعذّر تحميل القضايا ⚠️'; });
       unsubCats = onSnapshot(doc(db,'users',user.uid,'settings','customCategories'), snap => {

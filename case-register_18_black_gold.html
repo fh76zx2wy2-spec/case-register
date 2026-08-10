@@ -1,0 +1,2303 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ديوان القضايا — أرشيفك الذكي للقضايا</title>
+<style>
+:root{--g:#17483b;--g2:#236554;--gold:#b58a48;--sand:#f5f0e6;--ivory:#fcfaf5;--line:#ded5c4;--muted:#6e746e}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 70% 10%,#b58a4817,transparent 28%),var(--ivory);color:#23332e;font-family:Tahoma,Arial,sans-serif}.app{min-height:100vh;display:grid;grid-template-columns:240px 1fr}.side{position:fixed;right:0;top:0;width:240px;height:100vh;padding:28px 18px;background:linear-gradient(#103b31,#0c2d26);color:#fff}.brand{display:flex;align-items:center;gap:12px}.mark{display:grid;place-items:center;width:44px;height:44px;border:1px solid #d8b978;border-radius:13px;color:#e1c486;font:700 23px Georgia}.brand small{display:block;color:#afc1ba;margin-top:3px}.side nav{display:grid;gap:7px;margin-top:50px}.side nav button{border:0;background:none;color:#c7d4cf;text-align:right;padding:13px;border-radius:11px;cursor:pointer}.side nav button.active{background:#ffffff18;color:#fff}.main{grid-column:2;padding:0 min(7vw,85px) 60px}.top{height:75px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:12px}.page{display:none;max-width:940px;margin:55px auto}.page.active{display:block}.hero{text-align:center;max-width:720px;margin:0 auto 30px}.hero small,.eyebrow{color:var(--gold);font-weight:700}.hero h1{font-size:48px;color:var(--g);margin:12px}.hero h1 span{color:var(--gold)}.hero p{color:var(--muted);line-height:1.8}.box{background:#fff;border:1px solid var(--line);border-radius:20px;padding:5px;box-shadow:0 20px 55px #273c3212}.box textarea{width:100%;height:190px;border:0;outline:0;resize:vertical;padding:25px;background:none;font:16px/1.9 Tahoma;color:var(--g)}.bar{border-top:1px solid #eee8dd;padding:12px;display:flex;align-items:center;justify-content:flex-end}.primary,.soft{border:0;border-radius:10px;padding:12px 19px;cursor:pointer;font-weight:700}.primary{background:linear-gradient(135deg,var(--g2),var(--g));color:#fff}.primary:disabled{opacity:.5;cursor:not-allowed}.soft{background:#f1ede5;color:var(--g)}.review,.card,.tree{margin-top:15px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}.review-head,.section-head,.card-head{display:flex;align-items:center;justify-content:space-between}.badge{background:#edf8f1;color:#187346;border:1px solid #cfe8d8;border-radius:20px;padding:6px 10px;font-size:11px}.classification{margin:18px 0;padding:14px;background:#f7f4ed;border-radius:11px;color:var(--g)}.classification b{color:var(--gold);padding:0 9px}.tags span{display:inline-block;margin:5px 0 0 6px;padding:5px 9px;background:#f7f0e3;color:#7d6948;border-radius:12px;font-size:10px}.save{display:block;margin:20px auto}.section-head h1{color:var(--g);font-size:38px}.search{width:100%;padding:15px;border:1px solid var(--line);border-radius:12px;background:#fff;outline:0}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.card h3{color:var(--g)}.card p{color:var(--muted);font-size:12px}.card footer{display:flex;justify-content:space-between;border-top:1px solid #eee;padding-top:12px;margin-top:15px}.card footer button{border:0;background:none;color:#985d4e;cursor:pointer}.card .meta{font-size:10.5px;color:#9aa39c;margin-top:6px}.tree details{border-bottom:1px solid #eee;padding:10px}.tree details:last-child{border:0}.tree summary{cursor:pointer;color:var(--g);font-weight:700}.tree li{margin:10px;color:var(--muted)}.empty{text-align:center;color:var(--muted);padding:55px}.note{margin-top:20px;text-align:center;color:var(--muted);font-size:11px}.mobile{display:none}
+.addCaseBtn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;border:1px dashed #d8b978;background:#ffffff12;color:#e1c486;font-weight:700;padding:13px;border-radius:12px;cursor:pointer;font-size:14px;margin:18px 0 6px}
+.addCaseBtn:hover{background:#ffffff1f}
+.statgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}
+.statcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center}
+.statcard b{display:block;font-size:26px;color:var(--g)}
+.statcard span{font-size:11px;color:var(--muted)}
+.bigsearch{width:100%;padding:18px 20px;border:1px solid var(--line);border-radius:16px;background:#fff;outline:0;font-size:16px;box-shadow:0 12px 30px #273c3212}
+.iconbtn{position:relative;border:1px solid var(--line);background:#fff;border-radius:10px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.iconbtn .dot{position:absolute;top:6px;left:6px;width:8px;height:8px;border-radius:50%;background:var(--gold);display:none}
+.iconbtn.hasFilter .dot{display:block}
+.filterpanel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.filterpanel label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:700}
+.filterpanel select{width:100%;padding:9px;border:1px solid var(--line);border-radius:8px}
+.exportMenuWrap{position:relative}
+.exportMenu{display:none;position:absolute;left:0;top:48px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 30px #273c3230;z-index:10;min-width:190px;overflow:hidden}
+.exportMenu.open{display:block}
+.exportMenu button{display:block;width:100%;text-align:right;border:0;background:none;padding:12px 14px;cursor:pointer;font:inherit;color:var(--g)}
+.exportMenu button:hover{background:#f7f4ed}
+.reviewbadge{background:#fdf6e3;color:#a5761f;border:1px solid #f0dfae;border-radius:20px;padding:5px 9px;font-size:11px}
+.islamic-deco{position:fixed;pointer-events:none;z-index:0;width:230px;height:230px;color:var(--gold);opacity:.1}
+.islamic-deco.corner-tl{top:-55px;left:-55px}
+.islamic-deco.corner-br{bottom:-55px;left:-55px}
+.islamic-deco svg{width:100%;height:100%}
+@media(max-width:760px){.islamic-deco{width:120px;height:120px;opacity:.06}}
+.hijriBar{text-align:left;padding:9px 4px 0;color:var(--gold);font-size:12px;font-weight:700;letter-spacing:.2px}
+.appFooter{position:relative;z-index:1;text-align:center;color:#9aa39c;font-size:11px;padding:22px 10px 30px}
+.main{position:relative;z-index:1}
+.acct{display:flex;align-items:center;gap:8px}.acct img{width:28px;height:28px;border-radius:50%}.syncbadge{background:#eef1fb;color:#3b4c9e;border:1px solid #d6ddf5;border-radius:20px;padding:4px 9px;font-size:10.5px}
+@media(max-width:760px){.app{display:block}.side{display:none}.main{padding:0 15px 85px}.top{justify-content:center;flex-wrap:wrap;height:auto;padding:10px 0;gap:8px}.page{margin-top:20px}.hero h1{font-size:34px}.grid{grid-template-columns:1fr}.mobile{position:fixed;display:flex;bottom:0;left:0;right:0;height:65px;background:#fff;border-top:1px solid var(--line);justify-content:space-around;z-index:5}.mobile button{border:0;background:none;color:var(--muted)}.mobile button.active{color:var(--g)}}
+</style>
+<style id="islamic-judicial-theme">
+/* إعادة تصميم بصري فقط — لا يمس المنطق أو البيانات أو Firebase */
+:root{
+  --g:#0f4639;
+  --g2:#17614f;
+  --g3:#0a332a;
+  --gold:#aa854b;
+  --gold-soft:#d7c39a;
+  --sand:#f3ecdf;
+  --ivory:#fbf8f1;
+  --paper:#fffdf8;
+  --line:#ded3bf;
+  --line-green:#cbd9d2;
+  --ink:#24322d;
+  --muted:#69736e;
+  --danger:#8a4c42;
+  --shadow:0 12px 34px rgba(25,54,45,.075);
+  --shadow-hover:0 17px 42px rgba(25,54,45,.11);
+}
+
+html{scroll-behavior:smooth;background:var(--ivory)}
+body{
+  min-height:100vh;
+  color:var(--ink);
+  font-family:Tahoma,"Segoe UI",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 78% 5%,rgba(170,133,75,.08),transparent 25rem),
+    radial-gradient(circle at 15% 92%,rgba(15,70,57,.045),transparent 27rem),
+    var(--ivory);
+  letter-spacing:0;
+}
+body::before,body::after{
+  content:"";
+  position:fixed;
+  z-index:0;
+  pointer-events:none;
+  top:0;
+  bottom:0;
+  width:72px;
+  opacity:.045;
+  background:
+    linear-gradient(30deg,transparent 38%,var(--g) 39% 42%,transparent 43%) 0 0/28px 48px,
+    linear-gradient(-30deg,transparent 38%,var(--gold) 39% 42%,transparent 43%) 0 0/28px 48px;
+}
+body::before{left:0}
+body::after{right:240px;transform:scaleX(-1)}
+::selection{background:rgba(170,133,75,.24);color:var(--g3)}
+
+.app{grid-template-columns:254px minmax(0,1fr);position:relative;isolation:isolate}
+.side{
+  width:254px;
+  padding:30px 20px 24px;
+  overflow:hidden;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.028),transparent 25%),
+    var(--g3);
+  border-left:1px solid rgba(215,195,154,.24);
+  box-shadow:-10px 0 35px rgba(7,31,25,.09) inset;
+}
+.side::before{
+  content:"";
+  position:absolute;
+  width:210px;
+  height:210px;
+  left:-86px;
+  bottom:-84px;
+  opacity:.075;
+  transform:rotate(22.5deg);
+  background:
+    repeating-conic-gradient(from 0deg,var(--gold) 0 7deg,transparent 7deg 22.5deg);
+  border-radius:50%;
+  -webkit-mask:radial-gradient(circle,transparent 0 24%,#000 25% 31%,transparent 32% 43%,#000 44% 47%,transparent 48%);
+  mask:radial-gradient(circle,transparent 0 24%,#000 25% 31%,transparent 32% 43%,#000 44% 47%,transparent 48%);
+  pointer-events:none;
+}
+.side::after{
+  content:"";
+  position:absolute;
+  top:0;right:0;left:0;
+  height:3px;
+  background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);
+  opacity:.8;
+}
+.brand{position:relative;padding:0 3px 25px;border-bottom:1px solid rgba(215,195,154,.16)}
+.brand::after{
+  content:"✦";
+  position:absolute;
+  bottom:-8px;right:50%;
+  transform:translateX(50%);
+  padding:0 9px;
+  color:var(--gold-soft);
+  background:var(--g3);
+  font-size:10px;
+}
+.mark{
+  width:46px;height:46px;
+  border:1px solid rgba(215,195,154,.7);
+  border-radius:12px;
+  color:#e2c995;
+  background:rgba(255,255,255,.025);
+  box-shadow:inset 0 0 0 4px rgba(215,195,154,.045);
+}
+.brand b{color:#fffaf0;font-size:16px;letter-spacing:.15px}
+.brand small{color:#b9c9c2;line-height:1.7}
+.side nav{gap:5px;margin-top:32px;position:relative;z-index:1}
+.side nav button{
+  position:relative;
+  color:#cad7d1;
+  padding:13px 15px;
+  border-radius:8px;
+  font:600 13px/1.3 Tahoma,"Segoe UI",Arial,sans-serif;
+  transition:color .2s ease,background .2s ease,transform .2s ease;
+}
+.side nav button:hover{color:#fffaf0;background:rgba(255,255,255,.045);transform:translateX(-2px)}
+.side nav button.active{
+  color:#fffaf0;
+  background:linear-gradient(90deg,rgba(170,133,75,.15),rgba(255,255,255,.035));
+  box-shadow:inset -2px 0 var(--gold-soft);
+}
+.side nav button.active::after{
+  content:"";position:absolute;left:13px;top:50%;width:5px;height:5px;
+  border:1px solid var(--gold-soft);transform:translateY(-50%) rotate(45deg);
+}
+.addCaseBtn{
+  border-color:rgba(215,195,154,.56);
+  color:#e5ce9f;
+  background:rgba(255,255,255,.025);
+  border-radius:9px;
+}
+.addCaseBtn:hover{background:rgba(170,133,75,.12);border-style:solid}
+
+.main{grid-column:2;padding:0 clamp(24px,6vw,82px) 64px;position:relative;z-index:1}
+.top{
+  position:relative;
+  height:67px;
+  border-bottom:1px solid rgba(170,133,75,.42);
+  background:rgba(251,248,241,.78);
+  backdrop-filter:blur(10px);
+  color:var(--muted);
+}
+.top::after{
+  content:"";position:absolute;right:0;bottom:-2px;width:116px;height:3px;
+  background:linear-gradient(90deg,var(--gold),transparent);opacity:.55;
+}
+.hijriBar{color:#8f6c34;font-size:11.5px;padding-top:8px}
+.acct{gap:10px}.acct img{border:1px solid var(--gold-soft);box-shadow:0 2px 8px rgba(15,70,57,.12)}
+.syncbadge{background:#f1f5f1;color:var(--g);border-color:#d5e1db}
+
+.page{max-width:1040px;margin:46px auto}
+.hero{max-width:760px;margin-bottom:32px}
+.hero small,.eyebrow{color:#98743b;letter-spacing:.25px}
+.hero h1,.section-head h1{
+  color:var(--g);
+  font-family:Tahoma,"Segoe UI",Arial,sans-serif;
+  font-weight:800;
+  letter-spacing:-.6px;
+}
+.hero h1{font-size:clamp(34px,4vw,50px);line-height:1.25;margin:12px 0 14px}
+.hero h1 span{color:#9a7438}
+.hero p{color:var(--muted);line-height:2;max-width:650px;margin-inline:auto}
+.section-head{position:relative;padding-bottom:14px;margin-bottom:18px;border-bottom:1px solid rgba(170,133,75,.24);gap:18px}
+.section-head::before{
+  content:"✦";position:absolute;right:0;bottom:-8px;padding-left:9px;
+  color:var(--gold);background:var(--ivory);font-size:11px;
+}
+.section-head h1{font-size:clamp(28px,3vw,39px);margin-block:6px}
+
+.box,.review,.card,.tree,.statcard,.filterpanel,.exportMenu{
+  background:rgba(255,253,248,.96);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+}
+.box{border-radius:16px;padding:6px;overflow:hidden;position:relative}
+.box::before{
+  content:"";position:absolute;right:0;top:0;width:56px;height:56px;pointer-events:none;
+  background:linear-gradient(135deg,rgba(170,133,75,.12),transparent 55%);
+}
+.box textarea{color:var(--ink);font-family:Tahoma,"Segoe UI",Arial,sans-serif;background:transparent}
+.bar{border-color:#ebe3d5;background:rgba(247,243,235,.55)}
+.review,.card,.tree{border-radius:13px;padding:21px;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.review:hover,.card:hover,.statcard:hover{transform:translateY(-2px);border-color:#c9ad78;box-shadow:var(--shadow-hover)}
+.card h3{color:var(--g);line-height:1.6;margin-top:0}.card p{color:var(--muted);line-height:1.8}
+.card footer{border-color:#ece4d6}.card footer button{color:var(--danger)}
+.classification{background:#f5f2e9;border-right:3px solid rgba(170,133,75,.6);color:var(--g);border-radius:7px}
+.tags span{background:#f5eee1;color:#735e3b;border:1px solid #eadfc9}
+.badge{background:#edf5ef;color:#21634d;border-color:#cddfd5}
+.reviewbadge{background:#faf3e4;color:#8b672d;border-color:#ead6ae}
+.statgrid{gap:14px}.statcard{border-radius:12px;padding:18px}.statcard b{color:var(--g);font-size:28px}.statcard span{color:var(--muted)}
+.tree details{border-color:#e9e0d1}.tree summary{color:var(--g)}
+.empty{color:var(--muted);border:1px dashed #d9ceb9;border-radius:13px;background:rgba(255,253,248,.55)}
+
+button,input,textarea,select{font-family:Tahoma,"Segoe UI",Arial,sans-serif}
+.primary,.soft,.ghost,.iconbtn{
+  min-height:42px;
+  border-radius:8px;
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease;
+}
+.primary{
+  border:1px solid var(--g);
+  background:var(--g);
+  color:#fffdf7;
+  box-shadow:0 6px 15px rgba(15,70,57,.14);
+}
+.primary:hover:not(:disabled){background:var(--g2);border-color:var(--g2);transform:translateY(-1px);box-shadow:0 9px 20px rgba(15,70,57,.18)}
+.soft,.ghost{
+  background:#fffdf8;
+  color:var(--g);
+  border:1px solid #b9cbc2;
+}
+.soft:hover,.ghost:hover{background:#f1f5f2;border-color:var(--g2);transform:translateY(-1px)}
+.iconbtn{background:#fffdf8;border-color:var(--line);color:var(--g)}
+.iconbtn:hover{border-color:var(--gold);box-shadow:0 6px 15px rgba(15,70,57,.09)}
+.iconbtn .dot{background:var(--gold)}
+
+.search,.bigsearch,.filterpanel select,.fields input,.fields textarea,.fields select,
+.editMain,.editSub,#migrationInput,input[type="text"],input[type="date"],input[type="time"],select,textarea{
+  color:var(--ink);
+  background:#fffefa;
+  border-color:#d9d0c0;
+  border-radius:9px;
+  outline:none;
+  transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.search::placeholder,.bigsearch::placeholder,textarea::placeholder,input::placeholder{color:#929a95;opacity:1}
+.search:focus,.bigsearch:focus,.filterpanel select:focus,.fields input:focus,.fields textarea:focus,.fields select:focus,
+.editMain:focus,.editSub:focus,#migrationInput:focus,input:focus,select:focus,textarea:focus{
+  border-color:var(--g2)!important;
+  background:#fff;
+  box-shadow:0 0 0 3px rgba(170,133,75,.13)!important;
+}
+.bigsearch{box-shadow:0 8px 24px rgba(25,54,45,.055)}
+.filterpanel{border-radius:11px}.filterpanel label{color:#53635c}.exportMenu{border-radius:10px;overflow:hidden}.exportMenu button{color:var(--g)}.exportMenu button:hover{background:#f4f1e8}
+
+table{width:100%;border-collapse:separate;border-spacing:0;background:#fffdf9;border:1px solid var(--line);border-radius:11px;overflow:hidden}
+th{background:#eef2ed;color:var(--g);font-weight:700;border-bottom:1px solid #cbd7d1}
+th,td{padding:12px 14px;text-align:right;border-bottom:1px solid #eee7da}
+tr:last-child td{border-bottom:0}tbody tr:hover{background:#faf6ed}
+
+#reportModal,#caseDetailModal{background:rgba(7,35,28,.66)!important;backdrop-filter:blur(4px)}
+#reportModalBox,#caseDetailBox{
+  background:var(--paper)!important;
+  border:1px solid rgba(215,195,154,.75);
+  border-radius:14px!important;
+  box-shadow:0 28px 70px rgba(7,35,28,.24);
+}
+.islamic-deco{color:var(--gold);opacity:.065;filter:saturate(.7)}
+.islamic-deco.corner-tl{top:-68px;left:-68px}.islamic-deco.corner-br{bottom:-72px;left:-72px}
+.appFooter{color:#89918d;border-top:1px solid rgba(170,133,75,.17);margin-top:36px}
+
+@media(max-width:980px){
+  .app{grid-template-columns:224px minmax(0,1fr)}
+  .side{width:224px;padding-inline:15px}
+  body::after{right:224px}
+  .main{padding-inline:30px}
+  .statgrid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:760px){
+  body::before,body::after,.islamic-deco{display:none}
+  .app{display:block}.side{display:none}
+  .main{padding:0 14px 88px}
+  .top{min-height:55px;height:auto;padding:8px 4px;gap:7px;background:rgba(251,248,241,.94)}
+  .top::after{width:72px}
+  .page{margin:23px auto}
+  .hero{margin-bottom:22px}.hero h1{font-size:32px}.hero p{font-size:13px;line-height:1.85}
+  .section-head{align-items:flex-start;flex-wrap:wrap}.section-head h1{font-size:29px}
+  .grid{grid-template-columns:1fr}.statgrid{grid-template-columns:repeat(2,1fr);gap:9px}
+  .review,.card,.tree{padding:16px;border-radius:11px}.box textarea{height:165px;padding:18px}
+  .mobile{
+    height:66px;
+    background:rgba(255,253,248,.97);
+    border-top:1px solid rgba(170,133,75,.45);
+    box-shadow:0 -8px 22px rgba(15,70,57,.07);
+    backdrop-filter:blur(12px);
+  }
+  .mobile button{color:#76817c;position:relative}.mobile button.active{color:var(--g);font-weight:700}
+  .mobile button.active::before{content:"";position:absolute;top:0;right:24%;left:24%;height:2px;background:var(--gold)}
+  table{display:block;overflow-x:auto;white-space:nowrap}
+}
+@media(max-width:420px){
+  .main{padding-inline:11px}.statgrid{grid-template-columns:1fr 1fr}.statcard{padding:13px 8px}
+  .hero h1{font-size:28px}.bar{flex-wrap:wrap;gap:8px}.primary,.soft{padding:11px 14px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+/* الزخرفة المركزية الجديدة: نجمة ثمانية وتشابك هندسي SVG */
+.brand::after,.section-head::before{content:""}
+.islamic-deco{opacity:.025}
+.main>.islamic-header-ribbon{
+  width:min(1040px,100%);
+  height:48px;
+  margin:10px auto 0;
+  color:var(--gold);
+  opacity:.7;
+  overflow:hidden;
+  position:relative;
+  z-index:2;
+}
+.islamic-header-ribbon svg{display:block;width:100%;height:100%}
+.page{position:relative;isolation:isolate}
+.page>*{position:relative;z-index:1}
+.central-rosette{
+  position:absolute!important;
+  z-index:0!important;
+  pointer-events:none;
+  top:-132px;
+  left:50%;
+  width:420px;
+  height:420px;
+  transform:translateX(-50%);
+  color:var(--gold);
+  opacity:.105;
+}
+.central-rosette svg{width:100%;height:100%;overflow:visible}
+#dashboard>.section-head{
+  min-height:112px;
+  align-items:center;
+  padding:18px 20px 22px;
+  border-bottom-color:rgba(170,133,75,.34);
+}
+#dashboard>.section-head::after,
+#cases>.section-head::after,
+#taxonomy>.section-head::after,
+#trash>.section-head::after,
+#settings>.section-head::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:50%;top:50%;
+  width:260px;height:128px;
+  transform:translate(-50%,-50%);
+  opacity:.07;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 128'%3E%3Cg fill='none' stroke='%23aa854b' stroke-width='1'%3E%3Cpath d='M130 8l19 30 35-7-7 35 30 19-30 19 7 35-35-7-19 30-19-30-35 7 7-35-30-19 30-19-7-35 35 7z'/%3E%3Cpath d='M130 25l16 26 30-6-6 30 26 16-26 16 6 30-30-6-16 26-16-26-30 6 6-30-26-16 26-16-6-30 30 6z'/%3E%3Ccircle cx='130' cy='85' r='28'/%3E%3C/g%3E%3C/svg%3E");
+  background-position:center;
+  background-repeat:no-repeat;
+  background-size:contain;
+}
+.islamic-section-divider{
+  width:100%;
+  height:38px;
+  margin:10px 0 4px;
+  overflow:hidden;
+  color:var(--gold);
+  opacity:.62;
+}
+.islamic-section-divider svg{display:block;width:100%;height:100%}
+.islamic-section-divider::before,.islamic-section-divider::after{content:none}
+@media(max-width:760px){
+  .main>.islamic-header-ribbon{height:32px;margin-top:4px;opacity:.56}
+  .central-rosette{width:270px;height:270px;top:-68px;opacity:.065}
+  #dashboard>.section-head{min-height:92px;padding:12px 8px 16px}
+  .islamic-section-divider{height:27px;margin-block:7px 2px;opacity:.5}
+  #dashboard>.section-head::after,#cases>.section-head::after,#taxonomy>.section-head::after,#trash>.section-head::after,#settings>.section-head::after{width:190px;height:96px;opacity:.05}
+}
+</style>
+<style id="black-gold-judicial-theme">
+/* هوية بصرية فقط: Black Luxury + Antique Gold + Islamic Geometry */
+:root{
+  --g:#c6a15b;
+  --g2:#d0ae69;
+  --g3:#090a09;
+  --gold:#c6a15b;
+  --gold-soft:#e0c27a;
+  --sand:#211f1a;
+  --ivory:#11110f;
+  --paper:#1a1916;
+  --line:#4b412f;
+  --line-green:#51462f;
+  --ink:#f4efe4;
+  --muted:#b7afa1;
+  --danger:#d09483;
+  --shadow:0 16px 38px rgba(0,0,0,.34);
+  --shadow-hover:0 18px 46px rgba(0,0,0,.44),0 0 0 1px rgba(198,161,91,.22);
+}
+html{background:#11110f;color-scheme:dark}
+body{
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 72% 4%,rgba(198,161,91,.075),transparent 29rem),
+    radial-gradient(circle at 17% 88%,rgba(224,194,122,.035),transparent 31rem),
+    linear-gradient(135deg,#11110f,#151411 52%,#10100e);
+}
+body::before,body::after{
+  opacity:.055;
+  background:
+    linear-gradient(30deg,transparent 38%,#c6a15b 39% 42%,transparent 43%) 0 0/28px 48px,
+    linear-gradient(-30deg,transparent 38%,#e0c27a 39% 42%,transparent 43%) 0 0/28px 48px;
+}
+::selection{background:rgba(198,161,91,.28);color:#fff8e8}
+
+.side{
+  background:
+    radial-gradient(circle at 48% 108%,rgba(198,161,91,.13),transparent 42%),
+    linear-gradient(180deg,#0c0d0c,#090a09 72%);
+  color:#f4efe4;
+  border-left-color:rgba(198,161,91,.28);
+  box-shadow:-12px 0 38px rgba(0,0,0,.35) inset;
+}
+.side::before{opacity:.16;background:repeating-conic-gradient(from 0deg,#c6a15b 0 7deg,transparent 7deg 22.5deg)}
+.side::after{background:linear-gradient(90deg,transparent,#e0c27a,transparent)}
+.brand{border-bottom-color:rgba(198,161,91,.21)}
+.brand::after{background:#090a09}
+.mark{border-color:rgba(224,194,122,.72);color:#e0c27a;background:#121310;box-shadow:inset 0 0 0 4px rgba(198,161,91,.045)}
+.brand b{color:#f7f0df}.brand small{color:#aaa496}
+.side nav button{color:#c4bdae}
+.side nav button:hover{color:#f8f1e2;background:rgba(198,161,91,.055)}
+.side nav button.active{
+  color:#f8f1e2;
+  background:linear-gradient(90deg,rgba(198,161,91,.105),rgba(198,161,91,.018));
+  box-shadow:inset -2px 0 #c6a15b,0 0 0 1px rgba(198,161,91,.09);
+}
+.side nav button.active::after{border-color:#e0c27a}
+.addCaseBtn{color:#e0c27a;border-color:rgba(198,161,91,.62);background:#11120f}
+.addCaseBtn:hover{background:rgba(198,161,91,.095)}
+
+.top{
+  color:#aaa397;
+  background:rgba(17,17,15,.88);
+  border-bottom-color:rgba(198,161,91,.46);
+  box-shadow:0 8px 24px rgba(0,0,0,.14);
+}
+.top::after{background:linear-gradient(90deg,#c6a15b,transparent)}
+.hijriBar{color:#d2b06c}.acct img{border-color:#c6a15b}.syncbadge{background:#22211d;color:#dbc184;border-color:#564a32}
+
+.hero small,.eyebrow{color:#d0ad67}
+.hero h1,.section-head h1,.card h3,.tree summary,.statcard b{color:#e0c27a}
+.hero h1 span{color:#c6a15b}.hero p,.card p,.empty,.note,.statcard span{color:#b7afa1}
+.section-head{border-bottom-color:rgba(198,161,91,.3)}
+.section-head::before{background:#11110f;color:#c6a15b}
+#dashboard>.section-head{border-bottom-color:rgba(198,161,91,.38);background:linear-gradient(90deg,rgba(198,161,91,.035),transparent 65%)}
+
+.box,.review,.card,.tree,.statcard,.filterpanel,.exportMenu{
+  color:#f4efe4;
+  background:linear-gradient(145deg,#1d1c18,#181714);
+  border-color:rgba(198,161,91,.31);
+  box-shadow:var(--shadow);
+}
+.review:hover,.card:hover,.statcard:hover{
+  border-color:rgba(224,194,122,.62);
+  box-shadow:var(--shadow-hover);
+}
+.box::before{background:linear-gradient(135deg,rgba(198,161,91,.13),transparent 55%)}
+.box textarea{color:#f4efe4;background:transparent}.bar{border-color:#3d372b;background:rgba(9,10,9,.25)}
+.classification{color:#ead9b6;background:#24221d;border-right-color:#c6a15b}
+.classification b{color:#d9b66d}.tags span{color:#ddc793;background:#29251d;border-color:#53462e}
+.badge{color:#e0c98f;background:#24241f;border-color:#5a4d34}
+.reviewbadge{color:#dfc17b;background:#29251c;border-color:#655233}
+.card footer{border-color:#3c372d}.card footer button{color:#d69a89}.card .meta{color:#a69e91}
+.tree details{border-color:#3a352b}.tree li{color:#b7afa1}
+.empty{background:rgba(26,25,22,.62);border-color:#4f4533}
+
+.primary{
+  color:#11110f;
+  background:linear-gradient(180deg,#ceb06d,#b9924e);
+  border-color:#c6a15b;
+  box-shadow:0 7px 18px rgba(0,0,0,.24);
+}
+.primary:hover:not(:disabled){color:#0b0b0a;background:linear-gradient(180deg,#d7b873,#c09a55);border-color:#d8b96f;box-shadow:0 9px 23px rgba(0,0,0,.32),0 0 0 1px rgba(224,194,122,.2)}
+.soft,.ghost,.iconbtn{
+  color:#dfc27f;
+  background:#1b1a17;
+  border-color:#6a5736;
+}
+.soft:hover,.ghost:hover,.iconbtn:hover{color:#eed69e;background:#24211a;border-color:#c6a15b;box-shadow:0 7px 18px rgba(0,0,0,.25)}
+.iconbtn .dot{background:#c6a15b}
+
+.search,.bigsearch,.filterpanel select,.fields input,.fields textarea,.fields select,
+.editMain,.editSub,#migrationInput,input[type="text"],input[type="date"],input[type="time"],select,textarea{
+  color:#f4efe4!important;
+  background:#22211d!important;
+  border-color:#514733!important;
+}
+.search::placeholder,.bigsearch::placeholder,textarea::placeholder,input::placeholder{color:#8e887e}
+.search:focus,.bigsearch:focus,.filterpanel select:focus,.fields input:focus,.fields textarea:focus,.fields select:focus,
+.editMain:focus,.editSub:focus,#migrationInput:focus,input:focus,select:focus,textarea:focus{
+  color:#fff8e9!important;
+  background:#26241f!important;
+  border-color:#c6a15b!important;
+  box-shadow:0 0 0 3px rgba(198,161,91,.13),0 0 18px rgba(198,161,91,.06)!important;
+}
+.filterpanel label{color:#c1b9aa}.exportMenu button{color:#e4d7bd}.exportMenu button:hover{background:#29261f;color:#e0c27a}
+option{background:#22211d;color:#f4efe4}
+
+table{color:#eee8dc;background:#1b1a17;border-color:#4d422f}
+th{color:#dfc27f;background:#25231e;border-color:#594b32}
+th,td{border-bottom-color:#373329}tbody tr:hover{background:#25221b}
+
+#reportModal,#caseDetailModal{background:rgba(0,0,0,.76)!important}
+#reportModalBox,#caseDetailBox{
+  color:#f4efe4;
+  background:linear-gradient(145deg,#1e1d19,#151512)!important;
+  border-color:rgba(198,161,91,.5);
+  box-shadow:0 30px 80px rgba(0,0,0,.58);
+}
+#reportModalBox [style*="background:#fff"],#caseDetailBox [style*="background:#fff"],
+#reportModalBox [style*="background: #fff"],#caseDetailBox [style*="background: #fff"]{background:#211f1a!important;color:#f4efe4!important}
+
+.central-rosette{color:#c6a15b;opacity:.105;filter:drop-shadow(0 0 18px rgba(198,161,91,.035))}
+.islamic-deco{color:#c6a15b}
+.main>.islamic-header-ribbon,.islamic-section-divider{color:#c6a15b}
+.islamic-header-ribbon [stroke="#0f4639"],.islamic-section-divider [stroke="#0f4639"],.central-rosette [stroke="#0f4639"]{stroke:#8f7543}
+.islamic-header-ribbon [stroke="#aa854b"],.islamic-section-divider [stroke="#aa854b"]{stroke:#c6a15b}
+.islamic-header-ribbon [fill="url(#headerInterlace)"],.islamic-section-divider [fill="url(#sectionWeave)"]{opacity:.54}
+#dashboard>.section-head::after,#cases>.section-head::after,#taxonomy>.section-head::after,#trash>.section-head::after,#settings>.section-head::after{filter:sepia(1) saturate(.7) brightness(1.4);opacity:.085}
+.appFooter{color:#8e887d;border-color:rgba(198,161,91,.18)}
+
+@media(max-width:760px){
+  .top,.mobile{background:rgba(13,14,12,.97)}
+  .mobile{border-top-color:rgba(198,161,91,.45);box-shadow:0 -8px 24px rgba(0,0,0,.28)}
+  .mobile button{color:#9f988d}.mobile button.active{color:#e0c27a}.mobile button.active::before{background:#c6a15b}
+  .central-rosette{opacity:.07}
+}
+</style></head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.11.0/mammoth.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@9.7.1/dist/index.umd.cjs"></script>
+<body><div class="islamic-deco corner-tl" aria-hidden="true"><svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+<circle cx="110" cy="110" r="96" fill="none" stroke="currentColor" stroke-width="0.6"/>
+<circle cx="110" cy="110" r="14" fill="none" stroke="currentColor" stroke-width="0.6"/>
+<path d="M110.00,36.00 Q115.32,36.00 110.00,22.00 Q104.68,36.00 110.00,36.00 Z M147.00,45.91 Q151.61,48.57 154.00,33.79 Q142.39,43.25 147.00,45.91 Z M174.09,73.00 Q176.75,77.61 186.21,66.00 Q171.43,68.39 174.09,73.00 Z M184.00,110.00 Q184.00,115.32 198.00,110.00 Q184.00,104.68 184.00,110.00 Z M174.09,147.00 Q171.43,151.61 186.21,154.00 Q176.75,142.39 174.09,147.00 Z M147.00,174.09 Q142.39,176.75 154.00,186.21 Q151.61,171.43 147.00,174.09 Z M110.00,184.00 Q104.68,184.00 110.00,198.00 Q115.32,184.00 110.00,184.00 Z M73.00,174.09 Q68.39,171.43 66.00,186.21 Q77.61,176.75 73.00,174.09 Z M45.91,147.00 Q43.25,142.39 33.79,154.00 Q48.57,151.61 45.91,147.00 Z M36.00,110.00 Q36.00,104.68 22.00,110.00 Q36.00,115.32 36.00,110.00 Z M45.91,73.00 Q48.57,68.39 33.79,66.00 Q43.25,77.61 45.91,73.00 Z M73.00,45.91 Q77.61,43.25 66.00,33.79 Q68.39,48.57 73.00,45.91 Z" fill="currentColor" fill-opacity="0.5" stroke="none"/>
+<polygon points="110.00,38.00 121.39,67.50 146.00,47.65 141.11,78.89 172.35,74.00 152.50,98.61 182.00,110.00 152.50,121.39 172.35,146.00 141.11,141.11 146.00,172.35 121.39,152.50 110.00,182.00 98.61,152.50 74.00,172.35 78.89,141.11 47.65,146.00 67.50,121.39 38.00,110.00 67.50,98.61 47.65,74.00 78.89,78.89 74.00,47.65 98.61,67.50" fill="none" stroke="currentColor" stroke-width="0.7"/>
+<polygon points="125.01,53.98 127.50,79.69 151.01,68.99 140.31,92.50 166.02,94.99 145.00,110.00 166.02,125.01 140.31,127.50 151.01,151.01 127.50,140.31 125.01,166.02 110.00,145.00 94.99,166.02 92.50,140.31 68.99,151.01 79.69,127.50 53.98,125.01 75.00,110.00 53.98,94.99 79.69,92.50 68.99,68.99 92.50,79.69 94.99,53.98 110.00,75.00" fill="none" stroke="currentColor" stroke-width="0.5"/>
+<polygon points="110.00,76.00 115.36,97.07 134.04,85.96 122.93,104.64 144.00,110.00 122.93,115.36 134.04,134.04 115.36,122.93 110.00,144.00 104.64,122.93 85.96,134.04 97.07,115.36 76.00,110.00 97.07,104.64 85.96,85.96 104.64,97.07" fill="none" stroke="currentColor" stroke-width="0.5"/>
+</svg></div><div class="islamic-deco corner-br" aria-hidden="true"><svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+<circle cx="110" cy="110" r="96" fill="none" stroke="currentColor" stroke-width="0.6"/>
+<circle cx="110" cy="110" r="14" fill="none" stroke="currentColor" stroke-width="0.6"/>
+<path d="M110.00,36.00 Q115.32,36.00 110.00,22.00 Q104.68,36.00 110.00,36.00 Z M147.00,45.91 Q151.61,48.57 154.00,33.79 Q142.39,43.25 147.00,45.91 Z M174.09,73.00 Q176.75,77.61 186.21,66.00 Q171.43,68.39 174.09,73.00 Z M184.00,110.00 Q184.00,115.32 198.00,110.00 Q184.00,104.68 184.00,110.00 Z M174.09,147.00 Q171.43,151.61 186.21,154.00 Q176.75,142.39 174.09,147.00 Z M147.00,174.09 Q142.39,176.75 154.00,186.21 Q151.61,171.43 147.00,174.09 Z M110.00,184.00 Q104.68,184.00 110.00,198.00 Q115.32,184.00 110.00,184.00 Z M73.00,174.09 Q68.39,171.43 66.00,186.21 Q77.61,176.75 73.00,174.09 Z M45.91,147.00 Q43.25,142.39 33.79,154.00 Q48.57,151.61 45.91,147.00 Z M36.00,110.00 Q36.00,104.68 22.00,110.00 Q36.00,115.32 36.00,110.00 Z M45.91,73.00 Q48.57,68.39 33.79,66.00 Q43.25,77.61 45.91,73.00 Z M73.00,45.91 Q77.61,43.25 66.00,33.79 Q68.39,48.57 73.00,45.91 Z" fill="currentColor" fill-opacity="0.5" stroke="none"/>
+<polygon points="110.00,38.00 121.39,67.50 146.00,47.65 141.11,78.89 172.35,74.00 152.50,98.61 182.00,110.00 152.50,121.39 172.35,146.00 141.11,141.11 146.00,172.35 121.39,152.50 110.00,182.00 98.61,152.50 74.00,172.35 78.89,141.11 47.65,146.00 67.50,121.39 38.00,110.00 67.50,98.61 47.65,74.00 78.89,78.89 74.00,47.65 98.61,67.50" fill="none" stroke="currentColor" stroke-width="0.7"/>
+<polygon points="125.01,53.98 127.50,79.69 151.01,68.99 140.31,92.50 166.02,94.99 145.00,110.00 166.02,125.01 140.31,127.50 151.01,151.01 127.50,140.31 125.01,166.02 110.00,145.00 94.99,166.02 92.50,140.31 68.99,151.01 79.69,127.50 53.98,125.01 75.00,110.00 53.98,94.99 79.69,92.50 68.99,68.99 92.50,79.69 94.99,53.98 110.00,75.00" fill="none" stroke="currentColor" stroke-width="0.5"/>
+<polygon points="110.00,76.00 115.36,97.07 134.04,85.96 122.93,104.64 144.00,110.00 122.93,115.36 134.04,134.04 115.36,122.93 110.00,144.00 104.64,122.93 85.96,134.04 97.07,115.36 76.00,110.00 97.07,104.64 85.96,85.96 104.64,97.07" fill="none" stroke="currentColor" stroke-width="0.5"/>
+</svg></div><div class="app"><aside class="side"><div class="brand"><span class="mark">د</span><div><b>ديوان القضايا</b><small>أرشيفك الذكي للقضايا</small></div></div><button class="addCaseBtn" onclick="show('home')">+ إضافة قضية</button><nav id="nav"></nav><p style="position:absolute;bottom:20px;color:#afc1ba;font-size:11px" id="storageLine">● جارٍ الاتصال بالسحابة…</p></aside><main class="main"><div class="hijriBar" id="hijriBar"></div><header class="top"><span id="syncLine">جارٍ التحقق من حالة الدخول…</span><div class="acct" id="acctArea"></div></header>
+<div class="islamic-header-ribbon" aria-hidden="true">
+  <svg viewBox="0 0 1040 48" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs><pattern id="headerInterlace" width="96" height="48" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke-linecap="square">
+        <path d="M0 24H18L30 12H48L60 24H78L96 6M0 42L18 24 30 36H48L60 24 78 36H96" stroke="#aa854b" stroke-width="1.15"/>
+        <path d="M0 6L18 24 30 12H48L60 24 78 12H96L78 30 66 18H30L18 36 0 24" stroke="#0f4639" stroke-width=".8" opacity=".8"/>
+        <path d="M48 4L68 24 48 44 28 24Z M48 11L61 24 48 37 35 24Z" stroke="#aa854b" stroke-width=".75"/>
+      </g>
+    </pattern></defs>
+    <rect x="0" y="7" width="1040" height="34" fill="url(#headerInterlace)" opacity=".42"/>
+    <path d="M0 4H430L442 12 454 4H586L598 12 610 4H1040M0 44H430L442 36 454 44H586L598 36 610 44H1040" fill="none" stroke="#aa854b" stroke-width=".8" opacity=".72"/>
+  </svg>
+</div>
+<section id="dashboard" class="page active">
+  <div class="central-rosette" aria-hidden="true">
+    <svg viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke="currentColor">
+        <circle cx="210" cy="210" r="184" stroke-width="1.2"/>
+        <circle cx="210" cy="210" r="152" stroke-width=".8"/>
+        <circle cx="210" cy="210" r="72" stroke-width="1"/>
+        <path d="M210 35L251 111 330 90 309 169 385 210 309 251 330 330 251 309 210 385 169 309 90 330 111 251 35 210 111 169 90 90 169 111Z" stroke-width="1.5"/>
+        <path d="M210 70L242 130 304 116 290 178 350 210 290 242 304 304 242 290 210 350 178 290 116 304 130 242 70 210 130 178 116 116 178 130Z" stroke="#0f4639" stroke-width="1.15"/>
+        <path d="M210 108L238 164 300 176 256 220 268 282 210 252 152 282 164 220 120 176 182 164Z" stroke-width="1.05"/>
+        <path d="M210 108L228 170 290 150 250 204 302 240 238 238 240 302 204 250 150 290 170 228 108 210 170 192 150 130 204 170 240 118 238 182 302 180 250 216 290 270 228 250 210 312 192 250 130 270 170 216 118 180 182 182Z" stroke="#0f4639" stroke-width=".75"/>
+        <g stroke-width=".7" opacity=".9">
+          <path d="M210 26V394M26 210H394M80 80L340 340M340 80L80 340"/>
+          <path d="M115 48L305 372M48 115L372 305M305 48L115 372M372 115L48 305"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+  <div class="section-head"><div><small class="eyebrow">مرحبًا بعودتك</small><h1 style="color:var(--g);font-size:32px;margin:6px 0">أرشيف قضاياك</h1></div><button class="primary" onclick="show('home')">+ إضافة قضية</button></div>
+  <input class="bigsearch" id="dashSearch" placeholder="ابحث برقم القضية، النوع، الوصف، التصنيف، الوسوم، النتيجة أو السبب..." oninput="renderDashboard()">
+  <div class="islamic-section-divider" aria-hidden="true">
+    <svg viewBox="0 0 1040 38" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs><pattern id="sectionWeave" width="72" height="36" patternUnits="userSpaceOnUse">
+        <g fill="none"><path d="M0 18L18 3 36 18 54 3 72 18 54 33 36 18 18 33Z" stroke="#aa854b" stroke-width=".85"/><path d="M18 18L36 3 54 18 36 33Z" stroke="#0f4639" stroke-width=".65"/><circle cx="36" cy="18" r="5" stroke="#aa854b" stroke-width=".65"/></g>
+      </pattern></defs>
+      <path d="M0 19H1040" stroke="#aa854b" stroke-width=".55" opacity=".55"/>
+      <rect x="120" y="1" width="800" height="36" fill="url(#sectionWeave)" opacity=".48"/>
+    </svg>
+  </div>
+  <div class="statgrid">
+    <div class="statcard"><b id="statTotal">0</b><span>إجمالي القضايا</span></div>
+    <div class="statcard"><b id="statFinal">0</b><span>نهائية</span></div>
+    <div class="statcard"><b id="statAppeal">0</b><span>قابلة للاعتراض</span></div>
+    <div class="statcard"><b id="statReview">0</b><span>تحتاج مراجعة يدوية</span></div>
+  </div>
+  <div id="dashSearchResults"></div>
+  <div id="dashLists"></div>
+</section>
+<section id="home" class="page"><div class="hero"><small>مساعدك القانوني المنظّم</small><h1>أدخل القضية <span>بأي طريقة تريد</span></h1><p>اكتب رقم القضية ووصفًا مختصرًا بأي ترتيب، وسنرتبها ونصنفها لك دون افتراض أي واقعة لم تذكرها.</p></div><div class="box"><textarea id="input" placeholder="مثال:&#10;حادث&#10;8789797"></textarea><div class="bar"><button class="soft" onclick="document.getElementById('input').value='4870044548\nمطالبة المدعي المدعى عليه بمبلغ العقد لعدم إتمام العقد وحكم له'">استخدم مثالًا تجريبيًا</button><span style="flex:1"></span><button class="primary" onclick="runAnalysis()">تحليل القضية ←</button></div></div>
+<div id="preview"></div><p class="note"><b style="color:var(--g)">خصوصيتك أولًا:</b> لا نضيف وقائع غير مذكورة، ويمكنك مراجعة كل اقتراح قبل حفظه.</p></section><section id="cases" class="page"><div class="section-head"><div><small class="eyebrow">أرشيفك</small><h1>قضاياك المحفوظة <span class="badge" id="caseCounter">0</span></h1></div><button class="primary" onclick="newCase()">+ إضافة قضية</button></div><div style="display:flex;gap:8px"><input class="search" id="search" placeholder="ابحث بالرقم أو التصنيف أو النص أو الوسوم..." oninput="renderCases()" style="flex:1"><button class="iconbtn" id="filterIconBtn" onclick="toggleFilterPanel()" title="تصفية"><span class="dot"></span>⚲</button><div class="exportMenuWrap"><button class="iconbtn" onclick="toggleExportMenu()" title="تصدير">⭳</button><div class="exportMenu" id="exportMenu"><button onclick="closeExportMenu();exportToWord()">تصدير إلى Word</button><button onclick="closeExportMenu();exportCaseNumbersTxt()">تصدير أرقام القضايا TXT</button><button onclick="closeExportMenu();exportData()">نسخة احتياطية JSON</button></div></div></div><div id="filterPanel" class="filterpanel" style="display:none"></div><div id="caseList"></div></section><section id="taxonomy" class="page"><div class="section-head"><div><small class="eyebrow">تصنيف رئيسي ← تصنيف فرعي ← القضايا</small><h1>دليل التصنيفات</h1></div></div><div id="tree" class="tree"></div></section><section id="trash" class="page"><div class="section-head"><div><small class="eyebrow">سلة المحذوفات</small><h1>القضايا المحذوفة</h1></div></div><div id="trashList"></div></section><section id="settings" class="page"><div class="section-head"><div><small class="eyebrow">الحساب والبيانات</small><h1>الإعدادات</h1></div></div><article class="card" id="acctCard"><h3>الحساب والمزامنة</h3><p>سجّل الدخول بحساب Google لحفظ قضاياك سحابيًا في Firestore ومزامنتها فورًا بين كل أجهزتك.</p><div id="acctSettingsArea"></div></article><article class="card"><h3>النسخة الاحتياطية</h3><p>صدّر جميع بياناتك أو استورد نسخة سابقة إلى حسابك السحابي. لن تتكرر أرقام القضايا الموجودة.</p><div style="display:flex;gap:8px;margin-top:15px"><button class="soft" onclick="exportData()">تصدير JSON</button><button class="primary" onclick="document.getElementById('importFile').click()">استيراد نسخة</button><input hidden id="importFile" type="file" accept="application/json" onchange="importData(event)"></div></article><article class="card"><h3>إعادة تحليل القضايا غير المصنفة</h3><p>بعد أي تحسين لمحرك التصنيف، استخدم هذا الزر لإعادة تصنيف القضايا التي وقعت سابقًا في "غير مصنف بدقة" فقط — دون حذف أي قضية أو تغيير رقمها أو نصها الأصلي. القضايا التي راجعتها يدويًا (manuallyReviewed) لن تُمس.</p><div style="margin-top:15px"><button class="primary" id="btnReanalyze" onclick="reanalyzeUnclassified()">إعادة تحليل القضايا غير المصنفة</button></div></article>
+      <article class="card"><h3>إضافة شهر الأرشفة الهجري للقضايا القديمة</h3><p>قضاياك المضافة قبل هذه الميزة ليس لها بعد شهر أرشفة هجري. هذا الترحيل يحسب الشهر الهجري (أم القرى) بناءً على تاريخ الإضافة الفعلي المحفوظ (createdAt) لكل قضية — دون تغيير رقمها أو وصفها أو تصنيفها أو تاريخ إنشائها. يعرض معاينة أولًا ولا ينفّذ شيئًا قبل موافقتك.</p><div style="margin-top:15px"><button class="soft" onclick="previewHijriMigration()">معاينة إضافة شهر الأرشفة</button></div></article>
+      <article class="card"><h3>إصلاح نصوص قضايا قديمة (تعطّلت بسبب خلل قديم في القارئ)</h3><p>الصق هنا نفس القائمة الأصلية الصحيحة التي كتبتها سابقًا. سيطابق النظام كل رقم قضية مع قاعدة البيانات الحالية، ويقترح إصلاحًا فقط للقضايا التي نصها فارغ أو نصها الحالي هو كلمة الحالة نفسها ("نهائي"/"غير نهائي") بالخطأ. لن يُطبَّق أي تغيير قبل مراجعتك للمعاينة والموافقة عليها صراحة — ولن يُنشئ أي قضية جديدة أو يمس رقم القضية أو تاريخ الإنشاء أو حالة الحذف أو معرّف المستند.</p>
+        <textarea id="migrationInput" style="width:100%;min-height:140px;margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit" placeholder="الصق هنا القائمة الأصلية الكاملة بنفس صيغتك المعتادة..."></textarea>
+        <div style="margin-top:12px"><button class="soft" id="btnMigrationPreview" onclick="previewMigration()">معاينة الإصلاح (بدون أي تغيير فعلي)</button></div>
+      </article>
+      <article class="card"><h3>سياسة الحذف</h3><p>لا تحذف القضايا نهائيًا؛ تنتقل إلى السلة سحابيًا ويمكن استعادتها من أي جهاز في أي وقت.</p><span class="badge">حذف آمن</span></article></section><footer class="appFooter" id="appFooter"></footer></main><nav class="mobile" id="mobile"></nav></div>
+<div id="reportModal" style="display:none;position:fixed;inset:0;background:#0c2d2660;z-index:70;align-items:center;justify-content:center;padding:20px">
+  <div id="reportModalBox" style="background:#fff;border-radius:16px;padding:24px;max-width:680px;width:100%;max-height:86vh;overflow-y:auto"></div>
+</div>
+<div id="caseDetailModal" style="display:none;position:fixed;inset:0;background:#0c2d2660;z-index:75;align-items:center;justify-content:center;padding:20px">
+  <div id="caseDetailBox" style="background:#fff;border-radius:16px;padding:24px;max-width:640px;width:100%;max-height:90vh;overflow-y:auto"></div>
+</div>
+<script>
+const navItems=[['dashboard','الرئيسية'],['cases','القضايا'],['taxonomy','التصنيفات'],['trash','المحذوفات'],['settings','الإعدادات']];
+let records=[],draft=[];
+/* =====================================================================
+   محرك تصنيف بالنقاط (Scoring) بدل أول تطابق (rules.find)
+   كل تصنيف فرعي (CATS) له:
+     tier    : 0 مخصّص من المستخدم (أعلى أولوية) | 1 موضوع أساسي | 2 دفع إجرائي | 3 يمين/بينة فقط (أدنى أولوية)
+     strong  : أنماط قوية الدلالة (وزن 5 لكل تطابق)
+     weak    : أنماط داعمة فقط (وزن 1 لكل تطابق)
+     requires: إن وُجدت، يجب تحقق واحد منها على الأقل وإلا استُبعد التصنيف
+     excludes: إن تحقق أي منها يُستبعد التصنيف فورًا
+   يُختار التصنيف من أعلى طبقة (tier) لديها مرشح، ثم الأعلى نقاطًا داخلها.
+   الهدف: لا يفوز اليمين/النكول بالتصنيف الرئيسي على حساب موضوع القضية،
+   ولا تكفي كلمة عامة واحدة (عقار/خبير) لتصنيف خاطئ محدد.
+   ===================================================================== */
+let CATS=[
+/* ===== المركبات والحوادث (tier 1) ===== */
+{main:'المركبات والحوادث',sub:'حادث مركبة دون تأمين',caseType:'حادث مركبة',tier:1,
+  strong:[/(حادث|حوادث|تصادم|صدم|دهس|اصطدام|ارتطام|انقلاب).{0,20}(بدون|عدم وجود|ما فيه|لا يوجد|منتهي).{0,10}تامين/,/تامين.{0,10}منتهي/]},
+{main:'المركبات والحوادث',sub:'تعويض عن حادث مروري',caseType:'حادث مروري',tier:1,
+  strong:[/تعويض.{0,15}حادث/,/حادث.{0,15}تعويض/,/تعويض.{0,15}اضرار.{0,15}(مركبه|سياره)/]},
+{main:'المركبات والحوادث',sub:'أرش إصابة في حادث مروري',caseType:'حادث مروري',tier:1,
+  requires:[/ارش/], strong:[/ارش.{0,10}اصابه/,/ارش/]},
+{main:'المركبات والحوادث',sub:'اعتراض على نسبة الخطأ في حادث مروري',caseType:'حادث مروري',tier:1,
+  strong:[/اعتراض.{0,15}نسبه.{0,15}الخطا/,/نسبه.{0,10}الخطا/]},
+{main:'المركبات والحوادث',sub:'تلفيات مركبة',caseType:'حادث مركبة',tier:1,
+  strong:[/تلفيات.{0,10}(مركبه|سياره)/,/تلفيات/]},
+{main:'المركبات والحوادث',sub:'أجرة زائدة لمركبة',caseType:'مركبات',tier:1,
+  strong:[/اجره.{0,10}زايده.{0,15}(مركبه|مركبات|سياره|سيارات)/,/زياده.{0,10}اجره.{0,15}(مركبه|مركبات|سياره|سيارات)/,/(مركبه|مركبات|سياره|سيارات).{0,15}اجره.{0,10}زايده/]},
+{main:'المركبات والحوادث',sub:'أجرة المثل للمركبة',caseType:'مركبات',tier:1,
+  strong:[/اجره.{0,10}المثل.{0,15}(مركبه|مركبات|سياره|سيارات)/,/اجره المثل/]},
+{main:'المركبات والحوادث',sub:'أجرة مركبة',caseType:'مركبات',tier:1,
+  strong:[/(اجره|أجرة|ايجار).{0,10}(مركبه|مركبات|سياره|سيارات)/,/(مركبه|مركبات|سياره|سيارات).{0,10}(اجره|أجرة|ايجار)/]},
+{main:'المركبات والحوادث',sub:'نقل مخالفات المركبة',caseType:'مركبات',tier:1,
+  strong:[/نقل.{0,10}مخالفات/,/مخالفات.{0,10}نقل/]},
+{main:'المركبات والحوادث',sub:'مطالبة بقيمة إصلاح مركبة',caseType:'حادث مركبة',tier:1,
+  strong:[/اصلاح.{0,15}(مركبه|سياره)/,/(مركبه|سياره).{0,15}اصلاح/]},
+{main:'المركبات والحوادث',sub:'عدم صفة قائد المركبة',caseType:'حادث مركبة',tier:1,
+  strong:[/(قايد|قايده).{0,25}(مو مالك|ليس مالك|ليست مالك|غير مالك|غير المالك|بدون تفويض|ما معه تفويض|غير مفوض|غير المفوض|لا يملك تفويض|بدون رخصه)/]},
+{main:'المركبات والحوادث',sub:'رد مركبة / استرداد عين مركبة',caseType:'مركبات',tier:1,
+  strong:[/استرداد.{0,10}(مركبه|سياره)/,/استرداد عين.{0,15}(مركبه|سياره)/,/رد.{0,10}(مركبه|سياره)/]},
+{main:'المركبات والحوادث',sub:'حادث مروري غير محدد',caseType:'حادث مروري',tier:1,
+  strong:[/حادث|حوادث|تصادم|اصطدام|صدم|دهس|دعس|انقلاب|ارتطام|صدمه/]},
+
+/* ===== أجرة نقل (خدمات) — تُفحص مبكرًا حتى لا تُبتلع بتصنيف الإيجار العام ===== */
+{main:'الشركات والخدمات',sub:'أجرة نقل',caseType:'خدمات',tier:1,
+  strong:[/اجره.{0,10}نقل/,/نقل.{0,10}اجره/]},
+
+/* ===== المرافق: الكهرباء والاتصالات (tier 1، قصيرة عمدًا) ===== */
+{main:'الكهرباء',sub:'مطالبة بفواتير كهرباء غير مسددة',caseType:'فواتير كهرباء',tier:1,
+  strong:[/كهرباء/]},
+{main:'الاتصالات',sub:'مطالبة بفواتير اتصالات غير مسددة',caseType:'فواتير اتصالات',tier:1,
+  strong:[/اتصالات|stc|موبايلي|زين/i]},
+
+/* ===== العقارات (tier 1) ===== */
+{main:'العقارات والملكية',sub:'رد ثمن العقار لعدم وجود صك ملكية',caseType:'عقار',tier:1,
+  strong:[/(ارض|عقار).{0,20}(ما لها صك|بدون صك).{0,20}(رد|استرجاع|رجع)/,/رد.{0,15}(ثمن|الفلوس|المبلغ).{0,15}(صك|عقار|ارض)/,/عدم وجود صك.{0,20}رد.{0,10}ثمن/]},
+{main:'العقارات والملكية',sub:'فسخ عقد بيع عقار ورد الثمن',caseType:'عقار',tier:1,
+  strong:[/فسخ.{0,15}بيع.{0,15}عقار/,/فسخ.{0,15}عقار.{0,15}(رد|ثمن)/]},
+{main:'العقارات والملكية',sub:'فسخ عقد متعلق بعقار غير مملوك للمدعى عليه',caseType:'عقار',tier:1,
+  strong:[/فسخ.{0,20}عقار.{0,20}غير مملوك/]},
+{main:'العقارات والملكية',sub:'نقل ملكية عقار',caseType:'عقار',tier:1,
+  strong:[/نقل.{0,10}ملكيه.{0,10}عقار/,/نقل ملكيه/]},
+{main:'العقارات والملكية',sub:'إخلاء عقار',caseType:'عقار',tier:1,
+  strong:[/اخلاء.{0,10}عقار/]},
+{main:'العقارات والملكية',sub:'إلزام بإفراغ جزء من عقار',caseType:'عقار',tier:1,
+  strong:[/افراغ.{0,15}عقار/,/الزام.{0,10}افراغ/]},
+{main:'العقارات والملكية',sub:'رفع يد عن عقار متداخل',caseType:'عقار',tier:1,
+  strong:[/رفع.{0,10}يد.{0,15}عقار/,/رفع اليد/]},
+{main:'العقارات والملكية',sub:'إصلاح عقار مستأجر من قبل المؤجر',caseType:'عقار',tier:1,
+  strong:[/اصلاح.{0,10}(عقار|ماجور).{0,15}مءجر/,/اصلاح.{0,10}الماجور/]},
+{main:'العقارات والملكية',sub:'مطالبة بنسبة من أرباح عقار',caseType:'عقار',tier:1,
+  strong:[/نسبه.{0,10}ارباح.{0,10}عقار/,/ارباح.{0,10}عقار/]},
+{main:'العقارات والملكية',sub:'نزاع على صك ملكية',caseType:'عقار',tier:1,
+  strong:[/نزاع.{0,15}صك/,/صك.{0,15}نزاع/]},
+{main:'العقارات والملكية',sub:'عدم وجود صك',caseType:'عقار',tier:1,
+  strong:[/(بدون|ما لها|لا يوجد|عدم وجود).{0,10}صك/]},
+{main:'العقارات والملكية',sub:'إثبات ملكية عقار',caseType:'عقار',tier:1,
+  requires:[/اثبات.{0,15}(ملكيه|ملك)/,/ملكيه.{0,15}عقار/,/اثبات.{0,10}الملكيه/],
+  strong:[/اثبات.{0,15}(ملكيه|ملك)/,/ملكيه.{0,15}عقار/,/اثبات.{0,10}الملكيه/]},
+
+/* ===== الإيجار (tier 1) ===== */
+{main:'الإيجار',sub:'مطالبة بأجرة متبقية من عقد إيجار',caseType:'إيجار',tier:1,
+  strong:[/اجره.{0,10}متبقيه/,/متبقي.{0,10}اجره/]},
+{main:'الإيجار',sub:'أجرة زائدة عن عقد إيجار',caseType:'إيجار',tier:1,
+  strong:[/اجره.{0,10}زايده/,/زياده.{0,10}اجره/]},
+{main:'الإيجار',sub:'فسخ وإخلاء',caseType:'إيجار',tier:1,
+  strong:[/فسخ.{0,15}اخلاء/,/اخلاء.{0,15}فسخ/]},
+{main:'الإيجار',sub:'فسخ عقد إيجار',caseType:'إيجار',tier:1,
+  strong:[/فسخ.{0,10}ايجار/]},
+{main:'الإيجار',sub:'إخلاء مأجور',caseType:'إيجار',tier:1,
+  strong:[/اخلاء/]},
+{main:'الإيجار',sub:'عدم سداد الأجرة',caseType:'إيجار',tier:1,
+  strong:[/عدم سداد.{0,10}اجره/,/اجره.{0,15}(ما سدد|لم يسدد|متاخره)/]},
+{main:'الإيجار',sub:'أجرة عقار',caseType:'إيجار',tier:1,
+  strong:[/اجره.{0,10}عقار/]},
+{main:'الإيجار',sub:'مطالبة بأجرة',caseType:'إيجار',tier:1,
+  strong:[/عقد ايجار|اجره|ايجار/]},
+
+/* ===== القروض والديون (tier 1) ===== */
+{main:'القروض والديون',sub:'قرض مع إنكار الاستلام',caseType:'قرض',tier:1,
+  strong:[/قرض.{0,15}انكار.{0,15}استلام/,/قرض.{0,10}(ما|لم).{0,10}استلم/]},
+{main:'القروض والديون',sub:'إقرار بالقرض',caseType:'قرض',tier:1,
+  strong:[/قرض.{0,25}اقرار/,/اقرار.{0,25}قرض/]},
+{main:'القروض والديون',sub:'إقرار بمديونية',caseType:'قرض',tier:1,
+  strong:[/اقرار.{0,25}مديونيه/,/اقرار.{0,15}(?<!م)دين/]},
+{main:'القروض والديون',sub:'مطالبة برد قرض',caseType:'قرض',tier:1,
+  strong:[/رد.{0,10}قرض/,/قرض.{0,10}رد/]},
+{main:'القروض والديون',sub:'منازعة في سبب المديونية',caseType:'قرض',tier:1,
+  strong:[/منازعه.{0,15}سبب.{0,15}مديونيه/,/منازعه.{0,10}مديونيه/,/منازعه.{0,10}سبب.{0,10}الدين/]},
+{main:'القروض والديون',sub:'إثبات قرض',caseType:'قرض',tier:1,
+  strong:[/اثبات.{0,10}قرض/]},
+{main:'القروض والديون',sub:'سلفة',caseType:'قرض',tier:1,
+  strong:[/سلفه/]},
+{main:'القروض والديون',sub:'سند لأمر',caseType:'قرض',tier:1,
+  strong:[/سند.{0,5}لامر/]},
+{main:'القروض والديون',sub:'مطالبة بسداد قرض',caseType:'قرض',tier:1,
+  strong:[/قرض/]},
+{main:'القروض والديون',sub:'مطالبة بدين',caseType:'دين',tier:1,
+  strong:[/(?<!م)دين(?!ونيه)/]},
+
+/* ===== الكفالة والضمان (tier 1) ===== */
+{main:'الكفالة والضمان',sub:'الحكم على الكفيل الغارم',caseType:'كفالة',tier:1,
+  strong:[/كفيل.{0,5}غارم/]},
+{main:'الكفالة والضمان',sub:'رجوع الكفيل على المدين',caseType:'كفالة',tier:1,
+  strong:[/رجوع.{0,10}كفيل/]},
+{main:'الكفالة والضمان',sub:'إنكار الكفالة',caseType:'كفالة',tier:1,
+  strong:[/انكار.{0,10}كفاله/,/انكار.{0,10}كفيل/]},
+{main:'الكفالة والضمان',sub:'مطالبة كفيل',caseType:'كفالة',tier:1,
+  strong:[/كفيل|كفاله/]},
+{main:'الكفالة والضمان',sub:'ضمان مالي',caseType:'كفالة',tier:1,
+  strong:[/ضمان/]},
+
+/* ===== الصلح والتنازل (tier 1) ===== */
+{main:'الصلح والتنازل',sub:'تنفيذ اتفاق صلح',caseType:'صلح',tier:1,
+  strong:[/تنفيذ.{0,10}صلح/,/اتفاق.{0,10}صلح/]},
+{main:'الصلح والتنازل',sub:'إثبات صلح',caseType:'صلح',tier:1,
+  strong:[/صلح/]},
+{main:'الصلح والتنازل',sub:'إثبات تنازل',caseType:'تنازل',tier:1,
+  strong:[/اثبات.{0,10}تنازل/]},
+{main:'الصلح والتنازل',sub:'تنازل عن الدعوى',caseType:'تنازل',tier:1,
+  strong:[/تنازل.{0,15}دعو/]},
+{main:'الصلح والتنازل',sub:'تنازل عن مطالبة',caseType:'تنازل',tier:1,
+  strong:[/تنازل/]},
+{main:'الصلح والتنازل',sub:'مخالصة',caseType:'تنازل',tier:1,
+  strong:[/مخالصه/]},
+
+/* ===== أتعاب المحاماة والخبرة (tier 1) — إصلاح: تتطلب تركيبة وليس كلمة مفردة ===== */
+{main:'أتعاب المحاماة والخبرة',sub:'رفض أتعاب محاماة',caseType:'أتعاب',tier:1,
+  requires:[/رفض.{0,15}اتعاب.{0,15}محام/], strong:[/رفض.{0,15}اتعاب.{0,15}محام/]},
+{main:'أتعاب المحاماة والخبرة',sub:'نزاع في مقدار الأتعاب',caseType:'أتعاب',tier:1,
+  requires:[/نزاع.{0,10}اتعاب/,/مقدار.{0,10}اتعاب/], strong:[/نزاع.{0,10}اتعاب/,/مقدار.{0,10}اتعاب/]},
+{main:'أتعاب المحاماة والخبرة',sub:'أتعاب خبير',caseType:'أتعاب',tier:1,
+  requires:[/اتعاب.{0,15}خبير/,/خبير.{0,15}اتعاب/],
+  strong:[/اتعاب.{0,15}خبير/,/خبير.{0,15}اتعاب/]},
+{main:'أتعاب المحاماة والخبرة',sub:'مطالبة بأتعاب محاماة',caseType:'أتعاب',tier:1,
+  requires:[/اتعاب.{0,15}محام/,/محاماه/], strong:[/اتعاب.{0,15}محام/,/محاماه/]},
+
+/* ===== البيع والمبيع (tier 1) ===== */
+{main:'البيع والمبيع',sub:'عيب مبيع',caseType:'بيع',tier:1,
+  strong:[/عيب.{0,10}(مبيع|بيع)/,/(مبيع|بيع).{0,10}عيب/,/اشتريت.{0,10}عيب/]},
+{main:'البيع والمبيع',sub:'مطالبة بثمن مبيع',caseType:'بيع',tier:1,
+  strong:[/ثمن.{0,10}(مبيع|بيع)/,/(مبيع|بيع).{0,10}ثمن/,/باقي.{0,10}ثمن/,/عدم سداد.{0,10}ثمن/,/لم يسدد.{0,10}ثمن/,/ما سدد.{0,10}ثمن/,/اشتري.{0,25}(لم|ما).{0,10}(يسدد|سدد)/]},
+{main:'البيع والمبيع',sub:'تسليم المبيع',caseType:'بيع',tier:1,
+  strong:[/تسليم.{0,10}مبيع/]},
+{main:'البيع والمبيع',sub:'فسخ عقد بيع',caseType:'بيع',tier:1,
+  strong:[/فسخ.{0,10}بيع/]},
+
+/* ===== الشركات والخدمات (tier 1) ===== */
+{main:'الشركات والخدمات',sub:'محاسبة بين الشركاء',caseType:'شركات',tier:1,
+  strong:[/محاسبه.{0,10}شركاء/,/تصفيه.{0,10}شركه/]},
+{main:'الشركات والخدمات',sub:'مستحقات شريك',caseType:'شركات',tier:1,
+  strong:[/شريك/]},
+{main:'الشركات والخدمات',sub:'مطالبة بموجب فواتير',caseType:'خدمات',tier:1,
+  strong:[/فواتير|فاتوره/]},
+{main:'الشركات والخدمات',sub:'عقد خدمات',caseType:'خدمات',tier:1,
+  strong:[/خدمه|خدمات/]},
+
+/* ===== العقود (tier 1، عام — يُفحص أخيرًا لأن كلمة "عقد" شائعة في تصنيفات أخرى) ===== */
+{main:'العقود والالتزامات',sub:'عدم إتمام العقد',caseType:'عقد',tier:1,
+  strong:[/عدم.{0,10}اتمام.{0,10}عقد/,/ما تم العقد/,/لم يتم العقد/]},
+{main:'العقود والالتزامات',sub:'عدم تنفيذ العقد',caseType:'عقد',tier:1,
+  strong:[/عدم تنفيذ العقد/,/ما نفذ العقد/]},
+{main:'العقود والالتزامات',sub:'فسخ العقد',caseType:'عقد',tier:1,
+  strong:[/فسخ.{0,10}عقد/]},
+{main:'العقود والالتزامات',sub:'تنفيذ الالتزام',caseType:'عقد',tier:1,
+  strong:[/تنفيذ.{0,10}التزام/,/الزام.{0,10}تنفيذ/]},
+{main:'العقود والالتزامات',sub:'التعويض عن الإخلال بالعقد',caseType:'عقد',tier:1,
+  strong:[/تعويض.{0,10}اخلال/,/اخلال.{0,10}عقد/]},
+{main:'العقود والالتزامات',sub:'مطالبة مالية ناشئة عن عقد',caseType:'عقد',tier:1,
+  strong:[/عقد/]},
+
+/* ===== المنقولات والودائع (tier 1) ===== */
+{main:'المنقولات والودائع',sub:'استرداد وديعة',caseType:'منقولات',tier:1,
+  strong:[/استرداد.{0,30}(منقول|ذهب).{0,20}(وديعه|مودع)/,/(وديعه|مودع).{0,20}استرداد/,/استرداد.{0,15}(وديعه|مودع)/]},
+{main:'المنقولات والودائع',sub:'استرداد منقول',caseType:'منقولات',tier:1,
+  strong:[/استرداد.{0,10}منقول/,/استرداد.{0,15}ذهب/,/ذهب/]},
+{main:'المنقولات والودائع',sub:'استرداد عين',caseType:'منقولات',tier:1,
+  strong:[/استرداد عين/]},
+
+/* ===== الالتزامات المالية العامة (tier 1) ===== */
+{main:'الالتزامات المالية',sub:'استرداد مبلغ',caseType:'التزامات مالية',tier:1,
+  strong:[/استرداد.{0,10}مبلغ/,/رد.{0,10}مبلغ/]},
+{main:'الالتزامات المالية',sub:'رد طلب التعويض المعنوي',caseType:'تعويض',tier:1,
+  strong:[/تعويض.{0,10}معنوي/,/رد.{0,15}تعويض.{0,15}معنوي/]},
+{main:'الالتزامات المالية',sub:'مطالبة بتعويض',caseType:'تعويض',tier:1,
+  weak:[/تعويض/]},
+
+/* ===== الدفوع الشكلية والإجرائية (tier 2 — بعد المواضيع الأساسية) ===== */
+{main:'الدفوع الشكلية والإجرائية',sub:'رد الدعوى لعدم سداد رسوم الخبير',caseType:'دفع إجرائي',tier:2,
+  strong:[/(رد|رفض).{0,15}(سداد|دفع).{0,15}(رسوم|اتعاب).{0,15}خبير/,/رسوم.{0,10}الخبير/]},
+{main:'الدفوع الشكلية والإجرائية',sub:'عدم اختصاص مكاني',caseType:'دفع إجرائي',tier:2,
+  strong:[/اختصاص.{0,10}مكاني/,/مكاني.{0,10}اختصاص/]},
+{main:'الدفوع الشكلية والإجرائية',sub:'سبق الفصل في الدعوى',caseType:'دفع إجرائي',tier:2,
+  strong:[/سبق.{0,10}فصل/]},
+{main:'الدفوع الشكلية والإجرائية',sub:'رفض التماس إعادة النظر',caseType:'دفع إجرائي',tier:2,
+  strong:[/التماس.{0,10}اعاده.{0,10}نظر/,/اعاده النظر/]},
+{main:'الدفوع الشكلية والإجرائية',sub:'صرف النظر عن دعوى مستعجلة',caseType:'دفع إجرائي',tier:2,
+  strong:[/صرف.{0,10}النظر.{0,15}مستعجله/,/صرف النظر/]},
+{main:'الدفوع الشكلية والإجرائية',sub:'عدم الاختصاص',caseType:'دفع إجرائي',tier:2,
+  strong:[/عدم اختصاص|غير مختصه|اختصاص/]},
+{main:'الدفوع الشكلية والإجرائية',sub:'عدم القبول',caseType:'دفع إجرائي',tier:2,
+  strong:[/عدم.{0,10}قبول/]},
+{main:'الدفوع الشكلية والإجرائية',sub:'عدم الصفة',caseType:'دفع إجرائي',tier:2,
+  strong:[/عدم.{0,10}صفه/,/الدفع.{0,10}صفه/]},
+
+/* ===== الأيمان والبينة (tier 3 — تفاصيل/بينة، لا تسرق التصنيف الرئيسي من الموضوع) ===== */
+{main:'الأيمان والبينة',sub:'نكول المدعى عليه بسبب غيابه',caseType:'يمين',tier:3,
+  strong:[/(غياب|غايب|غاب).{0,20}نكول/,/نكول.{0,20}(غياب|غايب|غاب)/,/(غياب|غايب|غاب).{0,20}(ما ادي اليمين|لم يود اليمين)/]},
+{main:'الأيمان والبينة',sub:'نكول عن اليمين',caseType:'يمين',tier:3,
+  strong:[/نكول|نكل/]},
+{main:'الأيمان والبينة',sub:'توجيه اليمين',caseType:'يمين',tier:3,
+  strong:[/توجيه.{0,10}يمين/,/يمين حاسمه/,/يمين متممه/,/يمين/]},
+{main:'الأيمان والبينة',sub:'شهادة شاهد',caseType:'بينة',tier:3,
+  strong:[/شاهد|شهاده/]},
+{main:'الأيمان والبينة',sub:'عدم تقديم بينة',caseType:'بينة',tier:3,
+  strong:[/عدم.{0,10}(تقديم.{0,10})?بينه/,/عدم وجود بينه/]}
+];
+
+/* دليل التصنيفات (نفس بنية الواجهة القديمة: كائن main → [subs]) يُبنى تلقائيًا من CATS
+   حتى لا يظهر أي تصنيف بالواجهة إلا وله قاعدة تحليل فعلية. */
+function buildCatalog(cats){
+  const map={};
+  cats.forEach(c=>{ (map[c.main]=map[c.main]||[]); if(!map[c.main].includes(c.sub))map[c.main].push(c.sub); });
+  map['غير مصنف بدقة']=['يحتاج مراجعة يدوية'];
+  return map;
+}
+let catalog=buildCatalog(CATS);
+let customCategories=[]; // {id, main, sub, caseType, pattern, tags} — مخزّنة سحابيًا لكل مستخدم
+
+function caseTypeForSub(sub){const c=CATS.find(x=>x.sub===sub);return c?c.caseType:'';}
+function isCustomCategory(main,sub){return customCategories.some(c=>c.main===main&&c.sub===sub);}
+function addCustomCategoryRuntime(entry){
+  if(!catalog[entry.main])catalog[entry.main]=[];
+  if(!catalog[entry.main].includes(entry.sub))catalog[entry.main].push(entry.sub);
+  const parts=(entry.pattern||'').split(',').map(s=>norm(s.trim())).filter(Boolean).map(s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+  const re=parts.length?new RegExp(parts.join('|')):/$^/;
+  CATS.unshift({id:entry.id,main:entry.main,sub:entry.sub,caseType:entry.caseType||entry.main,tier:0,strong:[re]});
+}
+function removeCustomCategoryRuntime(id){
+  const entry=customCategories.find(c=>c.id===id);
+  if(!entry)return;
+  CATS=CATS.filter(c=>!(c.id===id));
+  if(catalog[entry.main])catalog[entry.main]=catalog[entry.main].filter(s=>s!==entry.sub);
+  customCategories=customCategories.filter(c=>c.id!==id);
+}
+
+/* ===== تصحيحات المستخدم اليدوية (classificationAliases) =====
+   مطابقة نصية دقيقة فقط (exact match على النص المطبَّع) — لا تتحول لقاعدة عامة تؤثر على نصوص أخرى مشابهة.
+   الهدف: إذا صحّح المستخدم تصنيف قضية معينة يدويًا، ونفس هذا النص بالحرف ورد لاحقًا (إعادة تحليل، أو قضية جديدة
+   بنفس الوصف)، يستفيد من تصحيحه دون تعميمه ككلمة دالة جديدة. */
+let classificationAliases=[]; // {normalizedText, mainCategory, subCategory, caseType, savedAt}
+function findAlias(text){
+  const n=norm(text||'');
+  if(!n)return null;
+  return classificationAliases.find(a=>a.normalizedText===n)||null;
+}
+function saveClassificationAlias(text,mainCategory,subCategory,caseType){
+  const n=norm(text||'');
+  if(!n)return;
+  const entry={normalizedText:n,mainCategory,subCategory,caseType,savedAt:new Date().toISOString()};
+  const i=classificationAliases.findIndex(a=>a.normalizedText===n);
+  if(i>-1)classificationAliases[i]=entry; else classificationAliases.push(entry);
+  if(window.__cloudSaveAlias)window.__cloudSaveAlias(entry);
+}
+/* بديل classifyScored يراعي تصحيحات المستخدم أولًا (مطابقة نصية دقيقة)، ثم يعود لمحرك النقاط كالمعتاد */
+function classifyWithAliases(text){
+  const alias=findAlias(text);
+  if(alias)return{mainCategory:alias.mainCategory,subCategory:alias.subCategory,caseType:alias.caseType,confidence:99};
+  return classifyScored(text);
+}
+
+function norm(s){return s.normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/ة/g,'ه').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\s+/g,' ').trim()}
+
+/* ===== التقويم الهجري (أم القرى) — عبر Intl المدعومة أصلًا في المتصفح، بلا حساب يدوي أو افتراض بداية الشهر ===== */
+const HIJRI_MONTH_NAMES=['محرم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
+const HIJRI_WEEKDAY_NAMES=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت']; // getDay(): 0=الأحد
+const hijriFormatter=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{year:'numeric',month:'numeric',day:'numeric'});
+function gregorianToHijri(dateObj){
+  const parts=hijriFormatter.formatToParts(dateObj);
+  const year=parseInt(parts.find(p=>p.type==='year').value,10);
+  const month=parseInt(parts.find(p=>p.type==='month').value,10);
+  const day=parseInt(parts.find(p=>p.type==='day').value,10);
+  return{
+    hijriYear:year,
+    hijriMonthNumber:month,
+    hijriMonth:HIJRI_MONTH_NAMES[month-1],
+    hijriMonthKey:year+'-'+String(month).padStart(2,'0'),
+    hijriDay:day
+  };
+}
+function hijriFieldsForNow(){return gregorianToHijri(new Date());}
+/* نص شريط التاريخ الهجري العلوي، مثل: "الأحد 25 صفر 1448 هـ" */
+function formatHijriHeaderString(dateObj){
+  const h=gregorianToHijri(dateObj);
+  const weekday=HIJRI_WEEKDAY_NAMES[dateObj.getDay()];
+  return weekday+' '+h.hijriDay+' '+h.hijriMonth+' '+h.hijriYear+' هـ';
+}
+function renderHijriBar(){
+  const el=document.getElementById('hijriBar');
+  if(el)el.textContent=formatHijriHeaderString(new Date());
+}
+function renderFooter(){
+  const el=document.getElementById('appFooter');
+  if(el)el.textContent='جميع الحقوق محفوظة © زياد بن محمد '+new Date().getFullYear();
+}
+/* ===== كاشف كلمة الحالة (نهائي/غير نهائي) عندما تكون النص بأكمله كلمة الحالة فقط ===== */
+function detectStatusWord(text){
+  const n=norm(text);
+  if(/^غير\s*نهاي/.test(n))return 'قابلة للاعتراض';
+  if(/^قابل(ه|ة)?\s*للاعتراض/.test(n))return 'قابلة للاعتراض';
+  if(/^نهاي/.test(n))return 'نهائية';
+  return null;
+}
+
+/* ===== محلل الإدخال المتعدد (parser) =====
+   يدعم: أرقام ثم وصف / وصف ثم أرقام / رقم+حالة على نفس السطر (11111 نهائي) /
+   وصف ثم أرقام مع حالة / أكثر من رقم يتقاسمون نفس الوصف — بأي ترتيب،
+   ولا تُنهي الأسطر الفارغة العلاقة بين الرقم والوصف إلا عند اكتمال مجموعة فعلية. */
+function parse(s){
+  const lines=s.split(/\n/).map(x=>x.trim());
+  let pendingNums=[];       // [{num, status}]
+  let pendingDesc=[];       // [line, line, ...]
+  let descCameFirst=false;  // هل تصدَّر الوصف الأرقام في هذه المجموعة؟
+  let pendingGroupStatus=null; // حالة وردت ضمن سطر وصف (مثل "تلفيات مركبة نهائي") تسري كحالة افتراضية لكل أرقام المجموعة التي لم تُحدَّد حالتها صراحة برقمها
+  const out=[];
+
+  function flush(){
+    if(pendingNums.length){
+      const joined=pendingDesc.join(' ').trim();
+      pendingNums.forEach(entry=>out.push({num:entry.num,text:joined,status:entry.status||pendingGroupStatus||null}));
+    }
+    pendingNums=[];pendingDesc=[];descCameFirst=false;pendingGroupStatus=null;
+  }
+  function addNumber(num,status){
+    if(pendingDesc.length===0){
+      pendingNums.push({num,status});
+    } else if(pendingNums.length===0){
+      descCameFirst=true;
+      pendingNums.push({num,status});
+    } else if(descCameFirst){
+      pendingNums.push({num,status});
+    } else {
+      flush();
+      pendingNums.push({num,status});
+    }
+  }
+  function addDescLine(rawLine){
+    // سطر وصف قد ينتهي أو يتضمّن كلمة حالة ملحقة بنص حقيقي (مثل "تلفيات مركبة نهائي" أو
+    // "جميع دعاوى الاتصالات السعودية نهائية") — استخرج الحالة ونظّف السطر منها قبل اعتباره وصفًا،
+    // واحتفظ بها كحالة افتراضية للمجموعة الحالية (تُستخدم فقط للأرقام التي لم تُحدَّد حالتها بنفسها).
+    const foundStatus=detectCaseStatus(norm(rawLine));
+    const line=foundStatus?stripStatusWords(rawLine):rawLine;
+    if(foundStatus)pendingGroupStatus=foundStatus;
+    if(!line)return; // كان السطر بأكمله كلمة حالة (حالة نادرة، متكفَّل بها أصلًا في مكان آخر)
+    if(pendingNums.length===0){
+      pendingDesc.push(line);
+    } else if(pendingDesc.length===0){
+      descCameFirst=false;
+      pendingDesc.push(line);
+    } else if(!descCameFirst){
+      pendingDesc.push(line);
+    } else {
+      flush();
+      pendingDesc.push(line);
+    }
+  }
+
+  for(const l of lines){
+    if(!l){
+      // سطر فارغ: لا يُنهي العلاقة إلا إذا كانت المجموعة الحالية مكتملة فعلاً (أرقام + وصف معًا)
+      if(pendingNums.length&&pendingDesc.length)flush();
+      continue;
+    }
+    const same=l.match(/^([0-9٠-٩]{4,20})\s+(.+)$/);
+    if(same){
+      const num=norm(same[1]);
+      const rest=same[2].trim();
+      const statusOnly=detectStatusWord(rest);
+      if(statusOnly){
+        // رقم + حالة فقط بنفس السطر (مثل "11111 نهائي") — ليست وصفًا، بل حالة تُلحق بالرقم
+        addNumber(num,statusOnly);
+      } else {
+        // رقم ووصف حقيقي معًا في نفس السطر: بيانات مكتملة ومستقلة
+        flush();
+        out.push({num,text:rest,status:null});
+      }
+      continue;
+    }
+    const n=norm(l);
+    if(/^\d{4,20}$/.test(n)){
+      addNumber(n,null);
+      continue;
+    }
+    const statusOnlyLine=detectStatusWord(l);
+    if(statusOnlyLine&&pendingNums.length&&!pendingDesc.length){
+      // سطر حالة مستقل (بدون رقم) يخص كل الأرقام المعلّقة التي لم تُحدَّد حالتها بعد
+      pendingNums.forEach(e=>{ if(!e.status)e.status=statusOnlyLine; });
+      continue;
+    }
+    addDescLine(l);
+  }
+  flush();
+  return out;
+}
+
+/* إزالة كلمة الحالة من نص الوصف نفسه عندما تكون واردة ضمن سطر الوصف (لا تصبح جزءًا من originalText) */
+function stripStatusWords(text){
+  return String(text||'')
+    .replace(/غير\s*نهائي[ةه]?/g,'')
+    .replace(/قابل[ةه]?\s*للاعتراض/g,'')
+    .replace(/نهائي[ةه]?/g,'')
+    .replace(/\s{2,}/g,' ')
+    .replace(/^[\s,،\-–]+|[\s,،\-–]+$/g,'')
+    .trim();
+}
+function detectCaseStatus(n){
+  if(/غير\s*نهاي/.test(n))return 'قابلة للاعتراض';
+  if(/قابل(ه|ة)?\s*للاعتراض/.test(n))return 'قابلة للاعتراض';
+  if(/نهاي/.test(n))return 'نهائية';
+  return '';
+}
+
+/* ===== استيراد Word: تفسير خلية "حالة القضية" المستقلة (وليست جزءًا من جملة وصفية) ===== */
+function parseImportStatus(text){
+  const t=String(text||'').trim();
+  if(!t)return '';
+  const n=norm(t);
+  if(/^غير\s*نهاي/.test(n))return 'قابلة للاعتراض';
+  if(/^قابله?\s*للاعتراض$/.test(n))return 'قابلة للاعتراض';
+  if(/^نهاي/.test(n))return 'نهائية';
+  return '';
+}
+/* استخراج جدول من HTML الناتج عن mammoth.convertToHtml — يتجاهل سطر العناوين والصفوف الفارغة بالكامل */
+function parseDocxTable(htmlString){
+  const parser=new DOMParser();
+  const docu=parser.parseFromString(htmlString,'text/html');
+  const table=docu.querySelector('table');
+  const result={rows:[],blankSkipped:0,headerSkipped:false};
+  if(!table)return result;
+  const trs=Array.from(table.querySelectorAll('tr'));
+  trs.forEach((tr,idx)=>{
+    const tds=Array.from(tr.querySelectorAll('td'));
+    const cellText=i=>(tds[i]?tds[i].textContent:'').trim();
+    const col0=norm(cellText(0)).replace(/[^\d]/g,''); // رقم القضية بعد تطبيع الأرقام العربية
+    const col1=cellText(1);
+    const col2=cellText(2);
+    if(idx===0&&!/^\d{4,20}$/.test(col0)){result.headerSkipped=true;return}
+    if(!col0&&!col1&&!col2){result.blankSkipped++;return}
+    result.rows.push({rawCaseNumber:col0,rawDesc:col1,rawStatus:col2});
+  });
+  return result;
+}
+/* بناء معاينة الاستيراد: نفس محرك التصنيف الحالي بالضبط (analyze)، لا محرك ثانٍ */
+function buildImportPreview(parsedRows){
+  const seenInFile=new Set();
+  const existingSet=new Set(records.filter(r=>!r.isDeleted).map(r=>String(r.caseNumber)));
+  const nowHijri=hijriFieldsForNow();
+  return parsedRows.map(row=>{
+    const num=row.rawCaseNumber;
+    let importRowStatus='ok',note='';
+    if(!/^\d{4,20}$/.test(num)){importRowStatus='error';note='رقم القضية غير صالح';}
+    else if(seenInFile.has(num)){importRowStatus='error';note='مكرر داخل الملف نفسه';}
+    else if(existingSet.has(num)){importRowStatus='exists';note='موجودة مسبقًا — لن تُستورد لتفادي التكرار';}
+    if(importRowStatus!=='error')seenInFile.add(num);
+
+    const a=analyze(num,row.rawDesc||'',null);
+    const wordStatus=parseImportStatus(row.rawStatus);
+    if(wordStatus)a.caseStatus=wordStatus;
+    return{...a,importRowStatus,note,hijriYear:nowHijri.hijriYear,hijriMonth:nowHijri.hijriMonth,hijriMonthNumber:nowHijri.hijriMonthNumber,hijriMonthKey:nowHijri.hijriMonthKey};
+  });
+}
+
+/* ===== استخراج حقول إضافية صريحة فقط (بلا افتراض) ===== */
+function extractJudgmentResult(n){
+  if(/رد.{0,10}دعوي|رفض.{0,10}دعوي|رد.{0,10}طلب|رفض.{0,10}طلب/.test(n))return 'رد الدعوى';
+  if(/للمدعي عليه|حكم.{0,15}المدعي عليه/.test(n))return 'للمدعى عليه';
+  if(/حكم.{0,10}للمدعي(?!.{0,8}عليه)|حكم.{0,10}لصالح.{0,10}المدعي(?!.{0,8}عليه)|حكم له/.test(n))return 'للمدعي';
+  if(/حكم عليه/.test(n))return 'للمدعى عليه';
+  return '';
+}
+function extractReason(n){
+  const m=n.match(/(?:بسبب|نتيجه|لعدم|بدعوي|لرفض)\s+([^,.]{3,45})/);
+  return m?m[0].trim():'';
+}
+function extractEvidenceType(n){
+  if(/شاهد|شهاده/.test(n))return 'شهادة شهود';
+  if(/عدم.{0,10}بينه|عدم وجود بينه/.test(n))return 'عدم تقديم بينة';
+  if(/صك|مستند|سند/.test(n))return 'بينة كتابية';
+  if(/يمين|حلف|نكول|نكل/.test(n))return 'يمين';
+  return '';
+}
+function extractOathType(n){
+  if(/نكول.{0,15}حاسمه|حاسمه.{0,15}نكول|نكل.{0,15}حاسمه/.test(n))return 'نكول عن اليمين الحاسمة';
+  if(/نكول.{0,15}متممه|متممه.{0,15}نكول|نكل.{0,15}متممه/.test(n))return 'نكول عن اليمين المتممة';
+  if(/نكول|نكل/.test(n))return 'نكول عن اليمين';
+  if(/يمين حاسمه/.test(n))return 'يمين حاسمة';
+  if(/يمين متممه/.test(n))return 'يمين متممة';
+  if(/ادي.{0,10}اليمين|اداء.{0,10}اليمين|ادى اليمين/.test(n))return 'أداء اليمين';
+  if(/يمين/.test(n))return 'يمين';
+  return '';
+}
+function extractPartyStatus(n){
+  if(/غياب|غايب|غاب/.test(n))return 'غياب المدعى عليه';
+  if(/انكار/.test(n))return 'إنكار';
+  if(/اقرار/.test(n))return 'إقرار';
+  return '';
+}
+
+/* ===== محرك التسجيل بالنقاط ===== */
+function scoreCategory(cat,n){
+  if(cat.excludes&&cat.excludes.some(re=>re.test(n)))return null;
+  if(cat.requires&&cat.requires.length&&!cat.requires.some(re=>re.test(n)))return null;
+  // كل عنصر في strong هو صياغة بديلة لنفس الإشارة، وليس دليلاً إضافيًا مستقلاً؛
+  // لذلك النقاط "مسطّحة" (٥ كحد أقصى لوجود أي تطابق قوي) بدل جمع كل الصياغات المتطابقة.
+  const hasStrong=(cat.strong||[]).some(re=>re.test(n));
+  const weakHits=(cat.weak||[]).filter(re=>re.test(n)).length;
+  const raw=(hasStrong?5:0)+Math.min(weakHits,2);
+  return raw>0?raw:null;
+}
+function classifyScored(text){
+  const n=norm(text);
+  const candidates=[];
+  CATS.forEach(cat=>{ const score=scoreCategory(cat,n); if(score!=null)candidates.push({cat,score}); });
+  if(!candidates.length)return{mainCategory:'غير مصنف بدقة',subCategory:'يحتاج مراجعة يدوية',caseType:'غير محدد',confidence:0};
+  candidates.sort((a,b)=> (a.cat.tier-b.cat.tier) || (b.score-a.score) );
+  const best=candidates[0].cat, bestScore=candidates[0].score;
+  const confidence=Math.min(97,Math.round((bestScore/(bestScore+3))*100));
+  return{mainCategory:best.main,subCategory:best.sub,caseType:best.caseType,confidence};
+}
+
+function analyze(number,text,statusHint){
+  let finalText=text;
+  let caseStatus;
+  if(statusHint){
+    caseStatus=statusHint; // وردت الحالة من parser (سطر/إلحاق منفصل) — النص أصلًا نظيف منها
+  } else {
+    caseStatus=detectCaseStatus(norm(text));
+    if(caseStatus)finalText=stripStatusWords(text); // أزل كلمة الحالة من الوصف المخزَّن
+  }
+  const n=norm(finalText);
+  const c=classifyWithAliases(finalText);
+  const oathType=extractOathType(n);
+  const partyStatus=extractPartyStatus(n);
+  const tags=[c.caseType,caseStatus,oathType,partyStatus].filter(Boolean);
+  return{caseNumber:number,originalText:finalText,mainCategory:c.mainCategory,subCategory:c.subCategory,caseType:c.caseType,
+    tags,confidence:c.confidence,isDeleted:false,caseStatus,
+    judgmentResult:extractJudgmentResult(n),judgmentReason:extractReason(n),
+    evidenceType:extractEvidenceType(n),oathType,partyStatus};
+}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fmtDate(iso){if(!iso)return '—';try{const d=new Date(iso);return d.toLocaleDateString('ar-SA',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
+
+function mainOptionsHTML(selected){return Object.keys(catalog).map(m=>`<option value="${esc(m)}" ${m===selected?'selected':''}>${esc(m)}</option>`).join('');}
+function subOptionsHTML(main,selected){return (catalog[main]||[]).map(s=>`<option value="${esc(s)}" ${s===selected?'selected':''}>${esc(s)}</option>`).join('');}
+
+function runAnalysis(){
+  draft=parse(document.getElementById('input').value).map(x=>analyze(x.num,x.text,x.status));
+  let el=document.getElementById('preview');
+  if(!draft.length){el.innerHTML='<div class="empty">أضف رقم قضية من 4 أرقام على الأقل.</div>';return}
+  el.innerHTML='<div class="section-head"><div><small class="eyebrow">نتيجة التحليل</small><h2>راجع الاقتراح قبل الحفظ</h2></div></div>'+
+    draft.map((x,i)=>`<article class="review" data-i="${i}"><div class="review-head"><div><small style="color:var(--muted)">رقم القضية</small><br><strong>#${esc(x.caseNumber)}</strong></div><span class="badge">${x.confidence>60?'جديدة':'تحتاج مراجعة'}</span></div>
+      <div class="fields" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0">
+        <div><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي</label><select class="editMain" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px">${mainOptionsHTML(x.mainCategory)}</select></div>
+        <div><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي</label><select class="editSub" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px">${subOptionsHTML(x.mainCategory,x.subCategory)}</select></div>
+      </div>
+      <div style="margin:10px 0"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px">حالة القضية${x.caseStatus?' <span style="color:var(--g)">— اكتُشفت تلقائيًا من النص ✓</span>':''}</label>
+        <div style="display:flex;gap:8px">
+          <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
+            <input type="radio" name="caseStatus${i}" class="caseStatusRadio" value="نهائية" ${x.caseStatus==='نهائية'?'checked':''}> نهائية
+          </label>
+          <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
+            <input type="radio" name="caseStatus${i}" class="caseStatusRadio" value="قابلة للاعتراض" ${x.caseStatus==='قابلة للاعتراض'?'checked':''}> قابلة للاعتراض
+          </label>
+        </div>
+      </div>
+      <p>${esc(x.originalText)||'لا يوجد وصف'}</p><p style="font-size:11px;color:var(--muted)">درجة الثقة <b style="color:var(--g)">${x.confidence}%</b></p><div class="tags">${x.tags.map(t=>`<span>#${esc(t)}</span>`).join('')}</div><details style="margin-top:15px"><summary style="cursor:pointer;color:var(--g)">تفاصيل إضافية</summary><p>نوع القضية: <span class="typeShow">${esc(x.caseType)}</span></p><p>النص الأصلي: ${esc(x.originalText)||'غير مذكور'}</p></details></article>`).join('')+
+    `<button class="primary save" id="btnSaveDraft" ${window.__authUid?'':'disabled'} onclick="saveDraft()">${window.__authUid?'اعتماد الاقتراح وحفظ سحابيًا ☁️':'سجّل الدخول أولًا لحفظ القضية سحابيًا'}</button>`;
+  el.querySelectorAll('.review').forEach(card=>{
+    const i=+card.dataset.i, mainSel=card.querySelector('.editMain'), subSel=card.querySelector('.editSub');
+    mainSel.onchange=()=>{
+      draft[i].mainCategory=mainSel.value;
+      subSel.innerHTML=subOptionsHTML(mainSel.value,(catalog[mainSel.value]||[])[0]);
+      subSel.dispatchEvent(new Event('change'));
+    };
+    subSel.onchange=()=>{
+      draft[i].subCategory=subSel.value;
+      draft[i].caseType=caseTypeForSub(subSel.value)||mainSel.value;
+      draft[i].confidence=99;
+      card.querySelector('.typeShow').textContent=draft[i].caseType;
+    };
+    card.querySelectorAll('.caseStatusRadio').forEach(radio=>{
+      radio.onchange=()=>{ if(radio.checked) draft[i].caseStatus=radio.value; };
+    });
+  });
+}
+
+/* ============================= حفظ/تعديل/حذف — كل شيء يكتب مباشرة إلى Firestore (autosave، لا يوجد تخزين محلي) ============================= */
+async function saveDraft(){
+  if(!window.__authUid){alert('سجّل الدخول بحساب Google أولًا لحفظ القضية.');return}
+  const btn=document.getElementById('btnSaveDraft');
+  if(btn){btn.disabled=true;btn.textContent='جارٍ الحفظ سحابيًا... ☁️';}
+  setSync('جارٍ الحفظ ☁️');
+  const existing=new Set(records.map(x=>String(x.caseNumber)));
+  const toSave=draft.filter(x=>!existing.has(String(x.caseNumber)));
+  try{
+    const now=new Date().toISOString();
+    const hijri=gregorianToHijri(new Date(now));
+    for(const c of toSave){
+      c.createdAt=now;c.updatedAt=now;
+      c.hijriYear=hijri.hijriYear;c.hijriMonth=hijri.hijriMonth;c.hijriMonthNumber=hijri.hijriMonthNumber;c.hijriMonthKey=hijri.hijriMonthKey;
+      await window.__cloudSetCase(c);
+    }
+    setSync('تم الحفظ ☁️');
+  }catch(err){
+    console.error(err);setSync('تعذّر الحفظ ⚠️');alert('تعذّر الحفظ سحابيًا: '+(err.message||err));
+  }
+  draft=[];document.getElementById('input').value='';document.getElementById('preview').innerHTML='';document.getElementById('search').value='';show('cases');
+}
+function exportData(){let blob=new Blob([JSON.stringify({schemaVersion:1,exportedAt:new Date().toISOString(),cases:records},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='case-register-backup.json';a.click();URL.revokeObjectURL(a.href)}
+async function importData(e){
+  if(!window.__authUid){alert('سجّل الدخول أولًا لاستيراد نسخة إلى حسابك السحابي.');e.target.value='';return}
+  try{
+    let data=JSON.parse(await e.target.files[0].text()),rows=Array.isArray(data)?data:data.cases;
+    if(!Array.isArray(rows))throw new Error('بنية غير متوقعة');
+    let existing=new Set(records.map(x=>String(x.caseNumber)));
+    let added=0;
+    setSync('جارٍ استيراد النسخة الاحتياطية ☁️');
+    for(const row of rows){
+      if(!row||!row.caseNumber||existing.has(String(row.caseNumber)))continue;
+      const now=new Date().toISOString();
+      await window.__cloudSetCase({
+        caseNumber:String(row.caseNumber),originalText:String(row.originalText||''),
+        mainCategory:row.mainCategory||'غير مصنف بدقة',subCategory:row.subCategory||'غير مصنف بدقة',
+        caseType:row.caseType||'غير محدد',tags:Array.isArray(row.tags)?row.tags:[],
+        confidence:row.confidence||0,isDeleted:!!row.isDeleted,
+        createdAt:row.createdAt||now,updatedAt:now
+      });
+      added++;
+    }
+    setSync('تم الحفظ ☁️');
+    alert('تم استيراد '+added+' قضية جديدة بنجاح إلى حسابك السحابي');
+  }catch(err){console.error(err);alert('ملف النسخة الاحتياطية غير صالح: '+(err.message||err))}
+  e.target.value='';
+}
+async function trash(n,restore=false){
+  if(!window.__authUid)return;
+  setSync('جارٍ الحفظ ☁️');
+  try{
+    await window.__cloudUpdateCase(n,{isDeleted:!restore,updatedAt:new Date().toISOString()});
+    setSync('تم الحفظ ☁️');
+  }catch(err){console.error(err);setSync('تعذّر الحفظ ⚠️');}
+}
+
+/* ============================= إعادة تحليل القضايا غير المصنفة (ميزة صيانة، لا تمس رقم القضية/النص الأصلي/تاريخ الإنشاء/حالة الحذف/معرّف المستند) ============================= */
+
+/* يعيد فقط الحقول الناتجة عن محرك التصنيف — لا caseStatus ولا originalText ولا أي حقل آخر */
+function reanalyzeFields(originalText){
+  const n=norm(originalText||'');
+  const c=classifyWithAliases(originalText||'');
+  const oathType=extractOathType(n);
+  const partyStatus=extractPartyStatus(n);
+  const tags=[c.caseType,oathType,partyStatus].filter(Boolean);
+  return{
+    mainCategory:c.mainCategory,subCategory:c.subCategory,caseType:c.caseType,
+    tags,confidence:c.confidence,
+    judgmentResult:extractJudgmentResult(n),judgmentReason:extractReason(n),
+    evidenceType:extractEvidenceType(n),oathType,partyStatus
+  };
+}
+
+/* استخراج الكلمات العربية (٣ أحرف فأكثر) من مصدر تعبيرات تصنيف معيّن، لأغراض تشخيص "أقرب تصنيف" فقط */
+function extractPatternWords(cat){
+  const all=[...(cat.strong||[]),...(cat.weak||[]),...(cat.requires||[])];
+  const words=new Set();
+  all.forEach(re=>{ (re.source.match(/[\u0600-\u06FF]{3,}/g)||[]).forEach(w=>words.add(w)); });
+  return[...words];
+}
+
+/* لماذا بقيت القضية غير مصنفة، وما أقرب تصنيف محتمل، وما الكلمة/القاعدة الناقصة */
+function diagnoseWhyUnclassified(text){
+  const n=norm(text||'');
+  const words=[...new Set(n.split(/\s+/).filter(w=>w.length>=3))];
+  if(!words.length)return{reason:'لا يوجد نص وصفي كافٍ لتحليله',closest:'—',missingRule:'أضف وصفًا للقضية أولًا'};
+  let candidates=[];
+  CATS.forEach(cat=>{
+    const patternWords=extractPatternWords(cat);
+    const overlap=words.filter(w=>patternWords.some(pw=>w.includes(pw)||pw.includes(w)));
+    if(overlap.length)candidates.push({main:cat.main,sub:cat.sub,overlap:[...new Set(overlap)]});
+  });
+  candidates.sort((a,b)=>b.overlap.length-a.overlap.length);
+  if(!candidates.length){
+    return{reason:'لا تحتوي القضية أي كلمة دالة معروفة لدى محرك التصنيف الحالي',closest:'لا يوجد',missingRule:'أضف تصنيفًا فرعيًا جديدًا وكلمات دالة تصف موضوع هذه القضية (من صفحة التصنيفات)'};
+  }
+  const top=candidates[0];
+  return{
+    reason:'يوجد تشابه جزئي فقط في الكلمات، غير كافٍ لتجاوز حد الثقة الأدنى لأي تصنيف',
+    closest:top.main+' ← '+top.sub,
+    missingRule:'وسّع قاعدة "'+top.sub+'" لتشمل الكلمات: '+top.overlap.join('، ')
+  };
+}
+
+async function reanalyzeUnclassified(){
+  if(!window.__authUid){alert('سجّل الدخول بحساب Google أولًا لتشغيل إعادة التحليل السحابية.');return}
+  const targets=records.filter(r=>!r.isDeleted&&r.mainCategory==='غير مصنف بدقة'&&!r.manuallyReviewed);
+  if(!targets.length){alert('لا توجد قضايا غير مصنفة بحاجة لإعادة التحليل حاليًا 🎉');return}
+
+  const btn=document.getElementById('btnReanalyze');
+  if(btn){btn.disabled=true;btn.textContent='جارٍ إعادة تحليل '+targets.length+' قضية... ☁️';}
+  setSync('جارٍ إعادة التحليل ☁️');
+
+  let reanalyzedCount=0,becameClassified=0,stillUnclassified=0;
+  const stillUnclassifiedDetails=[];
+
+  for(const r of targets){
+    const fields=reanalyzeFields(r.originalText);
+    fields.updatedAt=new Date().toISOString();
+    try{
+      // updateDoc يحدّث الحقول المذكورة فقط؛ لا يمس caseNumber ولا originalText ولا createdAt
+      // ولا isDeleted ولا معرّف المستند نفسه (doc id) بأي شكل.
+      await window.__cloudUpdateCase(r.caseNumber,fields);
+      Object.assign(r,fields); // تحديث النسخة المحلية فورًا لتفادي أي وميض قبل وصول onSnapshot
+      reanalyzedCount++;
+      if(fields.mainCategory!=='غير مصنف بدقة'){
+        becameClassified++;
+      } else {
+        stillUnclassified++;
+        const diag=diagnoseWhyUnclassified(r.originalText);
+        stillUnclassifiedDetails.push({caseNumber:r.caseNumber,text:r.originalText,...diag});
+      }
+    }catch(err){
+      console.error('تعذّر إعادة تحليل القضية #'+r.caseNumber,err);
+    }
+  }
+
+  if(btn){btn.disabled=false;btn.textContent='إعادة تحليل القضايا غير المصنفة';}
+  setSync('تم الحفظ ☁️');
+  renderCases();renderTrash();renderTree();
+
+  showReanalyzeReport(reanalyzedCount,becameClassified,stillUnclassified,stillUnclassifiedDetails);
+}
+
+function showReanalyzeReport(reanalyzed,became,stillUn,details){
+  const box=document.getElementById('reportModalBox');
+  let html='<h3 style="color:var(--g);margin-top:0">تقرير إعادة التحليل</h3>'+
+    '<div class="grid" style="margin:16px 0">'+
+      '<div class="card" style="margin:0"><div style="font-size:26px;color:var(--g);font-weight:700">'+reanalyzed+'</div><div style="font-size:12px;color:var(--muted)">تمت إعادة تحليلها</div></div>'+
+      '<div class="card" style="margin:0"><div style="font-size:26px;color:#187346;font-weight:700">'+became+'</div><div style="font-size:12px;color:var(--muted)">أصبحت مصنَّفة</div></div>'+
+    '</div>'+
+    '<div class="card" style="margin:0 0 16px"><div style="font-size:26px;color:#a5761f;font-weight:700">'+stillUn+'</div><div style="font-size:12px;color:var(--muted)">بقيت غير مصنفة</div></div>';
+
+  if(details.length){
+    html+='<h4 style="color:var(--g)">القضايا التي بقيت غير مصنفة</h4>';
+    details.forEach(d=>{
+      html+='<div class="card" style="margin-top:10px">'+
+        '<strong>#'+esc(d.caseNumber)+'</strong>'+
+        '<p style="font-size:12px;color:var(--muted);margin:6px 0">'+esc(d.text||'(بلا نص)')+'</p>'+
+        '<p style="font-size:12px"><b>السبب:</b> '+esc(d.reason)+'</p>'+
+        '<p style="font-size:12px"><b>أقرب تصنيف محتمل:</b> '+esc(d.closest)+'</p>'+
+        '<p style="font-size:12px"><b>ما الناقص:</b> '+esc(d.missingRule)+'</p>'+
+      '</div>';
+    });
+  }
+  html+='<div style="text-align:left;margin-top:18px"><button class="primary" onclick="closeReport()">إغلاق</button></div>';
+  box.innerHTML=html;
+  document.getElementById('reportModal').style.display='flex';
+}
+function closeReport(){document.getElementById('reportModal').style.display='none';}
+
+/* ============================= إصلاح نصوص قضايا قديمة (Migration) — معاينة إلزامية قبل أي كتابة، لا حذف ولا نسخ جديدة ============================= */
+
+/* نص "تالف" = فارغ، أو يساوي حرفيًا كلمة الحالة نفسها (بقايا الخلل القديم في parser) */
+function isBrokenText(text){
+  const t=String(text||'').trim();
+  if(!t)return true;
+  const n=norm(t);
+  if(/^غير\s*نهايي?ه?$/.test(n))return true;
+  if(/^نهايي?ه?$/.test(n))return true;
+  if(/^قابله?\s*للاعتراض$/.test(n))return true;
+  return false;
+}
+
+let migrationPreviewData=[]; // محفوظة بين خطوة المعاينة وخطوة التنفيذ
+
+function previewMigration(){
+  const raw=document.getElementById('migrationInput').value;
+  const parsed=parse(raw);
+  if(!parsed.length){alert('الصق نص القائمة الأصلية أولًا.');return}
+
+  const preview=[];
+  parsed.forEach(p=>{
+    const existing=records.find(r=>String(r.caseNumber)===String(p.num));
+    if(!existing)return;              // رقم غير موجود أصلًا في قاعدتك — لا نُنشئ قضية جديدة هنا إطلاقًا
+    if(existing.manuallyReviewed)return; // قضية راجعتها يدويًا — لا تُمس
+    if(!isBrokenText(existing.originalText))return; // نصها سليم أصلًا — لا حاجة لإصلاح
+    const fields=reanalyzeFields(p.text);
+    preview.push({
+      caseNumber:p.num,
+      oldText:existing.originalText||'(بلا نص)',
+      newText:p.text,
+      newStatus:p.status||'',
+      ...fields
+    });
+  });
+
+  migrationPreviewData.length=0;
+  migrationPreviewData.push(...preview);
+  renderMigrationPreview(preview);
+}
+
+function renderMigrationPreview(preview){
+  const box=document.getElementById('reportModalBox');
+  let html='<h3 style="color:var(--g);margin-top:0">معاينة إصلاح النصوص (لم يُطبَّق أي تغيير بعد)</h3>';
+  if(!preview.length){
+    html+='<p style="color:var(--muted)">لم يتم العثور على أي قضية تحتاج إصلاحًا مطابقة لهذه القائمة — إما أن الأرقام غير موجودة في قاعدتك، أو نصوصها سليمة أصلًا، أو رُوجعت يدويًا من قبل.</p>'+
+      '<div style="text-align:left;margin-top:16px"><button class="soft" onclick="closeReport()">إغلاق</button></div>';
+    box.innerHTML=html;
+    document.getElementById('reportModal').style.display='flex';
+    return;
+  }
+  html+='<p style="color:var(--muted);font-size:12px">سيتم إصلاح <b style="color:var(--g)">'+preview.length+'</b> قضية. راجع الجدول ثم اضغط "تأكيد وتنفيذ" للمتابعة، أو "إلغاء" للتراجع دون أي تغيير.</p>'+
+    '<div style="overflow-x:auto;margin-top:12px"><table style="width:100%;border-collapse:collapse;font-size:12px">'+
+    '<thead><tr style="text-align:right;color:var(--muted)"><th style="padding:8px">رقم القضية</th><th style="padding:8px">النص الحالي</th><th style="padding:8px">النص المصحح</th><th style="padding:8px">التصنيف المتوقع</th></tr></thead><tbody>';
+  preview.forEach(p=>{
+    html+='<tr style="border-top:1px solid #eee8dd"><td style="padding:8px">#'+esc(p.caseNumber)+'</td>'+
+      '<td style="padding:8px;color:#a1443a">'+esc(p.oldText)+'</td>'+
+      '<td style="padding:8px;color:#187346">'+esc(p.newText)+(p.newStatus?' <span class="badge" style="margin-inline-start:4px">'+esc(p.newStatus)+'</span>':'')+'</td>'+
+      '<td style="padding:8px">'+esc(p.mainCategory)+' ← '+esc(p.subCategory)+'</td></tr>';
+  });
+  html+='</tbody></table></div>'+
+    '<div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end">'+
+      '<button class="soft" onclick="closeReport()">إلغاء</button>'+
+      '<button class="primary" id="btnConfirmMigration" onclick="applyMigration()">تأكيد وتنفيذ الإصلاح ☁️</button>'+
+    '</div>';
+  box.innerHTML=html;
+  document.getElementById('reportModal').style.display='flex';
+}
+
+async function applyMigration(){
+  if(!window.__authUid){alert('سجّل الدخول أولًا.');return}
+  const preview=migrationPreviewData;
+  if(!preview.length)return;
+  const btn=document.getElementById('btnConfirmMigration');
+  if(btn){btn.disabled=true;btn.textContent='جارٍ الإصلاح... ☁️';}
+  setSync('جارٍ إصلاح النصوص ☁️');
+
+  let fixedCount=0,becameClassified=0,stillNeedsReview=0;
+  for(const p of preview){
+    const patch={
+      originalText:p.newText,
+      caseStatus:p.newStatus,
+      mainCategory:p.mainCategory,subCategory:p.subCategory,caseType:p.caseType,
+      tags:p.tags,confidence:p.confidence,
+      judgmentResult:p.judgmentResult,judgmentReason:p.judgmentReason,
+      evidenceType:p.evidenceType,oathType:p.oathType,partyStatus:p.partyStatus,
+      updatedAt:new Date().toISOString()
+    };
+    try{
+      // updateDoc: تحديث جزئي فقط — لا يمس caseNumber ولا createdAt ولا isDeleted ولا معرّف المستند
+      await window.__cloudUpdateCase(p.caseNumber,patch);
+      const local=records.find(r=>String(r.caseNumber)===String(p.caseNumber));
+      if(local)Object.assign(local,patch);
+      fixedCount++;
+      if(p.mainCategory!=='غير مصنف بدقة')becameClassified++; else stillNeedsReview++;
+    }catch(err){
+      console.error('تعذّر إصلاح القضية #'+p.caseNumber,err);
+    }
+  }
+
+  setSync('تم الحفظ ☁️');
+  renderCases();renderTrash();renderTree();
+  migrationPreviewData.length=0;
+
+  const box=document.getElementById('reportModalBox');
+  box.innerHTML='<h3 style="color:var(--g);margin-top:0">تقرير إصلاح النصوص</h3>'+
+    '<div class="grid" style="margin:16px 0">'+
+      '<div class="card" style="margin:0"><div style="font-size:26px;color:var(--g);font-weight:700">'+fixedCount+'</div><div style="font-size:12px;color:var(--muted)">تم إصلاح نصها</div></div>'+
+      '<div class="card" style="margin:0"><div style="font-size:26px;color:#187346;font-weight:700">'+becameClassified+'</div><div style="font-size:12px;color:var(--muted)">أصبحت مصنَّفة</div></div>'+
+    '</div>'+
+    '<div class="card" style="margin:0 0 16px"><div style="font-size:26px;color:#a5761f;font-weight:700">'+stillNeedsReview+'</div><div style="font-size:12px;color:var(--muted)">بقيت تحتاج مراجعة</div></div>'+
+    '<div style="text-align:left"><button class="primary" onclick="closeReport()">إغلاق</button></div>';
+}
+
+/* ============================= استيراد قضايا من Word (.docx) — معاينة إلزامية، ثم استيراد فقط بعد الموافقة ============================= */
+let wordImportPreviewData=[];
+
+async function handleWordFile(event){
+  const file=event.target.files[0];
+  event.target.value='';
+  if(!file)return;
+  if(typeof mammoth==='undefined'){alert('تعذّر تحميل مكتبة قراءة ملفات Word. تأكد من اتصالك بالإنترنت وأعد المحاولة.');return}
+  try{
+    const arrayBuffer=await file.arrayBuffer();
+    const result=await mammoth.convertToHtml({arrayBuffer});
+    const parsed=parseDocxTable(result.value);
+    if(!parsed.rows.length){alert('لم يتم العثور على جدول صالح داخل الملف، أو الجدول فارغ بالكامل.');return}
+    const preview=buildImportPreview(parsed.rows);
+    wordImportPreviewData.length=0;
+    wordImportPreviewData.push(...preview);
+    renderWordImportPreview(preview,parsed);
+  }catch(err){
+    console.error(err);
+    alert('تعذّرت قراءة الملف: '+(err.message||err));
+  }
+}
+
+function renderWordImportPreview(preview,parsedMeta){
+  const box=document.getElementById('reportModalBox');
+  const okCount=preview.filter(p=>p.importRowStatus==='ok').length;
+  const existsCount=preview.filter(p=>p.importRowStatus==='exists').length;
+  const errorCount=preview.filter(p=>p.importRowStatus==='error').length;
+
+  let html='<h3 style="color:var(--g);margin-top:0">معاينة استيراد Word</h3>'+
+    '<p style="font-size:12px;color:var(--muted)">'+preview.length+' صفًا في الجدول'+
+    (parsedMeta.blankSkipped?(' — تم تجاهل '+parsedMeta.blankSkipped+' صفًا فارغًا'):'')+
+    '. جاهزة للاستيراد: <b style="color:#187346">'+okCount+'</b> — موجودة مسبقًا: <b style="color:#a5761f">'+existsCount+'</b> — أخطاء: <b style="color:#a1443a">'+errorCount+'</b>.</p>'+
+    '<div style="overflow-x:auto;margin-top:10px;max-height:50vh;overflow-y:auto"><table style="width:100%;border-collapse:collapse;font-size:11.5px">'+
+    '<thead><tr style="text-align:right;color:var(--muted)"><th style="padding:6px">#</th><th style="padding:6px">الوصف</th><th style="padding:6px">التصنيف</th><th style="padding:6px">الحالة</th><th style="padding:6px">الشهر الهجري</th><th style="padding:6px">الوضع</th></tr></thead><tbody>';
+
+  preview.forEach((p,i)=>{
+    const badge=p.importRowStatus==='ok'?'<span class="badge">جديدة</span>':
+      p.importRowStatus==='exists'?'<span class="badge warn" style="background:#fdf6e3;color:#a5761f;border-color:#f0dfae">'+esc(p.note)+'</span>':
+      '<span class="badge" style="background:#fdecea;color:#a1443a;border-color:#f3cfc9">'+esc(p.note)+'</span>';
+    const disabled=p.importRowStatus!=='ok'?'disabled':'';
+    html+='<tr data-row="'+i+'" style="border-top:1px solid #eee8dd'+(p.importRowStatus!=='ok'?';opacity:.55':'')+'">'+
+      '<td style="padding:6px">'+esc(p.caseNumber)+'</td>'+
+      '<td style="padding:6px;max-width:160px">'+esc(p.originalText||'—')+'</td>'+
+      '<td style="padding:6px"><select class="wiMain" '+disabled+' style="font-size:11px;padding:4px;border:1px solid var(--line);border-radius:6px">'+mainOptionsHTML(p.mainCategory)+'</select><br><select class="wiSub" '+disabled+' style="font-size:11px;padding:4px;border:1px solid var(--line);border-radius:6px;margin-top:3px">'+subOptionsHTML(p.mainCategory,p.subCategory)+'</select></td>'+
+      '<td style="padding:6px"><select class="wiStatus" '+disabled+' style="font-size:11px;padding:4px;border:1px solid var(--line);border-radius:6px">'+
+        '<option value="" '+(!p.caseStatus?'selected':'')+'>—</option>'+
+        '<option value="نهائية" '+(p.caseStatus==='نهائية'?'selected':'')+'>نهائية</option>'+
+        '<option value="قابلة للاعتراض" '+(p.caseStatus==='قابلة للاعتراض'?'selected':'')+'>غير نهائية</option>'+
+      '</select></td>'+
+      '<td style="padding:6px">'+esc(p.hijriMonth)+' '+esc(p.hijriYear)+'هـ</td>'+
+      '<td style="padding:6px">'+badge+'</td>'+
+      '</tr>';
+  });
+  html+='</tbody></table></div>'+
+    '<div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">'+
+      '<button class="soft" onclick="closeReport()">إلغاء</button>'+
+      '<button class="primary" id="btnConfirmWordImport" '+(okCount?'':'disabled')+' onclick="confirmWordImport()">اعتماد واستيراد القضايا ('+okCount+')</button>'+
+    '</div>';
+  box.innerHTML=html;
+  // ربط تغيّر التصنيف الرئيسي بتحديث قائمة الفرعي لكل صف
+  box.querySelectorAll('tr[data-row] .wiMain').forEach(sel=>{
+    sel.onchange=()=>{
+      const subSel=sel.closest('td').querySelector('.wiSub');
+      subSel.innerHTML=subOptionsHTML(sel.value,(catalog[sel.value]||[])[0]);
+    };
+  });
+  document.getElementById('reportModal').style.display='flex';
+}
+
+async function confirmWordImport(){
+  if(!window.__authUid){alert('سجّل الدخول أولًا لاستيراد القضايا سحابيًا.');return}
+  const btn=document.getElementById('btnConfirmWordImport');
+  if(btn){btn.disabled=true;btn.textContent='جارٍ الاستيراد... ☁️';}
+  setSync('جارٍ استيراد قضايا Word ☁️');
+
+  const rows=document.querySelectorAll('#reportModalBox tr[data-row]');
+  let imported=0,skipped=0;
+  const now=new Date().toISOString();
+  for(const tr of rows){
+    const i=+tr.dataset.row;
+    const p=wordImportPreviewData[i];
+    if(!p||p.importRowStatus!=='ok'){skipped++;continue}
+    const mainCategory=tr.querySelector('.wiMain').value;
+    const subCategory=tr.querySelector('.wiSub').value;
+    const caseStatus=tr.querySelector('.wiStatus').value;
+    const caseType=caseTypeForSub(subCategory)||p.caseType;
+    const caseObj={
+      caseNumber:p.caseNumber,originalText:p.originalText,mainCategory,subCategory,caseType,
+      tags:[caseType,caseStatus,p.oathType,p.partyStatus].filter(Boolean),
+      confidence:p.confidence,isDeleted:false,caseStatus,
+      judgmentResult:p.judgmentResult,judgmentReason:p.judgmentReason,evidenceType:p.evidenceType,
+      oathType:p.oathType,partyStatus:p.partyStatus,
+      createdAt:now,updatedAt:now,manuallyReviewed:false,
+      hijriYear:p.hijriYear,hijriMonth:p.hijriMonth,hijriMonthNumber:p.hijriMonthNumber,hijriMonthKey:p.hijriMonthKey
+    };
+    try{
+      await window.__cloudSetCase(caseObj);
+      records.unshift(caseObj);
+      imported++;
+    }catch(err){
+      console.error('تعذّر استيراد القضية #'+p.caseNumber,err);
+      skipped++;
+    }
+  }
+
+  setSync('تم الحفظ ☁️');
+  renderCases();renderTrash();renderTree();
+  wordImportPreviewData.length=0;
+
+  const box=document.getElementById('reportModalBox');
+  box.innerHTML='<h3 style="color:var(--g);margin-top:0">تقرير استيراد Word</h3>'+
+    '<div class="grid" style="margin:16px 0">'+
+      '<div class="card" style="margin:0"><div style="font-size:26px;color:#187346;font-weight:700">'+imported+'</div><div style="font-size:12px;color:var(--muted)">قضية مستوردة بنجاح</div></div>'+
+      '<div class="card" style="margin:0"><div style="font-size:26px;color:var(--muted);font-weight:700">'+skipped+'</div><div style="font-size:12px;color:var(--muted)">تم تجاهلها</div></div>'+
+    '</div>'+
+    '<div style="text-align:left"><button class="primary" onclick="closeReport()">إغلاق</button></div>';
+}
+
+/* ============================= إضافة شهر الأرشفة الهجري للقضايا القديمة (ترحيل آمن، معاينة إلزامية) ============================= */
+let hijriMigrationPreviewData=[];
+let hijriAutoMigrationRunning=false;
+/* نسخة صامتة تلقائية من ترحيل الشهر الهجري — تعمل مرة واحدة كلما وُجدت قضايا ناقصة الحقول الهجرية،
+   بلا حاجة لأي إجراء يدوي من المستخدم. تستخدم نفس القاعدة الآمنة: حساب الشهر من createdAt الفعلي
+   لكل قضية، ولا تغيّر أي حقل آخر إطلاقًا. */
+async function runHijriMigrationSilently(){
+  if(hijriAutoMigrationRunning||!window.__authUid)return;
+  const targets=records.filter(r=>!r.isDeleted&&!r.hijriMonthKey&&r.createdAt);
+  if(!targets.length)return;
+  hijriAutoMigrationRunning=true;
+  for(const r of targets){
+    const h=gregorianToHijri(new Date(r.createdAt));
+    const patch={hijriYear:h.hijriYear,hijriMonth:h.hijriMonth,hijriMonthNumber:h.hijriMonthNumber,hijriMonthKey:h.hijriMonthKey};
+    try{
+      await window.__cloudUpdateCase(r.caseNumber,patch);
+      Object.assign(r,patch);
+    }catch(err){console.error('تعذّر الترحيل التلقائي للشهر الهجري للقضية #'+r.caseNumber,err);}
+  }
+  hijriAutoMigrationRunning=false;
+  if(typeof renderCases==='function')renderCases();
+  if(typeof renderDashboard==='function')renderDashboard();
+  if(typeof renderTree==='function')renderTree();
+}
+
+function previewHijriMigration(){
+  const targets=records.filter(r=>!r.isDeleted&&!r.hijriMonthKey&&r.createdAt);
+  hijriMigrationPreviewData.length=0;
+  hijriMigrationPreviewData.push(...targets.map(r=>{
+    const h=gregorianToHijri(new Date(r.createdAt));
+    return{caseNumber:r.caseNumber,createdAt:r.createdAt,...h};
+  }));
+  const box=document.getElementById('reportModalBox');
+  if(!hijriMigrationPreviewData.length){
+    box.innerHTML='<h3 style="color:var(--g);margin-top:0">لا حاجة لأي ترحيل</h3><p style="color:var(--muted)">كل قضاياك لديها بالفعل شهر أرشفة هجري.</p><div style="text-align:left;margin-top:16px"><button class="soft" onclick="closeReport()">إغلاق</button></div>';
+    document.getElementById('reportModal').style.display='flex';
+    return;
+  }
+  // تجميع حسب الشهر لعرض ملخص واضح
+  const byMonth={};
+  hijriMigrationPreviewData.forEach(p=>{byMonth[p.hijriMonthKey]=byMonth[p.hijriMonthKey]||{label:p.hijriMonth+' '+p.hijriYear+'هـ',count:0};byMonth[p.hijriMonthKey].count++;});
+  let html='<h3 style="color:var(--g);margin-top:0">معاينة إضافة شهر الأرشفة الهجري</h3>'+
+    '<p style="font-size:12px;color:var(--muted)">سيُضاف شهر الأرشفة لـ<b style="color:var(--g)"> '+hijriMigrationPreviewData.length+' </b>قضية بناءً على تاريخ إضافتها الفعلي. لن يتغيّر رقم القضية أو وصفها أو تصنيفها أو تاريخ إنشائها.</p>'+
+    '<div style="margin-top:10px">'+Object.values(byMonth).map(m=>'<div class="card" style="margin-top:8px;padding:10px 14px;display:flex;justify-content:space-between"><span>'+esc(m.label)+'</span><b>'+m.count+' قضية</b></div>').join('')+'</div>'+
+    '<div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end">'+
+      '<button class="soft" onclick="closeReport()">إلغاء</button>'+
+      '<button class="primary" onclick="applyHijriMigration()">تأكيد وتنفيذ ☁️</button>'+
+    '</div>';
+  box.innerHTML=html;
+  document.getElementById('reportModal').style.display='flex';
+}
+async function applyHijriMigration(){
+  if(!window.__authUid){alert('سجّل الدخول أولًا.');return}
+  setSync('جارٍ إضافة شهر الأرشفة ☁️');
+  let done=0;
+  for(const p of hijriMigrationPreviewData){
+    const patch={hijriYear:p.hijriYear,hijriMonth:p.hijriMonth,hijriMonthNumber:p.hijriMonthNumber,hijriMonthKey:p.hijriMonthKey};
+    try{
+      await window.__cloudUpdateCase(p.caseNumber,patch);
+      const local=records.find(r=>String(r.caseNumber)===String(p.caseNumber));
+      if(local)Object.assign(local,patch);
+      done++;
+    }catch(err){console.error('تعذّر ترحيل القضية #'+p.caseNumber,err);}
+  }
+  setSync('تم الحفظ ☁️');
+  renderCases();renderTrash();renderTree();
+  hijriMigrationPreviewData.length=0;
+  const box=document.getElementById('reportModalBox');
+  box.innerHTML='<h3 style="color:var(--g);margin-top:0">تم إضافة شهر الأرشفة</h3><p><b style="color:#187346;font-size:22px">'+done+'</b> قضية أصبح لها الآن شهر أرشفة هجري.</p><div style="text-align:left;margin-top:16px"><button class="primary" onclick="closeReport()">إغلاق</button></div>';
+}
+
+/* ============================= العرض ============================= */
+let activeSubFilter=null; // عند الضغط على تصنيف فرعي من الدليل، أو من لوحة الفلاتر
+let activeMainFilter=null;
+let activeHijriMonthFilter=null; // مفتاح الشهر الهجري "1448-02" أو null لكل الفترات
+let activeCaseStatusFilter=null; // 'نهائية' | 'قابلة للاعتراض' | null
+let activeNeedsReviewFilter=false; // القضايا "غير مصنف بدقة" فقط
+
+function hasActiveFilters(){
+  return !!(activeSubFilter||activeMainFilter||activeHijriMonthFilter||activeCaseStatusFilter||activeNeedsReviewFilter);
+}
+function clearAllFilters(){
+  activeSubFilter=null;activeMainFilter=null;activeHijriMonthFilter=null;activeCaseStatusFilter=null;activeNeedsReviewFilter=false;
+  renderFilterPanel();renderCases();updateFilterIndicator();
+}
+function toggleFilterPanel(){
+  const el=document.getElementById('filterPanel');
+  const open=el.style.display==='grid';
+  if(open){el.style.display='none';return}
+  renderFilterPanel();
+  el.style.display='grid';
+}
+/* دوال تسمية صريحة لكل فلتر — تُستخدم من لوحة الفلاتر وقابلة لإعادة الاستخدام والاختبار مباشرة */
+function setHijriFilter(key){activeHijriMonthFilter=key||null;renderCases();updateFilterIndicator();}
+function setMainFilter(main){activeMainFilter=main||null;activeSubFilter=null;renderFilterPanel();renderCases();updateFilterIndicator();}
+function setSubFilter(sub){activeSubFilter=sub||null;renderCases();updateFilterIndicator();}
+function setCaseStatusFilter(status){activeCaseStatusFilter=status||null;renderCases();updateFilterIndicator();}
+function setNeedsReviewFilter(checked){activeNeedsReviewFilter=!!checked;renderCases();updateFilterIndicator();}
+function renderFilterPanel(){
+  const el=document.getElementById('filterPanel');
+  const activeRows=records.filter(x=>!x.isDeleted);
+  // الفترات الهجرية المتاحة فعليًا فقط
+  const monthCounts={};
+  activeRows.filter(r=>r.hijriMonthKey).forEach(r=>{monthCounts[r.hijriMonthKey]=monthCounts[r.hijriMonthKey]||{label:r.hijriMonth+' '+r.hijriYear+'هـ',count:0};monthCounts[r.hijriMonthKey].count++;});
+  const monthKeys=Object.keys(monthCounts).sort().reverse();
+  const mainOpts=Object.keys(catalog).filter(m=>m!=='غير مصنف بدقة');
+  const subOpts=(activeMainFilter?(catalog[activeMainFilter]||[]):Object.values(catalog).flat());
+
+  el.innerHTML=
+    `<div><label>الفترة (الشهر الهجري)</label><select id="fMonth" onchange="setHijriFilter(this.value)">
+      <option value="">كل الفترات</option>
+      ${monthKeys.map(k=>`<option value="${k}" ${activeHijriMonthFilter===k?'selected':''}>${esc(monthCounts[k].label)} — ${monthCounts[k].count} قضية</option>`).join('')}
+    </select></div>
+    <div><label>التصنيف الرئيسي</label><select id="fMain" onchange="setMainFilter(this.value)">
+      <option value="">كل التصنيفات</option>
+      ${mainOpts.map(m=>`<option value="${esc(m)}" ${activeMainFilter===m?'selected':''}>${esc(m)}</option>`).join('')}
+    </select></div>
+    <div><label>التصنيف الفرعي</label><select id="fSub" onchange="setSubFilter(this.value)">
+      <option value="">كل الفروع</option>
+      ${subOpts.map(s=>`<option value="${esc(s)}" ${activeSubFilter===s?'selected':''}>${esc(s)}</option>`).join('')}
+    </select></div>
+    <div><label>حالة القضية</label><select id="fStatus" onchange="setCaseStatusFilter(this.value)">
+      <option value="">الكل</option>
+      <option value="نهائية" ${activeCaseStatusFilter==='نهائية'?'selected':''}>نهائية</option>
+      <option value="قابلة للاعتراض" ${activeCaseStatusFilter==='قابلة للاعتراض'?'selected':''}>قابلة للاعتراض</option>
+    </select></div>
+    <div style="display:flex;align-items:flex-end;gap:8px">
+      <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:12px;color:#23332e"><input type="checkbox" id="fNeedsReview" ${activeNeedsReviewFilter?'checked':''} onchange="setNeedsReviewFilter(this.checked)"> تحتاج مراجعة يدوية</label>
+    </div>
+    <div style="display:flex;align-items:flex-end"><button class="ghost" onclick="clearAllFilters()" style="border:0;background:none;color:#a1443a;text-decoration:underline;cursor:pointer;font:inherit">مسح الفلاتر</button></div>`;
+}
+function updateFilterIndicator(){
+  document.getElementById('filterIconBtn').classList.toggle('hasFilter',hasActiveFilters());
+}
+function toggleExportMenu(){document.getElementById('exportMenu').classList.toggle('open');}
+function closeExportMenu(){document.getElementById('exportMenu').classList.remove('open');}
+
+/* الفلاتر الحالية بالضبط (بحث + تصنيف رئيسي/فرعي + فترة هجرية + حالة + تحتاج مراجعة) — مصدر واحد للحقيقة
+   يستخدمه العرض والتصدير معًا، لضمان أن ما يُصدَّر مطابق تمامًا لما هو ظاهر على الشاشة. */
+function getVisibleCaseRows(){
+  let q=document.getElementById('search').value,
+      rows=records.filter(x=>!x.isDeleted&&JSON.stringify(x).includes(q));
+  if(activeMainFilter)rows=rows.filter(x=>x.mainCategory===activeMainFilter);
+  if(activeSubFilter)rows=rows.filter(x=>x.subCategory===activeSubFilter);
+  if(activeHijriMonthFilter)rows=rows.filter(x=>x.hijriMonthKey===activeHijriMonthFilter);
+  if(activeCaseStatusFilter)rows=rows.filter(x=>x.caseStatus===activeCaseStatusFilter);
+  if(activeNeedsReviewFilter)rows=rows.filter(x=>x.mainCategory==='غير مصنف بدقة');
+  rows.sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));
+  return rows;
+}
+let selectionMode=false;
+let selectedCaseNumbers=new Set();
+function toggleSelectionMode(){
+  selectionMode=!selectionMode;
+  if(!selectionMode)selectedCaseNumbers.clear();
+  renderCases();
+}
+function toggleCaseSelection(num,checked){
+  if(checked)selectedCaseNumbers.add(String(num)); else selectedCaseNumbers.delete(String(num));
+  renderCases();
+}
+function renderCases(){
+  const rows=getVisibleCaseRows();
+  document.getElementById('caseCounter').textContent=records.filter(x=>!x.isDeleted).length;
+  const chips=[];
+  if(activeMainFilter)chips.push(`<span class="badge">التصنيف: ${esc(activeMainFilter)} <a href="#" onclick="activeMainFilter=null;renderCases();updateFilterIndicator();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span>`);
+  if(activeSubFilter)chips.push(`<span class="badge">الفرع: ${esc(activeSubFilter)} <a href="#" onclick="activeSubFilter=null;renderCases();updateFilterIndicator();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span>`);
+  if(activeCaseStatusFilter)chips.push(`<span class="badge">الحالة: ${esc(activeCaseStatusFilter)} <a href="#" onclick="activeCaseStatusFilter=null;renderCases();updateFilterIndicator();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span>`);
+  if(activeNeedsReviewFilter)chips.push(`<span class="badge">تحتاج مراجعة يدوية <a href="#" onclick="activeNeedsReviewFilter=false;renderCases();updateFilterIndicator();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span>`);
+  if(activeHijriMonthFilter){
+    const r0=records.find(x=>x.hijriMonthKey===activeHijriMonthFilter);
+    const label=r0?(r0.hijriMonth+' '+r0.hijriYear+'هـ'):activeHijriMonthFilter;
+    chips.push(`<span class="badge">الفترة: ${esc(label)} <a href="#" onclick="activeHijriMonthFilter=null;renderCases();return false" style="color:#a1443a;text-decoration:none;font-weight:700">✕</a></span>`);
+  }
+  const chip=chips.length?`<div style="margin-bottom:10px;display:flex;gap:6px;flex-wrap:wrap">${chips.join('')}</div>`:'';
+  const exportBar=`<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+    <button class="soft" onclick="toggleSelectionMode()">${selectionMode?'إلغاء التحديد':'تحديد قضايا معيّنة'}</button>
+    ${selectionMode&&selectedCaseNumbers.size?`<span class="badge">محدَّد: ${selectedCaseNumbers.size} — استخدم زر التصدير أعلى الصفحة لتصديرها</span>`:''}
+  </div>`;
+  document.getElementById('caseList').innerHTML=chip+exportBar+(rows.length?`<div class="grid">${rows.map(x=>{
+    const dateLine=x.hijriMonthKey?`أضيفت في ${esc(x.hijriMonth)} ${esc(x.hijriYear)}هـ`:`أُنشئت: ${fmtDate(x.createdAt)}`;
+    const checkbox=selectionMode?`<input type="checkbox" onclick="event.stopPropagation();toggleCaseSelection('${esc(x.caseNumber)}',this.checked)" ${selectedCaseNumbers.has(String(x.caseNumber))?'checked':''} style="width:17px;height:17px;margin-inline-end:6px">`:'';
+    return `<article class="card" onclick="${selectionMode?'':`openCaseDetail('${esc(x.caseNumber)}')`}" style="cursor:pointer"><div class="card-head"><strong>${checkbox}#${esc(x.caseNumber)}</strong><span class="badge">${esc(x.caseType)}</span></div><h3>${esc(x.subCategory)}</h3><p>${esc(x.originalText)}</p><div class="meta">${dateLine}${x.caseStatus?' — <span style="color:'+(x.caseStatus==='نهائية'?'#187346':'#a5761f')+'">'+esc(x.caseStatus)+'</span>':''}${x.manuallyReviewed?' — <span class="badge" style="padding:2px 7px">تمت المراجعة</span>':''}</div><footer><span>${esc(x.mainCategory)}</span><span style="color:var(--muted);font-size:11px">${selectionMode?'اضغط المربع للتحديد':'اضغط لفتح التفاصيل ←'}</span></footer></article>`;
+  }).join('')}</div>`:(window.__authUid?'<div class="empty">لا توجد قضايا مطابقة</div>':'<div class="empty">سجّل الدخول بحساب Google من الأعلى لعرض قضاياك المحفوظة سحابيًا</div>'));
+}
+
+/* ============================= تصدير أرقام القضايا فقط (نص عادي، خصوصية كاملة — لا نص أصلي ولا تصنيف ولا أي بيانات أخرى) ============================= */
+function downloadCaseNumbersFile(numbers,filename){
+  const uniqueNums=[...new Set(numbers.map(String))];
+  if(!uniqueNums.length){alert('لا توجد قضايا لتصديرها بالفلتر الحالي.');return}
+  const blob=new Blob([uniqueNums.join('\n')+'\n'],{type:'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=filename;a.click();URL.revokeObjectURL(a.href);
+}
+function exportVisibleCaseNumbers(){
+  const rows=getVisibleCaseRows();
+  const filename=activeHijriMonthFilter?('case-numbers-'+activeHijriMonthFilter+'.txt'):'case-numbers.txt';
+  downloadCaseNumbersFile(rows.map(x=>x.caseNumber),filename);
+}
+function exportSelectedCaseNumbers(){
+  downloadCaseNumbersFile([...selectedCaseNumbers],'case-numbers-selected.txt');
+}
+/* نقطة الدخول الموحّدة من قائمة "تصدير": تعمل على التحديد إن وُجد، وإلا على القضايا الظاهرة حاليًا بعد الفلاتر والبحث */
+function getExportScopeRows(){
+  if(selectionMode&&selectedCaseNumbers.size){
+    return records.filter(r=>selectedCaseNumbers.has(String(r.caseNumber)));
+  }
+  return getVisibleCaseRows();
+}
+function exportCaseNumbersTxt(){
+  if(selectionMode&&selectedCaseNumbers.size){exportSelectedCaseNumbers();return}
+  exportVisibleCaseNumbers();
+}
+
+/* ============================= تصدير إلى Word (.docx) — يحترم البحث والفلاتر والتحديد ============================= */
+async function exportToWord(){
+  if(typeof docx==='undefined'){alert('تعذّر تحميل مكتبة إنشاء ملفات Word. تأكد من اتصالك بالإنترنت وأعد المحاولة.');return}
+  const rows=getExportScopeRows();
+  if(!rows.length){alert('لا توجد قضايا لتصديرها بالفلتر أو التحديد الحالي.');return}
+  const {Document,Packer,Paragraph,Table,TableRow,TableCell,TextRun,WidthType}=docx;
+  const headerRow=new TableRow({children:['رقم القضية','نوع/وصف القضية','الحالة','شهر الأرشفة'].map(h=>
+    new TableCell({children:[new Paragraph({children:[new TextRun({text:h,bold:true})]})]})
+  )});
+  const dataRows=rows.map(r=>{
+    const hijri=r.hijriMonthKey?(r.hijriMonth+' '+r.hijriYear+'هـ'):'';
+    return new TableRow({children:[r.caseNumber,r.originalText||'',r.caseStatus||'',hijri].map(v=>
+      new TableCell({children:[new Paragraph(String(v||''))]})
+    )});
+  });
+  const table=new Table({width:{size:100,type:WidthType.PERCENTAGE},rows:[headerRow,...dataRows]});
+  const doc=new Document({sections:[{children:[table]}]});
+  const blob=await Packer.toBlob(doc);
+  const filename=(selectionMode&&selectedCaseNumbers.size)?'cases-export-selected.docx':(activeHijriMonthFilter?('cases-export-'+activeHijriMonthFilter+'.docx'):'cases-export.docx');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=filename;a.click();URL.revokeObjectURL(a.href);
+}
+
+function renderTrash(){
+  let rows=records.filter(x=>x.isDeleted);
+  document.getElementById('trashList').innerHTML=rows.length?rows.map(x=>`<article class="card"><strong>#${esc(x.caseNumber)}</strong><h3>${esc(x.subCategory)}</h3><div class="meta">حُذفت: ${fmtDate(x.updatedAt)}</div><footer><span>${esc(x.mainCategory)}</span><button onclick="trash('${esc(x.caseNumber)}',true)">استعادة</button></footer></article>`).join(''):'<div class="empty">السلة فارغة</div>';
+}
+function goToSub(sub){activeSubFilter=sub;show('cases');}
+
+/* ============================= الرئيسية (لوحة المعلومات) ============================= */
+function miniCaseCard(x){
+  const dateLine=x.hijriMonthKey?`${esc(x.hijriMonth)} ${esc(x.hijriYear)}هـ`:fmtDate(x.createdAt);
+  return `<article class="card" onclick="openCaseDetail('${esc(x.caseNumber)}')" style="cursor:pointer;margin-top:10px"><div class="card-head"><strong>#${esc(x.caseNumber)}</strong><span class="badge">${esc(x.caseType||'')}</span></div><h3 style="font-size:15px">${esc(x.subCategory)}</h3><p>${esc((x.originalText||'').slice(0,80))}</p><div class="meta">${dateLine}${x.caseStatus?' — <span style="color:'+(x.caseStatus==='نهائية'?'#187346':'#a5761f')+'">'+esc(x.caseStatus)+'</span>':''}</div></article>`;
+}
+function renderDashboard(){
+  const active=records.filter(x=>!x.isDeleted);
+  document.getElementById('statTotal').textContent=active.length;
+  document.getElementById('statFinal').textContent=active.filter(x=>x.caseStatus==='نهائية').length;
+  document.getElementById('statAppeal').textContent=active.filter(x=>x.caseStatus==='قابلة للاعتراض').length;
+  document.getElementById('statReview').textContent=active.filter(x=>x.mainCategory==='غير مصنف بدقة').length;
+
+  const q=document.getElementById('dashSearch').value.trim();
+  const resultsBox=document.getElementById('dashSearchResults');
+  if(q){
+    const matches=active.filter(x=>JSON.stringify(x).includes(q)).slice(0,12);
+    resultsBox.innerHTML=`<h4 style="color:var(--g);margin-top:20px">نتائج البحث (${matches.length})</h4>`+
+      (matches.length?`<div class="grid">${matches.map(miniCaseCard).join('')}</div>`:'<div class="empty">لا توجد نتائج مطابقة</div>');
+    document.getElementById('dashLists').innerHTML='';
+    return;
+  }
+  resultsBox.innerHTML='';
+
+  const recent=active.slice().sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||'')).slice(0,5);
+  const needsReview=active.filter(x=>x.mainCategory==='غير مصنف بدقة').slice(0,5);
+
+  let html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:10px">';
+  html+='<div><h4 style="color:var(--g)">آخر القضايا المضافة</h4>'+(recent.length?recent.map(miniCaseCard).join(''):'<div class="empty">لا توجد قضايا بعد</div>')+'</div>';
+  html+='<div><h4 style="color:var(--g)">تحتاج مراجعة يدوية <span class="reviewbadge">'+needsReview.length+'</span></h4>'+(needsReview.length?needsReview.map(miniCaseCard).join(''):'<div class="empty">لا توجد قضايا بحاجة مراجعة 🎉</div>')+'</div>';
+  html+='</div>';
+  document.getElementById('dashLists').innerHTML=html;
+}
+
+/* ============================= لوحة تفاصيل القضية: عرض / تعديل ومراجعة / إعادة تحليل فردية ============================= */
+let detailEditMode=false;
+let detailDraftFields=null; // نسخة عمل مؤقتة أثناء التعديل، لا تُكتب على السجل الفعلي إلا عند الحفظ
+let currentDetailCaseNumber=null;
+
+function openCaseDetail(caseNumber){
+  const r=records.find(x=>String(x.caseNumber)===String(caseNumber));
+  if(!r)return;
+  currentDetailCaseNumber=String(caseNumber);
+  detailEditMode=false;
+  detailDraftFields=null;
+  renderCaseDetail(r);
+  document.getElementById('caseDetailModal').style.display='flex';
+}
+function closeCaseDetail(){
+  document.getElementById('caseDetailModal').style.display='none';
+  detailEditMode=false;
+  detailDraftFields=null;
+  currentDetailCaseNumber=null;
+}
+
+function fieldRow(label,value){
+  return `<div style="padding:9px 0;border-bottom:1px solid #f1ede5"><div style="font-size:11px;color:var(--muted)">${esc(label)}</div><div style="font-size:13.5px;color:#23332e;margin-top:3px">${value||'<span style="color:#c8c2b4">—</span>'}</div></div>`;
+}
+
+function renderCaseDetail(r){
+  const box=document.getElementById('caseDetailBox');
+  if(!detailEditMode){
+    box.innerHTML=
+      `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+        <div><div style="font-size:11px;color:var(--muted)">رقم القضية</div><h3 style="margin:4px 0;color:var(--g)">#${esc(r.caseNumber)}</h3></div>
+        <button class="soft" onclick="closeCaseDetail()">إغلاق ✕</button>
+      </div>
+      <div class="classification" style="margin-top:12px">${esc(r.mainCategory)}<b>←</b>${esc(r.subCategory)}</div>
+      ${fieldRow('تاريخ الإضافة الكامل',esc(fmtDate(r.createdAt))+(r.hijriMonthKey?' — '+esc(r.hijriMonth)+' '+esc(r.hijriYear)+'هـ':''))}
+      ${fieldRow('النص الأصلي',esc(r.originalText||''))}
+      ${fieldRow('نوع القضية',esc(r.caseType||''))}
+      ${fieldRow('الصياغة المنظمة',esc(norm(r.originalText||'')))}
+      ${fieldRow('السبب',esc(r.judgmentReason||''))}
+      ${fieldRow('نتيجة الحكم',esc(r.judgmentResult||''))}
+      ${fieldRow('البينة',esc(r.evidenceType||''))}
+      ${fieldRow('نوع اليمين',esc(r.oathType||''))}
+      ${fieldRow('حالة الأطراف',esc(r.partyStatus||''))}
+      ${fieldRow('الوسوم',(r.tags||[]).map(t=>esc(t)).join('، '))}
+      ${fieldRow('الحالة',r.caseStatus?esc(r.caseStatus):'')}
+      ${fieldRow('درجة الثقة',r.confidence!=null?r.confidence+'%':'')}
+      ${fieldRow('حالة المراجعة',r.manuallyReviewed?'<span class="badge">تمت المراجعة يدويًا</span>':'<span class="badge" style="background:#fdf6e3;color:#a5761f;border-color:#f0dfae">لم تُراجَع بعد</span>')}
+      <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
+        <button class="primary" onclick="enterCaseEditMode()">تعديل ومراجعة</button>
+        <button class="soft" onclick="trashFromDetail('${esc(r.caseNumber)}')" style="color:#a1443a">نقل إلى السلة</button>
+      </div>`;
+  } else {
+    const d=detailDraftFields;
+    box.innerHTML=
+      `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+        <div><div style="font-size:11px;color:var(--muted)">تعديل ومراجعة القضية</div><h3 style="margin:4px 0;color:var(--g)">#${esc(r.caseNumber)}</h3></div>
+        <button class="soft" onclick="exitCaseEditMode()">إلغاء التعديل ✕</button>
+      </div>
+      <div class="fields" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+        <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">النص/الوصف</label><textarea id="dfText" style="width:100%;min-height:90px;padding:9px;border:1px solid var(--line);border-radius:8px;font:inherit">${esc(d.originalText)}</textarea></div>
+        <div><button class="soft" type="button" onclick="reanalyzeSingleCase()">إعادة التحليل (على النص أعلاه فقط)</button></div>
+        <div></div>
+        <div><label style="font-size:11px;color:var(--muted)">نوع القضية</label><input id="dfType" value="${esc(d.caseType)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
+        <div><label style="font-size:11px;color:var(--muted)">حالة الحكم</label><select id="dfStatus" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px">
+          <option value="" ${!d.caseStatus?'selected':''}>غير محددة</option>
+          <option value="نهائية" ${d.caseStatus==='نهائية'?'selected':''}>نهائية</option>
+          <option value="قابلة للاعتراض" ${d.caseStatus==='قابلة للاعتراض'?'selected':''}>غير نهائية / قابلة للاعتراض</option>
+        </select></div>
+        <div><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي</label><select id="dfMain" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px">${mainOptionsHTML(d.mainCategory)}</select></div>
+        <div><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي</label><select id="dfSub" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px">${subOptionsHTML(d.mainCategory,d.subCategory)}</select></div>
+        <div><label style="font-size:11px;color:var(--muted)">نتيجة الحكم</label><input id="dfJudgResult" value="${esc(d.judgmentResult)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
+        <div><label style="font-size:11px;color:var(--muted)">السبب</label><input id="dfJudgReason" value="${esc(d.judgmentReason)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
+        <div><label style="font-size:11px;color:var(--muted)">البينة</label><input id="dfEvidence" value="${esc(d.evidenceType)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
+        <div><label style="font-size:11px;color:var(--muted)">نوع اليمين</label><input id="dfOath" value="${esc(d.oathType)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
+        <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">حالة الأطراف</label><input id="dfParty" value="${esc(d.partyStatus)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
+      </div>
+      <div id="reanalyzeSuggestionBox"></div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="primary" onclick="saveCaseReview('${esc(r.caseNumber)}')">حفظ المراجعة</button>
+        <button class="soft" onclick="exitCaseEditMode()">إلغاء</button>
+      </div>`;
+    document.getElementById('dfMain').onchange=(e)=>{
+      document.getElementById('dfSub').innerHTML=subOptionsHTML(e.target.value,(catalog[e.target.value]||[])[0]);
+    };
+  }
+}
+
+function enterCaseEditMode(){
+  const r=records.find(x=>String(x.caseNumber)===String(currentDetailCaseNumber));
+  if(!r)return;
+  detailDraftFields={
+    originalText:r.originalText||'',caseType:r.caseType||'',mainCategory:r.mainCategory||'',subCategory:r.subCategory||'',
+    judgmentResult:r.judgmentResult||'',judgmentReason:r.judgmentReason||'',evidenceType:r.evidenceType||'',
+    oathType:r.oathType||'',partyStatus:r.partyStatus||'',caseStatus:r.caseStatus||''
+  };
+  detailEditMode=true;
+  renderCaseDetail(r);
+}
+function exitCaseEditMode(){
+  const r=records.find(x=>String(x.caseNumber)===String(currentDetailCaseNumber));
+  detailEditMode=false;
+  detailDraftFields=null;
+  if(r)renderCaseDetail(r);
+}
+
+/* إعادة تحليل قضية واحدة فقط: تعمل على نص textarea الحالي (وقد لا يزال غير محفوظ)، وتعرض اقتراحًا قبل الحفظ */
+function reanalyzeSingleCase(){
+  const text=document.getElementById('dfText').value;
+  const fields=reanalyzeFields(text);
+  const box=document.getElementById('reanalyzeSuggestionBox');
+  box.innerHTML=`<div class="classification" style="margin-top:12px">اقتراح إعادة التحليل: ${esc(fields.mainCategory)}<b>←</b>${esc(fields.subCategory)} — ثقة ${fields.confidence}%
+    <div style="margin-top:8px"><button class="soft" type="button" onclick="applyReanalyzeSuggestion()">اعتماد هذا الاقتراح في النموذج</button></div>
+  </div>`;
+  window.__lastReanalyzeSuggestion=fields;
+}
+function applyReanalyzeSuggestion(){
+  const fields=window.__lastReanalyzeSuggestion;
+  if(!fields)return;
+  document.getElementById('dfMain').value=fields.mainCategory;
+  document.getElementById('dfSub').innerHTML=subOptionsHTML(fields.mainCategory,fields.subCategory);
+  document.getElementById('dfType').value=fields.caseType||'';
+  document.getElementById('dfJudgResult').value=fields.judgmentResult||'';
+  document.getElementById('dfJudgReason').value=fields.judgmentReason||'';
+  document.getElementById('dfEvidence').value=fields.evidenceType||'';
+  document.getElementById('dfOath').value=fields.oathType||'';
+  document.getElementById('dfParty').value=fields.partyStatus||'';
+}
+
+async function saveCaseReview(caseNumber){
+  if(!window.__authUid){alert('سجّل الدخول أولًا لحفظ المراجعة سحابيًا.');return}
+  const patch={
+    originalText:document.getElementById('dfText').value,
+    caseType:document.getElementById('dfType').value,
+    mainCategory:document.getElementById('dfMain').value,
+    subCategory:document.getElementById('dfSub').value,
+    judgmentResult:document.getElementById('dfJudgResult').value,
+    judgmentReason:document.getElementById('dfJudgReason').value,
+    evidenceType:document.getElementById('dfEvidence').value,
+    oathType:document.getElementById('dfOath').value,
+    partyStatus:document.getElementById('dfParty').value,
+    caseStatus:document.getElementById('dfStatus').value,
+    manuallyReviewed:true,
+    updatedAt:new Date().toISOString()
+  };
+  setSync('جارٍ حفظ المراجعة ☁️');
+  try{
+    // updateDoc: تحديث جزئي — لا يمس caseNumber ولا createdAt ولا isDeleted ولا معرّف المستند
+    await window.__cloudUpdateCase(caseNumber,patch);
+    const local=records.find(x=>String(x.caseNumber)===String(caseNumber));
+    if(local)Object.assign(local,patch);
+    // حفظ التصحيح كـ classificationAlias (مطابقة نصية دقيقة فقط، لا قاعدة عامة)
+    saveClassificationAlias(patch.originalText,patch.mainCategory,patch.subCategory,patch.caseType);
+    setSync('تم الحفظ ☁️');
+    renderCases();renderTrash();renderTree();
+    detailEditMode=false;detailDraftFields=null;
+    if(local)renderCaseDetail(local);
+  }catch(err){
+    console.error(err);setSync('تعذّر الحفظ ⚠️');
+    alert('تعذّر حفظ المراجعة: '+(err.message||err));
+  }
+}
+
+async function trashFromDetail(caseNumber){
+  if(!confirm('نقل القضية #'+caseNumber+' إلى السلة؟'))return;
+  await trash(caseNumber);
+  closeCaseDetail();
+}
+
+function renderTree(){
+  let rows=records.filter(x=>!x.isDeleted);
+  document.getElementById('tree').innerHTML=
+    `<div style="margin-bottom:14px"><button class="soft" onclick="toggleAddCategoryForm()">+ إضافة تصنيف فرعي جديد</button></div>`+
+    `<div id="addCategoryForm" style="display:none;background:#f7f4ed;border-radius:12px;padding:14px;margin-bottom:16px">
+      <div class="fields" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي</label><select id="newCatMain" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px">${mainOptionsHTML()}</select></div>
+        <div><label style="font-size:11px;color:var(--muted)">اسم التصنيف الفرعي الجديد</label><input id="newCatSub" placeholder="مثال: أجرة مركبات" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px"></div>
+        <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">كلمات دالة (مفصولة بفاصلة) — تُستخدم للتعرّف على هذا التصنيف تلقائيًا مستقبلًا</label><input id="newCatKeywords" placeholder="مثال: اجرة مركبة, ايجار سياره" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px"></div>
+        <div><label style="font-size:11px;color:var(--muted)">نوع القضية (اختياري)</label><input id="newCatType" placeholder="مثال: مركبات" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px"></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px"><button class="primary" onclick="submitAddCategory()">إضافة</button><button class="soft" onclick="toggleAddCategoryForm()">إلغاء</button></div>
+    </div>`+
+    Object.entries(catalog).map(([m,subs])=>{
+      let count=rows.filter(x=>x.mainCategory===m).length;
+      return `<details><summary>${esc(m)} <span class="badge" style="float:left">${count}</span></summary><ul>${subs.map(s=>{
+        const n=rows.filter(x=>x.subCategory===s).length;
+        const del=isCustomCategory(m,s)?` <a href="#" onclick="event.stopPropagation();deleteCustomCategory('${esc(m)}','${esc(s)}');return false" style="color:#a1443a;text-decoration:none;font-weight:700;margin-inline-start:6px">حذف</a>`:'';
+        return `<li style="cursor:pointer" onclick="goToSub('${esc(s)}')">${esc(s)} — ${n} قضية${del}</li>`;
+      }).join('')}</ul></details>`;
+    }).join('');
+}
+function toggleAddCategoryForm(){
+  const f=document.getElementById('addCategoryForm');
+  if(f)f.style.display=f.style.display==='none'?'block':'none';
+}
+function submitAddCategory(){
+  const main=document.getElementById('newCatMain').value.trim();
+  const sub=document.getElementById('newCatSub').value.trim();
+  const keywords=document.getElementById('newCatKeywords').value.trim();
+  const caseType=document.getElementById('newCatType').value.trim();
+  if(!sub){alert('اكتب اسم التصنيف الفرعي الجديد');return}
+  if(!window.__authUid){alert('سجّل الدخول أولًا لحفظ التصنيفات الجديدة سحابيًا');return}
+  const entry={id:'cat_'+Date.now().toString(36),main,sub,caseType,pattern:keywords,tags:[]};
+  addCustomCategoryRuntime(entry);
+  customCategories.push(entry);
+  if(window.__cloudSaveCustomCategories)window.__cloudSaveCustomCategories(customCategories);
+  renderTree();
+}
+function deleteCustomCategory(main,sub){
+  const entry=customCategories.find(c=>c.main===main&&c.sub===sub);
+  if(!entry)return;
+  if(!confirm('حذف تصنيف "'+sub+'"؟ لن يتم حذف القضايا المصنفة سابقًا تحته، لكن لن يُقترح تلقائيًا بعد الآن.'))return;
+  removeCustomCategoryRuntime(entry.id);
+  if(window.__cloudSaveCustomCategories)window.__cloudSaveCustomCategories(customCategories);
+  renderTree();
+}
+function newCase(){document.getElementById('search').value='';draft=[];document.getElementById('preview').innerHTML='';show('home')}
+function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===id));if(id==='cases')renderCases();if(id==='trash')renderTrash();if(id==='taxonomy')renderTree();if(id==='dashboard')renderDashboard()}
+function initNav(where){document.getElementById(where).innerHTML=navItems.map(x=>`<button data-page="${x[0]}" onclick="show('${x[0]}')">${x[1]}</button>`).join('')}
+function setSync(text){const l=document.getElementById('syncLine');if(l)l.textContent=text;}
+initNav('nav');initNav('mobile');show('dashboard');
+renderHijriBar();renderFooter();
+setInterval(renderHijriBar,3600000); // تحديث تلقائي دوري (كل ساعة) ليعكس تغيّر اليوم دون إعادة تحميل الصفحة
+window.records=records; // تعريض للاختبار الآلي فقط (let لا يُضاف تلقائيًا إلى window)
+window.migrationPreviewData=migrationPreviewData;
+window.classificationAliases=classificationAliases;
+window.wordImportPreviewData=wordImportPreviewData;
+window.hijriMigrationPreviewData=hijriMigrationPreviewData;
+window.selectedCaseNumbers=selectedCaseNumbers;
+</script>
+
+<!-- ====================== Firebase: تسجيل دخول Google + Firestore بديلاً كاملاً عن localStorage ======================
+     عدّل القيم بين FIREBASE_CONFIG_START و FIREBASE_CONFIG_END بإعدادات مشروعك الحقيقية
+     (Firebase Console → Project settings → Your apps → Web app → SDK setup and configuration). -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, updateDoc, collection, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+// FIREBASE_CONFIG_START
+const firebaseConfig = {
+  apiKey: "AIzaSyDZ4TdRkD4JNoQsyl_f4Io4qSne1zikIbQ",
+  authDomain: "case-register.firebaseapp.com",
+  projectId: "case-register",
+  storageBucket: "case-register.firebasestorage.app",
+  messagingSenderId: "289439690308",
+  appId: "1:289439690308:web:07f7a23646460334679611"
+};
+// FIREBASE_CONFIG_END
+
+const configLooksReal = firebaseConfig.apiKey && !firebaseConfig.apiKey.includes('ضع-قيمتك-هنا');
+const acctArea = document.getElementById('acctArea');
+const acctSettingsArea = document.getElementById('acctSettingsArea');
+const storageLine = document.getElementById('storageLine');
+const syncLine = document.getElementById('syncLine');
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function renderSignedOutUI(){
+  const btnHtml = '<button class="soft" id="btnGoogleIn">تسجيل الدخول بحساب Google</button>';
+  acctArea.innerHTML = btnHtml;
+  acctSettingsArea.innerHTML = btnHtml;
+  storageLine.textContent='● سجّل الدخول لعرض قضاياك السحابية';
+  syncLine.textContent='غير مسجَّل الدخول';
+  window.__authUid = null;
+  if(typeof records!=='undefined'){records.length=0;}
+  if(typeof renderCases==='function'){renderCases();renderTrash();renderTree();}
+}
+function renderSignedInUI(user){
+  const html = '<div class="acct">'+(user.photoURL?'<img src="'+user.photoURL+'">':'')+
+    '<span>'+esc(user.displayName||user.email)+'</span>'+
+    '<button class="soft" id="btnGoogleOut">خروج</button></div>';
+  acctArea.innerHTML = html;
+  acctSettingsArea.innerHTML = '<div class="acct">'+(user.photoURL?'<img src="'+user.photoURL+'">':'')+
+    '<span><strong>'+esc(user.displayName||'')+'</strong><br><small>'+esc(user.email||'')+'</small></span>'+
+    '<span style="flex:1"></span><button class="soft" id="btnGoogleOut2">تسجيل الخروج</button></div>';
+  storageLine.textContent='● مزامنة سحابية فعّالة (Firestore)';
+}
+
+if(!configLooksReal){
+  acctArea.innerHTML='<span class="syncbadge">لم يتم ضبط Firebase بعد</span>';
+  acctSettingsArea.innerHTML='<p style="font-size:11px;color:var(--muted)">ضع إعدادات مشروعك الحقيقية داخل الملف بين FIREBASE_CONFIG_START وFIREBASE_CONFIG_END لتفعيل تسجيل الدخول والمزامنة السحابية.</p>';
+  storageLine.textContent='● لم يتم ضبط Firebase — لا يمكن الحفظ حاليًا';
+  syncLine.textContent='إعداد Firebase غير مكتمل';
+} else {
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+  let unsub = null;
+
+  async function doSignIn(){
+    try{ await signInWithPopup(auth, provider); }
+    catch(err){ console.error(err); alert('تعذّر تسجيل الدخول: '+(err.code||err.message)); }
+  }
+  async function doSignOut(){
+    if(unsub){unsub();unsub=null;}
+    await signOut(auth);
+  }
+
+  window.__cloudSetCase = async (caseObj) => {
+    if(!window.__authUid) throw new Error('غير مسجَّل الدخول');
+    await setDoc(doc(db,'users',window.__authUid,'cases',String(caseObj.caseNumber)), caseObj, {merge:true});
+  };
+  window.__cloudUpdateCase = async (caseNumber, patch) => {
+    if(!window.__authUid) throw new Error('غير مسجَّل الدخول');
+    await updateDoc(doc(db,'users',window.__authUid,'cases',String(caseNumber)), patch);
+  };
+  window.__cloudSaveCustomCategories = async (list) => {
+    if(!window.__authUid) return;
+    try{ await setDoc(doc(db,'users',window.__authUid,'settings','customCategories'), {list}); }
+    catch(err){ console.error('تعذّر حفظ التصنيفات المخصصة:', err); }
+  };
+  window.__cloudSaveAlias = async (entry) => {
+    if(!window.__authUid) return;
+    try{
+      const merged=classificationAliases.slice();
+      await setDoc(doc(db,'users',window.__authUid,'settings','classificationAliases'), {list:merged});
+    }catch(err){ console.error('تعذّر حفظ تصحيح التصنيف:', err); }
+  };
+
+  let unsubCats = null;
+  let unsubAliases = null;
+  onAuthStateChanged(auth, user => {
+    if(unsub){unsub();unsub=null;}
+    if(unsubCats){unsubCats();unsubCats=null;}
+    if(unsubAliases){unsubAliases();unsubAliases=null;}
+    if(user){
+      window.__authUid = user.uid;
+      renderSignedInUI(user);
+      unsub = onSnapshot(collection(db,'users',user.uid,'cases'), snap => {
+        const list = snap.docs.map(d=>d.data());
+        if(typeof records!=='undefined'){records.length=0;records.push(...list);}
+        if(typeof renderCases==='function'){renderCases();renderTrash();renderTree();}
+        if(typeof renderDashboard==='function')renderDashboard();
+        if(typeof runHijriMigrationSilently==='function')runHijriMigrationSilently();
+        syncLine.textContent='تم الحفظ ☁️ — آخر مزامنة الآن';
+      }, err => { console.error(err); syncLine.textContent='تعذّر تحميل القضايا ⚠️'; });
+      unsubCats = onSnapshot(doc(db,'users',user.uid,'settings','customCategories'), snap => {
+        const data = snap.exists() ? snap.data() : {list:[]};
+        const remoteList = Array.isArray(data.list) ? data.list : [];
+        if(typeof customCategories!=='undefined' && typeof addCustomCategoryRuntime==='function'){
+          // إعادة بناء التصنيفات المخصصة من الصفر لتفادي التكرار عند كل مزامنة
+          customCategories.forEach(c=>removeCustomCategoryRuntime(c.id));
+          customCategories.length = 0;
+          remoteList.forEach(entry=>{ addCustomCategoryRuntime(entry); customCategories.push(entry); });
+          if(document.getElementById('taxonomy').classList.contains('active') && typeof renderTree==='function') renderTree();
+        }
+      }, err => console.error('تعذّر تحميل التصنيفات المخصصة:', err));
+      unsubAliases = onSnapshot(doc(db,'users',user.uid,'settings','classificationAliases'), snap => {
+        const data = snap.exists() ? snap.data() : {list:[]};
+        const remoteList = Array.isArray(data.list) ? data.list : [];
+        if(typeof classificationAliases!=='undefined'){
+          classificationAliases.length = 0;
+          classificationAliases.push(...remoteList);
+        }
+      }, err => console.error('تعذّر تحميل تصحيحات التصنيف:', err));
+    } else {
+      window.__authUid = null;
+      renderSignedOutUI();
+    }
+  });
+
+  // تفويض النقر لأزرار الدخول/الخروج (تُنشأ ديناميكيًا)
+  document.addEventListener('click', e=>{
+    if(e.target && e.target.id==='btnGoogleIn') doSignIn();
+    if(e.target && (e.target.id==='btnGoogleOut'||e.target.id==='btnGoogleOut2')) doSignOut();
+  });
+}
+</script>
+</body></html>

@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>سجل القضايا — أرشيفك الذكي للقضايا</title>
+<title>ديوان القضايا — أرشيفك الذكي للقضايا</title>
 <style>
 :root{--g:#17483b;--g2:#236554;--gold:#b58a48;--sand:#f5f0e6;--ivory:#fcfaf5;--line:#ded5c4;--muted:#6e746e}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 70% 10%,#b58a4817,transparent 28%),var(--ivory);color:#23332e;font-family:Tahoma,Arial,sans-serif}.app{min-height:100vh;display:grid;grid-template-columns:240px 1fr}.side{position:fixed;right:0;top:0;width:240px;height:100vh;padding:28px 18px;background:linear-gradient(#103b31,#0c2d26);color:#fff}.brand{display:flex;align-items:center;gap:12px}.mark{display:grid;place-items:center;width:44px;height:44px;border:1px solid #d8b978;border-radius:13px;color:#e1c486;font:700 23px Georgia}.brand small{display:block;color:#afc1ba;margin-top:3px}.side nav{display:grid;gap:7px;margin-top:50px}.side nav button{border:0;background:none;color:#c7d4cf;text-align:right;padding:13px;border-radius:11px;cursor:pointer}.side nav button.active{background:#ffffff18;color:#fff}.main{grid-column:2;padding:0 min(7vw,85px) 60px}.top{height:75px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:12px}.page{display:none;max-width:940px;margin:55px auto}.page.active{display:block}.hero{text-align:center;max-width:720px;margin:0 auto 30px}.hero small,.eyebrow{color:var(--gold);font-weight:700}.hero h1{font-size:48px;color:var(--g);margin:12px}.hero h1 span{color:var(--gold)}.hero p{color:var(--muted);line-height:1.8}.box{background:#fff;border:1px solid var(--line);border-radius:20px;padding:5px;box-shadow:0 20px 55px #273c3212}.box textarea{width:100%;height:190px;border:0;outline:0;resize:vertical;padding:25px;background:none;font:16px/1.9 Tahoma;color:var(--g)}.bar{border-top:1px solid #eee8dd;padding:12px;display:flex;align-items:center;justify-content:flex-end}.primary,.soft{border:0;border-radius:10px;padding:12px 19px;cursor:pointer;font-weight:700}.primary{background:linear-gradient(135deg,var(--g2),var(--g));color:#fff}.primary:disabled{opacity:.5;cursor:not-allowed}.soft{background:#f1ede5;color:var(--g)}.review,.card,.tree{margin-top:15px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}.review-head,.section-head,.card-head{display:flex;align-items:center;justify-content:space-between}.badge{background:#edf8f1;color:#187346;border:1px solid #cfe8d8;border-radius:20px;padding:6px 10px;font-size:11px}.classification{margin:18px 0;padding:14px;background:#f7f4ed;border-radius:11px;color:var(--g)}.classification b{color:var(--gold);padding:0 9px}.tags span{display:inline-block;margin:5px 0 0 6px;padding:5px 9px;background:#f7f0e3;color:#7d6948;border-radius:12px;font-size:10px}.save{display:block;margin:20px auto}.section-head h1{color:var(--g);font-size:38px}.search{width:100%;padding:15px;border:1px solid var(--line);border-radius:12px;background:#fff;outline:0}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.card h3{color:var(--g)}.card p{color:var(--muted);font-size:12px}.card footer{display:flex;justify-content:space-between;border-top:1px solid #eee;padding-top:12px;margin-top:15px}.card footer button{border:0;background:none;color:#985d4e;cursor:pointer}.card .meta{font-size:10.5px;color:#9aa39c;margin-top:6px}.tree details{border-bottom:1px solid #eee;padding:10px}.tree details:last-child{border:0}.tree summary{cursor:pointer;color:var(--g);font-weight:700}.tree li{margin:10px;color:var(--muted)}.empty{text-align:center;color:var(--muted);padding:55px}.note{margin-top:20px;text-align:center;color:var(--muted);font-size:11px}.mobile{display:none}
 .addCaseBtn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;border:1px dashed #d8b978;background:#ffffff12;color:#e1c486;font-weight:700;padding:13px;border-radius:12px;cursor:pointer;font-size:14px;margin:18px 0 6px}
@@ -24,12 +24,34 @@
 .exportMenu button{display:block;width:100%;text-align:right;border:0;background:none;padding:12px 14px;cursor:pointer;font:inherit;color:var(--g)}
 .exportMenu button:hover{background:#f7f4ed}
 .reviewbadge{background:#fdf6e3;color:#a5761f;border:1px solid #f0dfae;border-radius:20px;padding:5px 9px;font-size:11px}
+.islamic-deco{position:fixed;pointer-events:none;z-index:0;width:230px;height:230px;color:var(--gold);opacity:.1}
+.islamic-deco.corner-tl{top:-55px;left:-55px}
+.islamic-deco.corner-br{bottom:-55px;left:-55px}
+.islamic-deco svg{width:100%;height:100%}
+@media(max-width:760px){.islamic-deco{width:120px;height:120px;opacity:.06}}
+.hijriBar{text-align:left;padding:9px 4px 0;color:var(--gold);font-size:12px;font-weight:700;letter-spacing:.2px}
+.appFooter{position:relative;z-index:1;text-align:center;color:#9aa39c;font-size:11px;padding:22px 10px 30px}
+.main{position:relative;z-index:1}
 .acct{display:flex;align-items:center;gap:8px}.acct img{width:28px;height:28px;border-radius:50%}.syncbadge{background:#eef1fb;color:#3b4c9e;border:1px solid #d6ddf5;border-radius:20px;padding:4px 9px;font-size:10.5px}
 @media(max-width:760px){.app{display:block}.side{display:none}.main{padding:0 15px 85px}.top{justify-content:center;flex-wrap:wrap;height:auto;padding:10px 0;gap:8px}.page{margin-top:20px}.hero h1{font-size:34px}.grid{grid-template-columns:1fr}.mobile{position:fixed;display:flex;bottom:0;left:0;right:0;height:65px;background:#fff;border-top:1px solid var(--line);justify-content:space-around;z-index:5}.mobile button{border:0;background:none;color:var(--muted)}.mobile button.active{color:var(--g)}}
 </style></head>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.11.0/mammoth.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/docx@9.7.1/dist/index.umd.cjs"></script>
-<body><div class="app"><aside class="side"><div class="brand"><span class="mark">س</span><div><b>سجل القضايا</b><small>أرشيفك الذكي للقضايا</small></div></div><button class="addCaseBtn" onclick="show('home')">+ إضافة قضية</button><nav id="nav"></nav><p style="position:absolute;bottom:20px;color:#afc1ba;font-size:11px" id="storageLine">● جارٍ الاتصال بالسحابة…</p></aside><main class="main"><header class="top"><span id="syncLine">جارٍ التحقق من حالة الدخول…</span><div class="acct" id="acctArea"></div></header>
+<body><div class="islamic-deco corner-tl" aria-hidden="true"><svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+<circle cx="110" cy="110" r="96" fill="none" stroke="currentColor" stroke-width="0.6"/>
+<circle cx="110" cy="110" r="14" fill="none" stroke="currentColor" stroke-width="0.6"/>
+<path d="M110.00,36.00 Q115.32,36.00 110.00,22.00 Q104.68,36.00 110.00,36.00 Z M147.00,45.91 Q151.61,48.57 154.00,33.79 Q142.39,43.25 147.00,45.91 Z M174.09,73.00 Q176.75,77.61 186.21,66.00 Q171.43,68.39 174.09,73.00 Z M184.00,110.00 Q184.00,115.32 198.00,110.00 Q184.00,104.68 184.00,110.00 Z M174.09,147.00 Q171.43,151.61 186.21,154.00 Q176.75,142.39 174.09,147.00 Z M147.00,174.09 Q142.39,176.75 154.00,186.21 Q151.61,171.43 147.00,174.09 Z M110.00,184.00 Q104.68,184.00 110.00,198.00 Q115.32,184.00 110.00,184.00 Z M73.00,174.09 Q68.39,171.43 66.00,186.21 Q77.61,176.75 73.00,174.09 Z M45.91,147.00 Q43.25,142.39 33.79,154.00 Q48.57,151.61 45.91,147.00 Z M36.00,110.00 Q36.00,104.68 22.00,110.00 Q36.00,115.32 36.00,110.00 Z M45.91,73.00 Q48.57,68.39 33.79,66.00 Q43.25,77.61 45.91,73.00 Z M73.00,45.91 Q77.61,43.25 66.00,33.79 Q68.39,48.57 73.00,45.91 Z" fill="currentColor" fill-opacity="0.5" stroke="none"/>
+<polygon points="110.00,38.00 121.39,67.50 146.00,47.65 141.11,78.89 172.35,74.00 152.50,98.61 182.00,110.00 152.50,121.39 172.35,146.00 141.11,141.11 146.00,172.35 121.39,152.50 110.00,182.00 98.61,152.50 74.00,172.35 78.89,141.11 47.65,146.00 67.50,121.39 38.00,110.00 67.50,98.61 47.65,74.00 78.89,78.89 74.00,47.65 98.61,67.50" fill="none" stroke="currentColor" stroke-width="0.7"/>
+<polygon points="125.01,53.98 127.50,79.69 151.01,68.99 140.31,92.50 166.02,94.99 145.00,110.00 166.02,125.01 140.31,127.50 151.01,151.01 127.50,140.31 125.01,166.02 110.00,145.00 94.99,166.02 92.50,140.31 68.99,151.01 79.69,127.50 53.98,125.01 75.00,110.00 53.98,94.99 79.69,92.50 68.99,68.99 92.50,79.69 94.99,53.98 110.00,75.00" fill="none" stroke="currentColor" stroke-width="0.5"/>
+<polygon points="110.00,76.00 115.36,97.07 134.04,85.96 122.93,104.64 144.00,110.00 122.93,115.36 134.04,134.04 115.36,122.93 110.00,144.00 104.64,122.93 85.96,134.04 97.07,115.36 76.00,110.00 97.07,104.64 85.96,85.96 104.64,97.07" fill="none" stroke="currentColor" stroke-width="0.5"/>
+</svg></div><div class="islamic-deco corner-br" aria-hidden="true"><svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+<circle cx="110" cy="110" r="96" fill="none" stroke="currentColor" stroke-width="0.6"/>
+<circle cx="110" cy="110" r="14" fill="none" stroke="currentColor" stroke-width="0.6"/>
+<path d="M110.00,36.00 Q115.32,36.00 110.00,22.00 Q104.68,36.00 110.00,36.00 Z M147.00,45.91 Q151.61,48.57 154.00,33.79 Q142.39,43.25 147.00,45.91 Z M174.09,73.00 Q176.75,77.61 186.21,66.00 Q171.43,68.39 174.09,73.00 Z M184.00,110.00 Q184.00,115.32 198.00,110.00 Q184.00,104.68 184.00,110.00 Z M174.09,147.00 Q171.43,151.61 186.21,154.00 Q176.75,142.39 174.09,147.00 Z M147.00,174.09 Q142.39,176.75 154.00,186.21 Q151.61,171.43 147.00,174.09 Z M110.00,184.00 Q104.68,184.00 110.00,198.00 Q115.32,184.00 110.00,184.00 Z M73.00,174.09 Q68.39,171.43 66.00,186.21 Q77.61,176.75 73.00,174.09 Z M45.91,147.00 Q43.25,142.39 33.79,154.00 Q48.57,151.61 45.91,147.00 Z M36.00,110.00 Q36.00,104.68 22.00,110.00 Q36.00,115.32 36.00,110.00 Z M45.91,73.00 Q48.57,68.39 33.79,66.00 Q43.25,77.61 45.91,73.00 Z M73.00,45.91 Q77.61,43.25 66.00,33.79 Q68.39,48.57 73.00,45.91 Z" fill="currentColor" fill-opacity="0.5" stroke="none"/>
+<polygon points="110.00,38.00 121.39,67.50 146.00,47.65 141.11,78.89 172.35,74.00 152.50,98.61 182.00,110.00 152.50,121.39 172.35,146.00 141.11,141.11 146.00,172.35 121.39,152.50 110.00,182.00 98.61,152.50 74.00,172.35 78.89,141.11 47.65,146.00 67.50,121.39 38.00,110.00 67.50,98.61 47.65,74.00 78.89,78.89 74.00,47.65 98.61,67.50" fill="none" stroke="currentColor" stroke-width="0.7"/>
+<polygon points="125.01,53.98 127.50,79.69 151.01,68.99 140.31,92.50 166.02,94.99 145.00,110.00 166.02,125.01 140.31,127.50 151.01,151.01 127.50,140.31 125.01,166.02 110.00,145.00 94.99,166.02 92.50,140.31 68.99,151.01 79.69,127.50 53.98,125.01 75.00,110.00 53.98,94.99 79.69,92.50 68.99,68.99 92.50,79.69 94.99,53.98 110.00,75.00" fill="none" stroke="currentColor" stroke-width="0.5"/>
+<polygon points="110.00,76.00 115.36,97.07 134.04,85.96 122.93,104.64 144.00,110.00 122.93,115.36 134.04,134.04 115.36,122.93 110.00,144.00 104.64,122.93 85.96,134.04 97.07,115.36 76.00,110.00 97.07,104.64 85.96,85.96 104.64,97.07" fill="none" stroke="currentColor" stroke-width="0.5"/>
+</svg></div><div class="app"><aside class="side"><div class="brand"><span class="mark">د</span><div><b>ديوان القضايا</b><small>أرشيفك الذكي للقضايا</small></div></div><button class="addCaseBtn" onclick="show('home')">+ إضافة قضية</button><nav id="nav"></nav><p style="position:absolute;bottom:20px;color:#afc1ba;font-size:11px" id="storageLine">● جارٍ الاتصال بالسحابة…</p></aside><main class="main"><div class="hijriBar" id="hijriBar"></div><header class="top"><span id="syncLine">جارٍ التحقق من حالة الدخول…</span><div class="acct" id="acctArea"></div></header>
 <section id="dashboard" class="page active">
   <div class="section-head"><div><small class="eyebrow">مرحبًا بعودتك</small><h1 style="color:var(--g);font-size:32px;margin:6px 0">أرشيف قضاياك</h1></div><button class="primary" onclick="show('home')">+ إضافة قضية</button></div>
   <input class="bigsearch" id="dashSearch" placeholder="ابحث برقم القضية، النوع، الوصف، التصنيف، الوسوم، النتيجة أو السبب..." oninput="renderDashboard()">
@@ -49,7 +71,7 @@
         <textarea id="migrationInput" style="width:100%;min-height:140px;margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit" placeholder="الصق هنا القائمة الأصلية الكاملة بنفس صيغتك المعتادة..."></textarea>
         <div style="margin-top:12px"><button class="soft" id="btnMigrationPreview" onclick="previewMigration()">معاينة الإصلاح (بدون أي تغيير فعلي)</button></div>
       </article>
-      <article class="card"><h3>سياسة الحذف</h3><p>لا تحذف القضايا نهائيًا؛ تنتقل إلى السلة سحابيًا ويمكن استعادتها من أي جهاز في أي وقت.</p><span class="badge">حذف آمن</span></article></section></main><nav class="mobile" id="mobile"></nav></div>
+      <article class="card"><h3>سياسة الحذف</h3><p>لا تحذف القضايا نهائيًا؛ تنتقل إلى السلة سحابيًا ويمكن استعادتها من أي جهاز في أي وقت.</p><span class="badge">حذف آمن</span></article></section><footer class="appFooter" id="appFooter"></footer></main><nav class="mobile" id="mobile"></nav></div>
 <div id="reportModal" style="display:none;position:fixed;inset:0;background:#0c2d2660;z-index:70;align-items:center;justify-content:center;padding:20px">
   <div id="reportModalBox" style="background:#fff;border-radius:16px;padding:24px;max-width:680px;width:100%;max-height:86vh;overflow-y:auto"></div>
 </div>
@@ -352,19 +374,36 @@ function norm(s){return s.normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640]
 
 /* ===== التقويم الهجري (أم القرى) — عبر Intl المدعومة أصلًا في المتصفح، بلا حساب يدوي أو افتراض بداية الشهر ===== */
 const HIJRI_MONTH_NAMES=['محرم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
+const HIJRI_WEEKDAY_NAMES=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت']; // getDay(): 0=الأحد
 const hijriFormatter=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{year:'numeric',month:'numeric',day:'numeric'});
 function gregorianToHijri(dateObj){
   const parts=hijriFormatter.formatToParts(dateObj);
   const year=parseInt(parts.find(p=>p.type==='year').value,10);
   const month=parseInt(parts.find(p=>p.type==='month').value,10);
+  const day=parseInt(parts.find(p=>p.type==='day').value,10);
   return{
     hijriYear:year,
     hijriMonthNumber:month,
     hijriMonth:HIJRI_MONTH_NAMES[month-1],
-    hijriMonthKey:year+'-'+String(month).padStart(2,'0')
+    hijriMonthKey:year+'-'+String(month).padStart(2,'0'),
+    hijriDay:day
   };
 }
 function hijriFieldsForNow(){return gregorianToHijri(new Date());}
+/* نص شريط التاريخ الهجري العلوي، مثل: "الأحد 25 صفر 1448 هـ" */
+function formatHijriHeaderString(dateObj){
+  const h=gregorianToHijri(dateObj);
+  const weekday=HIJRI_WEEKDAY_NAMES[dateObj.getDay()];
+  return weekday+' '+h.hijriDay+' '+h.hijriMonth+' '+h.hijriYear+' هـ';
+}
+function renderHijriBar(){
+  const el=document.getElementById('hijriBar');
+  if(el)el.textContent=formatHijriHeaderString(new Date());
+}
+function renderFooter(){
+  const el=document.getElementById('appFooter');
+  if(el)el.textContent='جميع الحقوق محفوظة © زياد بن محمد '+new Date().getFullYear();
+}
 /* ===== كاشف كلمة الحالة (نهائي/غير نهائي) عندما تكون النص بأكمله كلمة الحالة فقط ===== */
 function detectStatusWord(text){
   const n=norm(text);
@@ -1557,6 +1596,8 @@ function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.togg
 function initNav(where){document.getElementById(where).innerHTML=navItems.map(x=>`<button data-page="${x[0]}" onclick="show('${x[0]}')">${x[1]}</button>`).join('')}
 function setSync(text){const l=document.getElementById('syncLine');if(l)l.textContent=text;}
 initNav('nav');initNav('mobile');show('dashboard');
+renderHijriBar();renderFooter();
+setInterval(renderHijriBar,3600000); // تحديث تلقائي دوري (كل ساعة) ليعكس تغيّر اليوم دون إعادة تحميل الصفحة
 window.records=records; // تعريض للاختبار الآلي فقط (let لا يُضاف تلقائيًا إلى window)
 window.migrationPreviewData=migrationPreviewData;
 window.classificationAliases=classificationAliases;

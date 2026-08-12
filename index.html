@@ -398,30 +398,57 @@ function norm(s){return s.normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640]
 /* ===== التقويم الهجري (أم القرى) — عبر Intl المدعومة أصلًا في المتصفح، بلا حساب يدوي أو افتراض بداية الشهر ===== */
 const HIJRI_MONTH_NAMES=['محرم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
 const HIJRI_WEEKDAY_NAMES=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت']; // getDay(): 0=الأحد
-const hijriFormatter=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{year:'numeric',month:'numeric',day:'numeric'});
-function gregorianToHijri(dateObj){
-  const parts=hijriFormatter.formatToParts(dateObj);
-  const year=parseInt(parts.find(p=>p.type==='year').value,10);
-  const month=parseInt(parts.find(p=>p.type==='month').value,10);
-  const day=parseInt(parts.find(p=>p.type==='day').value,10);
-  return{
-    hijriYear:year,
-    hijriMonthNumber:month,
-    hijriMonth:HIJRI_MONTH_NAMES[month-1],
-    hijriMonthKey:year+'-'+String(month).padStart(2,'0'),
-    hijriDay:day
-  };
+/* تهيئة آمنة: لا تفترض أن كل متصفح يدعم تقويم islamic-umalqura. إن فشل الإنشاء أو أعاد نتائج غير معقولة
+   (مثل سنة هجرية خارج نطاق العصر الحالي، ما يعني أن المتصفح تجاهل التقويم بصمت وأرجع الميلادي)، نستخدم
+   fallback آمن (عرض التاريخ الميلادي) بدل كسر الشريط أو عرض بيانات خاطئة. */
+let hijriFormatter=null, hijriCalendarSupported=false;
+try{
+  hijriFormatter=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{year:'numeric',month:'numeric',day:'numeric'});
+  const testParts=hijriFormatter.formatToParts(new Date());
+  const testYear=parseInt(testParts.find(p=>p.type==='year').value,10);
+  hijriCalendarSupported=testYear>=1400&&testYear<=1500; // نطاق معقول لسنة هجرية فعلية، وليس ميلادية تسربت بصمت
+}catch(e){
+  console.warn('تقويم أم القرى غير مدعوم في هذا المتصفح؛ سيُستخدم التاريخ الميلادي كبديل آمن.',e);
+  hijriCalendarSupported=false;
 }
-function hijriFieldsForNow(){return gregorianToHijri(new Date());}
-/* نص شريط التاريخ الهجري العلوي، مثل: "الأحد 25 صفر 1448 هـ" */
+function gregorianToHijri(dateObj){
+  if(!hijriCalendarSupported)return null;
+  try{
+    const parts=hijriFormatter.formatToParts(dateObj);
+    const year=parseInt(parts.find(p=>p.type==='year').value,10);
+    const month=parseInt(parts.find(p=>p.type==='month').value,10);
+    const day=parseInt(parts.find(p=>p.type==='day').value,10);
+    return{
+      hijriYear:year,
+      hijriMonthNumber:month,
+      hijriMonth:HIJRI_MONTH_NAMES[month-1],
+      hijriMonthKey:year+'-'+String(month).padStart(2,'0'),
+      hijriDay:day
+    };
+  }catch(e){
+    console.warn('تعذّر حساب التاريخ الهجري لهذا التاريخ:',e);
+    return null;
+  }
+}
+function hijriFieldsForNow(){return gregorianToHijri(new Date())||{hijriYear:'',hijriMonth:'',hijriMonthNumber:'',hijriMonthKey:'',hijriDay:''};}
+const GREGORIAN_MONTH_NAMES_AR=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+/* نص شريط التاريخ العلوي: "الأحد 25 صفر 1448 هـ" عند دعم التقويم الهجري،
+   أو fallback ميلادي آمن مثل "الأحد 9 أغسطس 2026م" إن لم يكن مدعومًا — لا ينكسر الموقع أبدًا. */
 function formatHijriHeaderString(dateObj){
-  const h=gregorianToHijri(dateObj);
   const weekday=HIJRI_WEEKDAY_NAMES[dateObj.getDay()];
-  return weekday+' '+h.hijriDay+' '+h.hijriMonth+' '+h.hijriYear+' هـ';
+  const h=gregorianToHijri(dateObj);
+  if(h)return weekday+' '+h.hijriDay+' '+h.hijriMonth+' '+h.hijriYear+' هـ';
+  return weekday+' '+dateObj.getDate()+' '+GREGORIAN_MONTH_NAMES_AR[dateObj.getMonth()]+' '+dateObj.getFullYear()+'م';
 }
 function renderHijriBar(){
   const el=document.getElementById('hijriBar');
-  if(el)el.textContent=formatHijriHeaderString(new Date());
+  if(!el)return;
+  try{
+    el.textContent=formatHijriHeaderString(new Date());
+  }catch(e){
+    console.warn('تعذّر عرض شريط التاريخ؛ سيبقى الشريط فارغًا بأمان دون التأثير على بقية الموقع.',e);
+    el.textContent='';
+  }
 }
 function renderFooter(){
   const el=document.getElementById('appFooter');

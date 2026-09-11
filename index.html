@@ -24,6 +24,23 @@
 .filterpanel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
 .filterpanel label{display:block;font-size:11px;color:var(--text-secondary);margin-bottom:4px;font-weight:500}
 .filterpanel select{width:100%;padding:9px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text-primary);font-family:inherit}
+.ssel{position:relative}
+.ssel-input{width:100%;padding:9px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text-primary);font-family:inherit;outline:0}
+.ssel-input:focus{border-color:var(--mint)}
+.ssel-list{position:absolute;z-index:20;top:calc(100% + 4px);right:0;left:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;max-height:220px;overflow-y:auto;box-shadow:0 10px 24px #2f6f5220}
+.ssel-item{padding:9px 12px;cursor:pointer;font-size:13px;color:var(--text-primary)}
+.ssel-item:hover{background:var(--mint-pale);color:var(--mint-dark)}
+.multichecklist{border:1px solid var(--border);border-radius:10px;padding:10px;max-height:220px;overflow-y:auto;background:var(--surface)}
+.multichecklist label{display:flex;align-items:center;gap:7px;padding:5px 3px;font-size:12.5px;color:var(--text-primary);cursor:pointer}
+.multichecklist input[type=checkbox]{accent-color:var(--mint-dark)}
+.chipsline{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chipsline span{background:var(--mint-soft);color:var(--mint-dark);border-radius:12px;padding:4px 9px;font-size:11px}
+.suggestion-card{border:1.5px solid var(--mint);border-radius:14px;padding:16px;margin-top:12px;background:var(--mint-pale)}
+.confidence-badge{border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700}
+.confidence-high{background:#DDF2E3;color:#187346}
+.confidence-medium{background:var(--lemon-soft);color:var(--lemon-text)}
+.confidence-manual{background:#F8E7DD;color:#a5601f}
+.confidence-insufficient{background:var(--danger-bg);color:var(--danger)}
 .exportMenuWrap{position:relative}
 .exportMenu{display:none;position:absolute;left:0;top:48px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 30px #2f6f5226;z-index:10;min-width:190px;overflow:hidden}
 .exportMenu.open{display:block}
@@ -98,7 +115,11 @@
   <div id="dashLists"></div>
 </section>
 <section id="home" class="page"><div class="hero"><small>مساعدك القانوني المنظّم</small><h1>أدخل القضية <span>بأي طريقة تريد</span></h1><p>اكتب رقم القضية ووصفًا مختصرًا بأي ترتيب، وسنرتبها ونصنفها لك دون افتراض أي واقعة لم تذكرها.</p></div><div class="box"><textarea id="input" placeholder="مثال:&#10;حادث&#10;8789797"></textarea><div class="bar"><button class="soft" onclick="document.getElementById('input').value='4870044548\nمطالبة المدعي المدعى عليه بمبلغ العقد لعدم إتمام العقد وحكم له'">استخدم مثالًا تجريبيًا</button><span style="flex:1"></span><button class="primary" onclick="runAnalysis()">تحليل القضية ←</button></div></div>
-<div id="preview"></div><p class="note"><b style="color:var(--g)">خصوصيتك أولًا:</b> لا نضيف وقائع غير مذكورة، ويمكنك مراجعة كل اقتراح قبل حفظه.</p></section><section id="cases" class="page"><div class="section-head"><div><small class="eyebrow">أرشيفك</small><h1>قضاياك المحفوظة <span class="badge" id="caseCounter">0</span></h1></div><button class="primary" onclick="newCase()">+ إضافة قضية</button></div><div style="display:flex;gap:8px"><input class="search" id="search" placeholder="ابحث بالرقم أو التصنيف أو النص أو الوسوم..." oninput="renderCases()" style="flex:1"><button class="iconbtn" id="filterIconBtn" onclick="toggleFilterPanel()" title="تصفية"><span class="dot"></span>⚲</button><div class="exportMenuWrap"><button class="iconbtn" onclick="toggleExportMenu()" title="تصدير">⭳</button><div class="exportMenu" id="exportMenu"><button onclick="closeExportMenu();exportToWord()">تصدير إلى Word</button><button onclick="closeExportMenu();exportCaseNumbersTxt()">تصدير أرقام القضايا TXT</button><button onclick="closeExportMenu();exportData()">نسخة احتياطية JSON</button></div></div></div><div id="filterPanel" class="filterpanel" style="display:none"></div><div class="deco-hr thin" aria-hidden="true"><svg preserveAspectRatio="none"><defs><pattern id="hrPatCases" width="40" height="11" patternUnits="userSpaceOnUse"><line x1="0" y1="5.5" x2="40" y2="5.5" stroke="#2F6F52" stroke-width="0.5"/><rect x="15.5" y="1.5" width="8" height="8" transform="rotate(45 19.5 5.5)" fill="none" stroke="#D4B93E" stroke-width="0.7"/></pattern></defs><rect width="100%" height="11" fill="url(#hrPatCases)"/></svg></div><div id="caseList"></div></section><section id="taxonomy" class="page"><div class="section-head"><div><small class="eyebrow">تصنيف رئيسي ← تصنيف فرعي ← القضايا</small><h1>دليل التصنيفات</h1></div></div><div id="tree" class="tree"></div></section><section id="trash" class="page"><div class="section-head"><div><small class="eyebrow">سلة المحذوفات</small><h1>القضايا المحذوفة</h1></div></div><div id="trashList"></div></section><section id="settings" class="page"><div class="section-head"><div><small class="eyebrow">الحساب والبيانات</small><h1>الإعدادات</h1></div></div><article class="card" id="acctCard"><h3>الحساب والمزامنة</h3><p>سجّل الدخول بحساب Google لحفظ قضاياك سحابيًا في Firestore ومزامنتها فورًا بين كل أجهزتك.</p><div id="acctSettingsArea"></div></article><article class="card"><h3>النسخة الاحتياطية</h3><p>صدّر جميع بياناتك أو استورد نسخة سابقة إلى حسابك السحابي. لن تتكرر أرقام القضايا الموجودة.</p><div style="display:flex;gap:8px;margin-top:15px"><button class="soft" onclick="exportData()">تصدير JSON</button><button class="primary" onclick="document.getElementById('importFile').click()">استيراد نسخة</button><input hidden id="importFile" type="file" accept="application/json" onchange="importData(event)"></div></article><article class="card"><h3>إعادة تحليل القضايا غير المصنفة</h3><p>بعد أي تحسين لمحرك التصنيف، استخدم هذا الزر لإعادة تصنيف القضايا التي وقعت سابقًا في "غير مصنف بدقة" فقط — دون حذف أي قضية أو تغيير رقمها أو نصها الأصلي. القضايا التي راجعتها يدويًا (manuallyReviewed) لن تُمس.</p><div style="margin-top:15px"><button class="primary" id="btnReanalyze" onclick="reanalyzeUnclassified()">إعادة تحليل القضايا غير المصنفة</button></div></article>
+<div id="preview"></div><p class="note"><b style="color:var(--g)">خصوصيتك أولًا:</b> لا نضيف وقائع غير مذكورة، ويمكنك مراجعة كل اقتراح قبل حفظه.</p></section><section id="cases" class="page"><div class="section-head"><div><small class="eyebrow">أرشيفك</small><h1>قضاياك المحفوظة <span class="badge" id="caseCounter">0</span></h1></div><button class="primary" onclick="newCase()">+ إضافة قضية</button></div><div style="display:flex;gap:8px"><input class="search" id="search" placeholder="ابحث بالرقم أو التصنيف أو النص أو الوسوم..." oninput="renderCases()" style="flex:1"><button class="iconbtn" id="filterIconBtn" onclick="toggleFilterPanel()" title="تصفية"><span class="dot"></span>⚲</button><div class="exportMenuWrap"><button class="iconbtn" onclick="toggleExportMenu()" title="تصدير">⭳</button><div class="exportMenu" id="exportMenu"><button onclick="closeExportMenu();exportToWord()">تصدير إلى Word</button><button onclick="closeExportMenu();exportCaseNumbersTxt()">تصدير أرقام القضايا TXT</button><button onclick="closeExportMenu();exportData()">نسخة احتياطية JSON</button></div></div></div><div id="filterPanel" class="filterpanel" style="display:none"></div><div class="deco-hr thin" aria-hidden="true"><svg preserveAspectRatio="none"><defs><pattern id="hrPatCases" width="40" height="11" patternUnits="userSpaceOnUse"><line x1="0" y1="5.5" x2="40" y2="5.5" stroke="#2F6F52" stroke-width="0.5"/><rect x="15.5" y="1.5" width="8" height="8" transform="rotate(45 19.5 5.5)" fill="none" stroke="#D4B93E" stroke-width="0.7"/></pattern></defs><rect width="100%" height="11" fill="url(#hrPatCases)"/></svg></div><div id="caseList"></div></section><section id="review" class="page"><div class="section-head"><div><small class="eyebrow">التصنيف الموضوعي منفصل عن النتيجة الإجرائية</small><h1>مراجعة تصنيفات القضايا</h1></div><button class="soft" onclick="runFullReaudit()">إعادة تدقيق جميع التصنيفات السابقة</button></div>
+<div class="statgrid" id="reviewStatGrid"></div>
+<div style="display:flex;gap:8px;margin:14px 0;align-items:center"><label style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-secondary)"><input type="checkbox" id="highConfidenceOnlyFilter" onchange="renderReviewList()"> الاقتراحات عالية الثقة فقط</label><span id="bulkSelectedCount" style="font-size:12px;color:var(--mint-dark)"></span><button class="primary" id="btnApproveSelected" style="display:none" onclick="openBulkApproveConfirm()">اعتماد المحدد</button></div>
+<div id="reviewList"></div>
+</section><section id="taxonomy" class="page"><div class="section-head"><div><small class="eyebrow">تصنيف رئيسي ← تصنيف فرعي ← القضايا</small><h1>دليل التصنيفات</h1></div></div><div id="tree" class="tree"></div></section><section id="trash" class="page"><div class="section-head"><div><small class="eyebrow">سلة المحذوفات</small><h1>القضايا المحذوفة</h1></div></div><div id="trashList"></div></section><section id="settings" class="page"><div class="section-head"><div><small class="eyebrow">الحساب والبيانات</small><h1>الإعدادات</h1></div></div><article class="card" id="acctCard"><h3>الحساب والمزامنة</h3><p>سجّل الدخول بحساب Google لحفظ قضاياك سحابيًا في Firestore ومزامنتها فورًا بين كل أجهزتك.</p><div id="acctSettingsArea"></div></article><article class="card"><h3>النسخة الاحتياطية</h3><p>صدّر جميع بياناتك أو استورد نسخة سابقة إلى حسابك السحابي. لن تتكرر أرقام القضايا الموجودة.</p><div style="display:flex;gap:8px;margin-top:15px"><button class="soft" onclick="exportData()">تصدير JSON</button><button class="primary" onclick="document.getElementById('importFile').click()">استيراد نسخة</button><input hidden id="importFile" type="file" accept="application/json" onchange="importData(event)"></div></article><article class="card"><h3>إعادة تحليل القضايا غير المصنفة</h3><p>بعد أي تحسين لمحرك التصنيف، استخدم هذا الزر لإعادة تصنيف القضايا التي وقعت سابقًا في "غير مصنف بدقة" فقط — دون حذف أي قضية أو تغيير رقمها أو نصها الأصلي. القضايا التي راجعتها يدويًا (manuallyReviewed) لن تُمس.</p><div style="margin-top:15px"><button class="primary" id="btnReanalyze" onclick="reanalyzeUnclassified()">إعادة تحليل القضايا غير المصنفة</button></div></article>
       <article class="card"><h3>إضافة شهر الأرشفة الهجري للقضايا القديمة</h3><p>قضاياك المضافة قبل هذه الميزة ليس لها بعد شهر أرشفة هجري. هذا الترحيل يحسب الشهر الهجري (أم القرى) بناءً على تاريخ الإضافة الفعلي المحفوظ (createdAt) لكل قضية — دون تغيير رقمها أو وصفها أو تصنيفها أو تاريخ إنشائها. يعرض معاينة أولًا ولا ينفّذ شيئًا قبل موافقتك.</p><div style="margin-top:15px"><button class="soft" onclick="previewHijriMigration()">معاينة إضافة شهر الأرشفة</button></div></article>
       <article class="card"><h3>تحليل نظام التصنيف الجديد (قراءة فقط — بلا أي تعديل)</h3><p>يحسب هذا التقرير عدد قضاياك الفعلية تحت كل تصنيف قديم، ويطبّق عليها جدول Mapping المقترح للنظام الجديد، ويحدد لكل قضية: هل يمكن ترحيلها آليًا بثقة، أم تحتاج مراجعة يدوية. <b>لا يُحدَّث أو يُغيَّر أي تصنيف لأي قضية عند الضغط على هذا الزر — تقرير للعرض فقط.</b></p><div style="margin-top:15px"><button class="soft" onclick="analyzeNewTaxonomyMigration()">تشغيل تحليل الترحيل (Preview فقط)</button></div></article>
       <article class="card"><h3>إصلاح نصوص قضايا قديمة (تعطّلت بسبب خلل قديم في القارئ)</h3><p>الصق هنا نفس القائمة الأصلية الصحيحة التي كتبتها سابقًا. سيطابق النظام كل رقم قضية مع قاعدة البيانات الحالية، ويقترح إصلاحًا فقط للقضايا التي نصها فارغ أو نصها الحالي هو كلمة الحالة نفسها ("نهائي"/"غير نهائي") بالخطأ. لن يُطبَّق أي تغيير قبل مراجعتك للمعاينة والموافقة عليها صراحة — ولن يُنشئ أي قضية جديدة أو يمس رقم القضية أو تاريخ الإنشاء أو حالة الحذف أو معرّف المستند.</p>
@@ -113,7 +134,7 @@
   <div id="caseDetailBox" style="background:#FFFFFF;border-radius:16px;padding:24px;max-width:640px;width:100%;max-height:90vh;overflow-y:auto"></div>
 </div>
 <script>
-const navItems=[['dashboard','الرئيسية'],['cases','القضايا'],['taxonomy','التصنيفات'],['trash','المحذوفات'],['settings','الإعدادات']];
+const navItems=[['dashboard','الرئيسية'],['cases','القضايا'],['review','مراجعة التصنيفات'],['taxonomy','التصنيفات'],['trash','المحذوفات'],['settings','الإعدادات']];
 let records=[],draft=[];
 /* =====================================================================
    محرك تصنيف بالنقاط (Scoring) بدل أول تطابق (rules.find)
@@ -732,6 +753,62 @@ function analyze(number,text,statusHint){
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function fmtDate(iso){if(!iso)return '—';try{const d=new Date(iso);return d.toLocaleDateString('ar-SA',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
 
+/* ============================= محرك القائمة المنسدلة القابلة للبحث (Searchable Dropdown) ============================= */
+let __sselRegistry={};
+function buildSearchableSelect(id,options,selected,onSelectFnName){
+  __sselRegistry[id]={options,onSelectFnName};
+  return `<div class="ssel" id="${id}">
+    <input type="text" class="ssel-input" data-value="${esc(selected||'')}" value="${esc(selected||'')}" placeholder="اكتب للبحث..." oninput="sselFilter('${id}')" onfocus="sselFilter('${id}')">
+    <div class="ssel-list" style="display:none"></div>
+  </div>`;
+}
+function sselFilter(id){
+  const entry=__sselRegistry[id];
+  if(!entry)return;
+  const container=document.getElementById(id);
+  const input=container.querySelector('.ssel-input');
+  const list=container.querySelector('.ssel-list');
+  const q=norm(input.value);
+  const matches=entry.options.map((o,i)=>({o,i})).filter(x=>norm(x.o).includes(q)).slice(0,60);
+  list.innerHTML=matches.length?matches.map(x=>`<div class="ssel-item" onmousedown="sselChooseIndex('${id}',${x.i})">${esc(x.o)}</div>`).join(''):'<div class="ssel-item" style="color:var(--text-secondary)">لا توجد نتائج مطابقة</div>';
+  list.style.display='block';
+}
+function sselChooseIndex(id,idx){
+  const entry=__sselRegistry[id];
+  const value=entry.options[idx];
+  const container=document.getElementById(id);
+  const input=container.querySelector('.ssel-input');
+  input.value=value;input.dataset.value=value;
+  container.querySelector('.ssel-list').style.display='none';
+  if(entry.onSelectFnName&&typeof window[entry.onSelectFnName]==='function')window[entry.onSelectFnName](value);
+}
+function sselValue(id){
+  const container=document.getElementById(id);
+  return container?container.querySelector('.ssel-input').value:'';
+}
+if(typeof document!=='undefined')document.addEventListener('click',e=>{
+  document.querySelectorAll('.ssel-list').forEach(l=>{
+    const parent=l.closest('.ssel');
+    if(parent&&!parent.contains(e.target))l.style.display='none';
+  });
+});
+
+/* ============================= محرك مربعات الاختيار المتعدد (Multi-select Checklist) — للنتيجة الإجرائية/وسائل الإثبات/الوسوم ============================= */
+function buildMultiChecklist(id,options,selectedList){
+  const selSet=new Set(selectedList||[]);
+  const items=options.map(o=>`<label><input type="checkbox" value="${esc(o)}" ${selSet.has(o)?'checked':''}> ${esc(o)}</label>`).join('');
+  return `<div><input type="text" class="ssel-input" placeholder="بحث ضمن القائمة..." oninput="mclFilter('${id}',this.value)" style="margin-bottom:8px"><div class="multichecklist" id="${id}">${items}</div></div>`;
+}
+function mclFilter(id,q){
+  const nq=norm(q);
+  document.querySelectorAll('#'+id+' label').forEach(l=>{
+    l.style.display=norm(l.textContent).includes(nq)?'flex':'none';
+  });
+}
+function mclValues(id){
+  return Array.from(document.querySelectorAll('#'+id+' input[type=checkbox]:checked')).map(c=>c.value);
+}
+
 function mainOptionsHTML(selected){return Object.keys(catalog).map(m=>`<option value="${esc(m)}" ${m===selected?'selected':''}>${esc(m)}</option>`).join('');}
 function subOptionsHTML(main,selected){return (catalog[main]||[]).map(s=>`<option value="${esc(s)}" ${s===selected?'selected':''}>${esc(s)}</option>`).join('');}
 
@@ -777,6 +854,123 @@ function runAnalysis(){
 }
 
 /* ============================= حفظ/تعديل/حذف — كل شيء يكتب مباشرة إلى Firestore (autosave، لا يوجد تخزين محلي) ============================= */
+/* ============================= حساب حقول نظام التصنيف الجديد لكل قضية (إضافي بالكامل، لا يمس الحقول القديمة) ============================= */
+/* ============================= محرك اقتراح إعادة التصنيف (قراءة فقط — لا يغيّر أي قضية) =============================
+   يجمع إشارتين:
+   1) جدول Mapping (من التصنيف القديم) — مصدر ثقة أساسي.
+   2) تطابق الكلمات الدالة بين النص الأصلي وأسماء كل تصنيف فرعي في الشجرة الجديدة (689 فرعًا) —
+      تصحيح/تعزيز مستقل لا يعتمد فقط على التصنيف القديم.
+   لا "ذكاء اصطناعي" حقيقي هنا — قواعد ومطابقة نصية صريحة، معروضة بصراحة في سبب الاقتراح. */
+const STOPWORDS_AR=new Set(['غير','على','من','في','إلى','عن','مع','أن','إن','ما','لا','كل','هذا','هذه','ذلك','التي','الذي','قد','كان','كانت','بين','عند','بعد','قبل','دون','بلا','بها','منه','منها','عنه','عنها']);
+function keywordMatchScore(text,candidateLabel){
+  const textWords=new Set(norm(text).split(/\s+/).filter(w=>w.length>=3&&!STOPWORDS_AR.has(w)));
+  const candWords=norm(candidateLabel).split(/\s+/).filter(w=>w.length>=3&&!STOPWORDS_AR.has(w));
+  if(!candWords.length||!textWords.size)return 0;
+  let matches=0;
+  candWords.forEach(cw=>{ if([...textWords].some(tw=>tw.includes(cw)||cw.includes(tw)))matches++; });
+  return matches/candWords.length;
+}
+function findBestKeywordMatch(text){
+  let best=null,bestScore=0;
+  Object.entries(NEW_TAXONOMY).forEach(([main,subs])=>{
+    subs.forEach(sub=>{
+      const score=keywordMatchScore(text,sub);
+      if(score>bestScore){bestScore=score;best={main,sub};}
+    });
+  });
+  return{match:best,score:bestScore};
+}
+function generateReclassificationSuggestion(record){
+  const text=record.originalText||'';
+  const oldMain=record.legacy_main_category||record.mainCategory;
+  const oldSub=record.legacy_sub_category||record.subCategory;
+  const mappingEntry=MIGRATION_MAPPING.find(m=>m.oldMain===oldMain&&m.oldSub===oldSub);
+  const kw=findBestKeywordMatch(text);
+
+  let suggestedMain=null,suggestedSub=null,confidence,reason;
+  const proceduralSuggested=mappingEntry&&mappingEntry.proceduralResult?[mappingEntry.proceduralResult]:[];
+  const evidenceSuggested=mappingEntry&&mappingEntry.evidenceMethod?[mappingEntry.evidenceMethod]:[];
+
+  if(mappingEntry&&mappingEntry.newMain&&mappingEntry.status==='migrated_high'){
+    suggestedMain=mappingEntry.newMain;suggestedSub=mappingEntry.newSub;
+    confidence='اقتراح تغيير - ثقة عالية';
+    reason='التصنيف القديم "'+oldMain+' ← '+oldSub+'" يقابل بوضوح هذا التصنيف الجديد في جدول المطابقة.';
+  } else if(mappingEntry&&mappingEntry.newMain&&mappingEntry.status==='migrated_medium'){
+    suggestedMain=mappingEntry.newMain;suggestedSub=mappingEntry.newSub;
+    confidence='اقتراح تغيير - ثقة متوسطة';
+    reason='التصنيف القديم يقابل على الأرجح هذا التصنيف الجديد وفق جدول المطابقة، ويُفضَّل تأكيدك.';
+  } else if(kw.score>=0.6){
+    suggestedMain=kw.match.main;suggestedSub=kw.match.sub;
+    confidence=kw.score>=0.85?'اقتراح تغيير - ثقة عالية':'اقتراح تغيير - ثقة متوسطة';
+    reason='نص القضية الأصلي يحتوي كلمات دالة واضحة على تصنيف "'+kw.match.sub+'".';
+  } else if(kw.score>=0.3){
+    suggestedMain=kw.match.main;suggestedSub=kw.match.sub;
+    confidence='يحتاج قرارًا يدويًا';
+    reason='يوجد تشابه جزئي فقط بين النص وتصنيف "'+kw.match.sub+'"، غير كافٍ للجزم به آليًا.';
+  } else {
+    confidence='لا توجد معلومات كافية';
+    reason='النص الأصلي لا يحتوي كلمات دالة كافية لاقتراح تصنيف جديد بثقة معقولة — يحتاج مراجعة يدوية كاملة.';
+  }
+
+  const alreadyCorrect=record.main_category_new&&record.main_category_new===suggestedMain&&(!suggestedSub||record.sub_category_new===suggestedSub)&&record.migrationStatus==='migrated';
+  if(alreadyCorrect){confidence='التصنيف الحالي يبدو صحيحًا';reason='التصنيف الجديد الحالي للقضية يطابق نتيجة إعادة الفحص.';}
+
+  return{
+    caseNumber:record.caseNumber,originalText:text,
+    oldMain,oldSub,
+    currentMainNew:record.main_category_new||null,currentSubNew:record.sub_category_new||null,
+    suggestedMain,suggestedSub,
+    proceduralSuggested,evidenceSuggested,
+    confidence,reason,
+    alreadyCorrect:!!alreadyCorrect
+  };
+}
+
+function computeNewTaxonomyFields(oldMain,oldSub,originalText){
+  const mapping=MIGRATION_MAPPING.find(m=>m.oldMain===oldMain&&m.oldSub===oldSub);
+  const n=norm(originalText||'');
+  let mainNew=null,subNew=null,migrationStatus='needs_review';
+  const proceduralResults=[];
+  const evidenceMethods=[];
+
+  if(mapping){
+    if(mapping.newMain){
+      mainNew=mapping.newMain;
+      subNew=mapping.newSub||null;
+      migrationStatus=(mapping.status==='migrated_high'||mapping.status==='migrated_medium')?'suggested':'needs_review';
+    }
+    if(mapping.proceduralResult)proceduralResults.push(mapping.proceduralResult);
+    if(mapping.evidenceMethod)evidenceMethods.push(mapping.evidenceMethod);
+  }
+  if(!mainNew){
+    mainNew='يحتاج إنشاء تصنيف جديد';
+    subNew=null;
+    migrationStatus='needs_review';
+  }
+
+  // تعزيز وسائل الإثبات من الحقول المستخرجة أصلًا (oathType/evidenceType) إن طابقت قيمة معروفة في القائمة الجديدة
+  [oathTypeToEvidence(n)].filter(Boolean).forEach(v=>{ if(!evidenceMethods.includes(v))evidenceMethods.push(v); });
+
+  return{
+    main_category_new:mainNew,
+    sub_category_new:subNew,
+    procedural_results:proceduralResults,
+    evidence_methods:evidenceMethods,
+    tags_new:[],
+    legacy_main_category:oldMain,
+    legacy_sub_category:oldSub,
+    migrationStatus
+  };
+}
+/* يحوّل نوع اليمين/النكول المستخرج مسبقًا (oathType الحالي) إلى أقرب قيمة في قائمة وسائل الإثبات الجديدة، بلا تخمين إن لم يوجد تطابق واضح */
+function oathTypeToEvidence(n){
+  if(/نكول.{0,15}حاسمه|حاسمه.{0,15}نكول/.test(n))return 'نكول عن اليمين';
+  if(/نكول/.test(n))return 'نكول عن اليمين';
+  if(/يمين حاسمه/.test(n))return 'يمين حاسمة';
+  if(/يمين متممه/.test(n))return 'يمين متممة';
+  return null;
+}
+
 async function saveDraft(){
   if(!window.__authUid){alert('سجّل الدخول بحساب Google أولًا لحفظ القضية.');return}
   const btn=document.getElementById('btnSaveDraft');
@@ -790,6 +984,7 @@ async function saveDraft(){
     for(const c of toSave){
       c.createdAt=now;c.updatedAt=now;
       c.hijriYear=hijri.hijriYear;c.hijriMonth=hijri.hijriMonth;c.hijriMonthNumber=hijri.hijriMonthNumber;c.hijriMonthKey=hijri.hijriMonthKey;
+      Object.assign(c,computeNewTaxonomyFields(c.mainCategory,c.subCategory,c.originalText));
       await window.__cloudSetCase(c);
     }
     setSync('تم الحفظ ☁️');
@@ -1183,6 +1378,24 @@ async function confirmWordImport(){
 
 /* ============================= إضافة شهر الأرشفة الهجري للقضايا القديمة (ترحيل آمن، معاينة إلزامية) ============================= */
 let hijriMigrationPreviewData=[];
+/* ============================= سجل تدقيق تغييرات التصنيف (classificationAuditLog) ============================= */
+let auditLogCache=[]; // آخر السجلات المحمَّلة محليًا لعرضها في صفحة المراجعة
+async function writeAuditLogEntry(e){
+  const entry={
+    caseNumber:e.caseNumber,
+    oldMainCategoryNew:e.oldMain||null,oldSubCategoryNew:e.oldSub||null,
+    newMainCategoryNew:e.newMain||null,newSubCategoryNew:e.newSub||null,
+    proceduralResultsAfter:e.proceduralResultsAfter||[],evidenceMethodsAfter:e.evidenceMethodsAfter||[],
+    reason:e.reason||'',source:e.source||'manual', // 'manual' | 'suggestion_accepted' | 'bulk_accepted'
+    confidence:e.confidence||null,
+    changedAt:new Date().toISOString()
+  };
+  try{
+    if(window.__cloudAddAuditLog)await window.__cloudAddAuditLog(entry);
+    auditLogCache.unshift(entry);
+  }catch(err){console.error('تعذّر كتابة سجل التدقيق (لن يمنع حفظ القضية نفسها):',err);}
+}
+
 let hijriAutoMigrationRunning=false;
 /* نسخة صامتة تلقائية من ترحيل الشهر الهجري — تعمل مرة واحدة كلما وُجدت قضايا ناقصة الحقول الهجرية،
    بلا حاجة لأي إجراء يدوي من المستخدم. تستخدم نفس القاعدة الآمنة: حساب الشهر من createdAt الفعلي
@@ -1209,133 +1422,148 @@ async function runHijriMigrationSilently(){
 /* ============================= تحليل نظام التصنيف الجديد (قراءة فقط — مرحلة تحليل، لا تُنفَّذ أي كتابة على Firestore هنا إطلاقًا) =============================
    جدول Mapping هذا مطابق برمجيًا 1:1 لكل تصنيف قديم موجود فعليًا في محرك التصنيف الحالي (CATS) —
    تم التحقق من هذا التطابق آليًا (95 من 95، بلا نقص ولا زيادة) قبل تسليم هذا الملف. */
-const MIGRATION_MAPPING = [
-  // ===== المركبات والحوادث =====
-  { oldMain:'المركبات والحوادث', oldSub:'حادث مركبة دون تأمين', newMain:'المركبات والحوادث المرورية', newSub:null, proceduralResult:null, status:'needs_review', note:'لا يوجد فرع جديد مطابق لـ"دون تأمين" — أقترح إضافته كفرع جديد بدل التخمين.' },
-  { oldMain:'المركبات والحوادث', oldSub:'تعويض عن حادث مروري', newMain:'المركبات والحوادث المرورية', newSub:'تعويض حادث مروري', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'المركبات والحوادث', oldSub:'أرش إصابة في حادث مروري', newMain:'المركبات والحوادث المرورية', newSub:'تعويض حادث مروري', proceduralResult:null, status:'migrated_medium', note:'يُحفظ "أرش" كوسم؛ لا يوجد فرع "أرش إصابة" صريح في القائمة الجديدة.' },
-  { oldMain:'المركبات والحوادث', oldSub:'اعتراض على نسبة الخطأ في حادث مروري', newMain:'المركبات والحوادث المرورية', newSub:'نسبة الخطأ في الحادث', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'المركبات والحوادث', oldSub:'تلفيات مركبة', newMain:'المركبات والحوادث المرورية', newSub:'تلفيات مركبة', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'المركبات والحوادث', oldSub:'أجرة زائدة لمركبة', newMain:null, newSub:null, proceduralResult:null, status:'needs_review', note:'لا يوجد فرع "أجرة زائدة" صريح؛ قد ينتمي للإيجار أو للمركبات — يحتاج قرارك.' },
-  { oldMain:'المركبات والحوادث', oldSub:'أجرة المثل للمركبة', newMain:'المركبات والحوادث المرورية', newSub:'أجرة مثل مركبة', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'المركبات والحوادث', oldSub:'أجرة مركبة', newMain:'الإيجار', newSub:'إيجار المركبة', proceduralResult:null, status:'migrated_medium', note:'أُعيد تصنيفها رئيسيًا تحت الإيجار (عقد إيجار مركبة) بدل المركبات.' },
-  { oldMain:'المركبات والحوادث', oldSub:'نقل مخالفات المركبة', newMain:'المركبات والحوادث المرورية', newSub:'مخالفات مرورية مرتبطة بالتصرف أو الاستعمال', proceduralResult:null, status:'migrated_medium' },
-  { oldMain:'المركبات والحوادث', oldSub:'مطالبة بقيمة إصلاح مركبة', newMain:'المركبات والحوادث المرورية', newSub:'أجرة إصلاح مركبة', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'المركبات والحوادث', oldSub:'عدم صفة قائد المركبة', newMain:'المركبات والحوادث المرورية', newSub:null, proceduralResult:null, status:'needs_review', note:'يحتاج فرعًا جديدًا صريحًا "عدم صفة قائد المركبة وقت الحادث" — ليس دفعًا إجرائيًا عامًا بل واقعة موضوعية خاصة بالحادث.' },
-  { oldMain:'المركبات والحوادث', oldSub:'رد مركبة / استرداد عين مركبة', newMain:'المركبات والحوادث المرورية', newSub:'استرداد مركبة', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'المركبات والحوادث', oldSub:'حادث مروري غير محدد', newMain:'المركبات والحوادث المرورية', newSub:'تعويض حادث مروري', proceduralResult:null, status:'needs_review', note:'كان fallback عامًا أصلًا؛ يُفضَّل مراجعة النص الأصلي لتحديد الفرع الدقيق بدل الترحيل الآلي.' },
+const NEW_MAIN_CATEGORIES=["العقود وأحكامها العامة","البيع والمبيع","المقايضة","الهبة والتبرعات","القروض والديون","الصلح والتنازل والإسقاط","الإيجار","الإعارة","الوديعة والأمانات","الحراسة","المقاولات والإنشاءات","الخدمات والأعمال المهنية","الوكالة والنيابة في التعاقد","الشركات المدنية والمشاركة","المضاربة","المشاركة في الناتج والمزارعة والمساقاة","الكفالة والضمان","التأمين","المسؤولية المدنية والتعويض","المركبات والحوادث المرورية","الإثراء بلا سبب ودفع غير المستحق","الفضالة","الالتزام بالإرادة المنفردة والوعد بجائزة","تنفيذ الالتزامات والوفاء","أوصاف الالتزام وتعدد أطرافه","انتقال الحقوق والديون","انقضاء الالتزام","العقارات والملكية","الملكية الشائعة والقسمة","أسباب كسب الملكية والالتصاق","الشفعة","الحيازة","الانتفاع والاستعمال والسكنى والارتفاق","الرهن والحقوق العينية التبعية وحقوق الامتياز","الاتصالات والخدمات الرقمية","الكهرباء والمياه والمرافق","أتعاب المحاماة والخبرة والمهن","الأشخاص والأهلية والتمثيل المدني","القضاء المستعجل"];
+const NEW_TAXONOMY={
+"العقود وأحكامها العامة":["إثبات وجود عقد","نفي وجود عقد","انعقاد العقد","عدم انعقاد العقد","الوعد بالتعاقد","الإخلال بالوعد بالتعاقد","العربون","استرداد العربون","التفاوض بسوء نية","عقد الإذعان","الشرط التعسفي","تفسير العقد","تحديد مضمون العقد","تنفيذ العقد","الامتناع عن تنفيذ العقد","التنفيذ العيني","فسخ العقد","الفسخ الاتفاقي","الانفساخ لاستحالة التنفيذ","الإقالة","بطلان العقد","إبطال العقد","إبطال العقد لنقص الأهلية","الإبطال للغلط","الإبطال للتغرير","الإبطال للإكراه","الإبطال للاستغلال","الغبن في الحالات النظامية","بطلان شرط مع بقاء العقد","عدم مشروعية محل العقد","عدم مشروعية سبب العقد","عدم نفاذ التصرف","إجازة العقد أو التصرف","آثار العقد في الخلف العام","آثار العقد في الخلف الخاص","التعهد عن الغير","الاشتراط لمصلحة الغير","الظروف الاستثنائية","إعادة التوازن العقدي","التعويض عن الإخلال بالعقد","عقد غير مسمى","النزاع في وصف العقد","النزاع في تكييف العقد"],
+"البيع والمبيع":["المطالبة بالثمن","المطالبة بباقي الثمن","رد الثمن","تسليم المبيع","الامتناع عن تسليم المبيع","نقل ملكية المبيع","فسخ البيع","إبطال البيع","بطلان البيع","بيع ملك الغير","عدم نفاذ بيع ملك الغير","إجازة بيع ملك الغير","استحقاق المبيع للغير","ضمان الاستحقاق","ضمان العيب","العيب الخفي","نقص المبيع","زيادة المبيع","اختلاف مساحة المبيع","اختلاف مقدار المبيع","إنقاص الثمن","إكمال الثمن","رد المبيع","البيع بالعينة","عدم مطابقة العينة","البيع بشرط التجربة","البيع بالتقسيط","الثمن المؤجل","بيع حق متنازع فيه","بيع الجزاف","النزاع في وصف المبيع","هلاك المبيع قبل التسليم","مصروفات البيع","إخلال البائع بالتزاماته","إخلال المشتري بالتزاماته","التعويض الناشئ عن البيع"],
+"المقايضة":["إثبات المقايضة","تنفيذ المقايضة","تسليم أحد البدلين","فسخ المقايضة","إبطال المقايضة","ضمان الاستحقاق","ضمان العيب","الفرق النقدي بين البدلين","التعويض الناشئ عن المقايضة"],
+"الهبة والتبرعات":["إثبات الهبة","تسليم الموهوب","الرجوع في الهبة","استرداد الهبة","بطلان الهبة","إبطال الهبة","هبة مشروطة","الإخلال بشرط الهبة","هلاك الموهوب","التعويض الناشئ عن الهبة","النزاع في وصف التصرف هل هو هبة أو بيع","التصرف في مرض الموت في الحدود الداخلة في الاختصاص","التصرف مع الاحتفاظ بالحيازة أو الانتفاع"],
+"القروض والديون":["إثبات قرض","نفي القرض","المطالبة برد قرض","المطالبة بباقي قرض","قرض نقدي","قرض عيني","إثبات سداد الدين","نفي سداد الدين","السداد الجزئي","تحديد أجل الوفاء","قرض غير محدد الأجل","رد مثل المقترض","رد قيمة المقترض","النزاع في مقدار القرض","النزاع في وصف المبلغ هل هو قرض أو شراكة","النزاع في وصف المبلغ هل هو قرض أو هبة","النزاع في وصف المبلغ","دين ناشئ عن حوالة مالية","دين ناشئ عن تسليم نقدي","دين ناشئ عن حساب بين الطرفين","مطالبة بدين مدني","المطالبة بباقي الدين","براءة الذمة من الدين"],
+"الصلح والتنازل والإسقاط":["إثبات الصلح","تنفيذ الصلح","الإخلال بالصلح","تفسير عقد الصلح","صلح على جزء من الحق","صلح مع الإنكار","صلح مع الإقرار","صلح على تأجيل الدين","صلح على تعجيل الدين مع الحط","بطلان الصلح","إبطال الصلح","إثبات التنازل عن الحق","إثبات إسقاط الحق","النزاع في نطاق التنازل","النزاع في نطاق الصلح","الرجوع عن التنازل متى كان محلًا للنزاع"],
+"الإيجار":["إثبات عقد الإيجار","المطالبة بالأجرة","المطالبة بباقي الأجرة","أجرة مدة إضافية","أجرة المثل","تحديد مقدار الأجرة","تحديد مدة الإيجار","تجدد عقد الإيجار","عدم تجدد عقد الإيجار","فسخ عقد الإيجار","إنهاء عقد الإيجار","إخلاء المأجور","تسليم المأجور","رد المأجور","تأخر المؤجر في التسليم","عدم الانتفاع بالمأجور","نقص المنفعة","العيب في المأجور","صيانة المأجور","إلزام المؤجر بالإصلاح","إصلاح المستأجر والرجوع بالمصروفات","تلفيات المأجور","التعويض عن تلف المأجور","التغييرات التي أحدثها المستأجر","إعادة المأجور إلى حالته","التنازل عن الإيجار","التأجير من الباطن","اعتراض المؤجر على التنازل أو التأجير من الباطن","بيع العين المؤجرة","إيجار الأراضي","إيجار المنقول","إيجار المركبة","إيجار المعدات","إيجار منفعة","إيجار حق","التعويض الناشئ عن عقد الإيجار"],
+"الإعارة":["إثبات الإعارة","رد العين المعارة","الامتناع عن رد العين المعارة","تلف العين المعارة","هلاك العين المعارة","استعمال العين في غير ما أعدت له","تجاوز حدود الإذن","مصروفات العين المعارة","انتهاء الإعارة","التعويض الناشئ عن الإعارة"],
+"الوديعة والأمانات":["إثبات الوديعة","رد الوديعة","الامتناع عن رد الوديعة","هلاك الوديعة","تلف الوديعة","استعمال الوديعة دون إذن","نقل حفظ الوديعة إلى الغير","مصروفات حفظ الوديعة","أجرة الإيداع","التعويض عن إخلال المودع لديه","أموال مسلمة على سبيل الأمانة","مقتنيات مسلمة على سبيل الأمانة","مطالبة برد أمانة"],
+"الحراسة":["فرض الحراسة","تعيين الحارس","إنهاء الحراسة","تسليم المال للحارس","رد المال بعد انتهاء الحراسة","غلة المال محل الحراسة","حساب الحارس","أجرة الحارس","مسؤولية الحارس","تجاوز الحارس سلطته","إدارة المال محل الحراسة","استبدال الحارس"],
+"المقاولات والإنشاءات":["المطالبة بأجرة المقاولة","المطالبة بباقي قيمة المقاولة","تنفيذ العمل","إكمال العمل","فسخ عقد المقاولة","إنهاء عقد المقاولة","عيوب التنفيذ","عدم مطابقة المواصفات","إصلاح العيوب","إعادة تنفيذ الأعمال","تأخر المقاول","تعويض التأخير","تلف المواد","مواد قدمها المقاول","مواد قدمها صاحب العمل","الأعمال الإضافية","زيادة الأعمال","اختلاف المقايسة","تجاوز المقايسة","عقد مقاولة بسعر إجمالي","المطالبة بزيادة الأجر","أجر المثل","استلام العمل","الامتناع عن استلام العمل","ضمان الأعمال","المقاولة من الباطن","مطالبة المقاول من الباطن","رجوع صاحب العمل على المقاول","توقف المقاول عن العمل","الظروف الاستثنائية في المقاولة","إعادة التوازن المالي للمقاولة","فسخ المقاولة بسبب الظروف الاستثنائية","التعويض عن سوء التنفيذ"],
+"الخدمات والأعمال المهنية":["عقد تقديم خدمة","المطالبة بمقابل خدمة","خدمة لم تنفذ","خدمة نفذت جزئيًا","خدمة معيبة","فسخ عقد خدمة","استرداد مقابل خدمة","التعويض عن إخلال مقدم الخدمة","أعمال التصميم","تصميم هندسي","تصميم معماري","تصميم داخلي","برمجة","تطوير موقع","تطوير نظام","صيانة","إصلاح","تركيب","نقل","تخزين","دعاية وإعلان","تصوير","استشارات","تدريب","وساطة","سمسرة في الحدود الداخلة في الاختصاص","خدمات إلكترونية","خدمات مهنية أخرى"],
+"الوكالة والنيابة في التعاقد":["إثبات الوكالة","تجاوز حدود الوكالة","تصرف الوكيل دون صلاحية","إجازة تصرف الوكيل","عدم نفاذ تصرف الوكيل","المطالبة بأجرة الوكيل","المطالبة بمصروفات الوكيل","مطالبة الوكيل بمبالغ تسلمها","إلزام الوكيل بتقديم الحساب","إخلال الوكيل بواجب العناية","شراء الوكيل لنفسه","بيع الوكيل لنفسه","تصرف الوكيل لمصلحة قريبه","بيع الوكيل بأقل من الثمن المحدد","شراء الوكيل بأكثر من الثمن المحدد","البيع المؤجل من الوكيل","انتهاء الوكالة","عزل الوكيل","اعتزال الوكيل","التعويض عن تصرف الوكيل"],
+"الشركات المدنية والمشاركة":["إثبات الشركة","بطلان الشركة المدنية","حصة الشريك","عدم تقديم الحصة","إدارة الشركة","تجاوز المدير","أرباح الشركة","خسائر الشركة","محاسبة الشريك","تقديم حساب عن الشركة","مسؤولية الشركاء عن الدين","انسحاب الشريك","إخراج الشريك","انتهاء الشركة","تصفية الشركة","تعيين مصف","قسمة أموال الشركة","بيع حصة الشريك","النزاع في نسبة الشراكة","استرداد رأس المال","التعويض الناشئ عن الشراكة"],
+"المضاربة":["إثبات المضاربة","رأس مال المضاربة","أرباح المضاربة","خسائر المضاربة","تعدي المضارب","تقصير المضارب","ضمان المضارب بسبب التعدي أو التقصير","خلط أموال المضاربة","تسليم المال للغير مضاربة","مخالفة قيود المضاربة","تقديم حساب المضاربة","إنهاء المضاربة","انسحاب أحد الطرفين","رد رأس المال","تصفية المضاربة","التعويض"],
+"المشاركة في الناتج والمزارعة والمساقاة":["المشاركة في الناتج","توزيع الناتج","مصروفات الأصل","رد الأصل","فسخ المشاركة","إنهاء المشاركة","المزارعة","المساقاة","نصيب المالك","نصيب العامل","البذر والغراس","نفقات الزراعة","انتهاء العقد قبل الحصاد","أجر مثل العامل","التعويض عن الإخلال"],
+"الكفالة والضمان":["إثبات الكفالة","مطالبة الكفيل","براءة الكفيل","انتهاء الكفالة","رجوع الكفيل على المدين","تعدد الكفلاء","كفالة جزء من الدين","كفالة دين مستقبل","كفالة دين مشروط","الوفاء من الكفيل","تمديد أجل الدين وأثره على الكفيل","انتقال الدين المكفول","الضمان الشخصي","التعويض المرتبط بالكفالة أو الضمان"],
+"التأمين":["استحقاق مبلغ التأمين","رفض التغطية التأمينية","تفسير التغطية","استثناءات الوثيقة","تعويض التأمين","رجوع شركة التأمين","التأمين على المركبات","التأمين على الممتلكات","تأمين المسؤولية","إلغاء وثيقة التأمين","استرداد قسط التأمين"],
+"المسؤولية المدنية والتعويض":["تعويض عن ضرر مادي","تعويض عن ضرر معنوي","خسارة محققة","فوات كسب","تفويت منفعة","إتلاف مال","تلف منقول","تلف عقار","إصابة جسدية","وفاة","مسؤولية عن فعل شخصي","مسؤولية المتبوع عن التابع","مسؤولية متولي الرقابة","مسؤولية عن الأشياء","مسؤولية عن البناء","مسؤولية عن الحيوان","تعدد المسؤولين","اشتراك المتضرر في الخطأ","السبب الأجنبي","القوة القاهرة","فعل الغير","خطأ المتضرر","التعويض العيني","التعويض النقدي","تقدير التعويض","التعويض عن الضرر المستقبلي","التعويض عن إساءة استعمال الحق","التعويض عن التفاوض بسوء نية","تعويض عقدي","تعويض غير عقدي","رجوع من أدى التعويض على المسؤول"],
+"المركبات والحوادث المرورية":["تعويض حادث مروري","تلفيات مركبة","نقص قيمة المركبة","تكلفة إصلاح مركبة","أجرة سطحة أو نقل","فوات منفعة المركبة","أجرة مركبة بديلة","النزاع في نسبة الخطأ","رجوع شركة التأمين","بيع مركبة معيبة","عيب خفي في مركبة","اختلاف عداد المركبة","التلاعب بعداد المركبة","تغيير الهيكل","وجود حادث سابق","فسخ بيع مركبة","رد ثمن مركبة","نقل ملكية مركبة","الامتناع عن نقل ملكية مركبة","استرداد حيازة مركبة","استعمال مركبة دون إذن","إيجار مركبة","أجرة مثل مركبة","إصلاح مركبة","نزاع مع ورشة","صيانة مركبة","قطع غيار","مخالفات مرورية مرتبطة باستعمال المركبة أو التصرف فيها متى انعقد الاختصاص"],
+"الإثراء بلا سبب ودفع غير المستحق":["استرداد مبلغ دفع خطأ","استرداد حوالة خاطئة","استرداد مبلغ غير مستحق","استرداد مبلغ زال سبب استحقاقه","إثراء على حساب الغير","استرداد منفعة دون سبب","رد ما قبض دون سند","الوفاء بدين غير موجود","الوفاء بدين منقضٍ","التعويض بقدر الإثراء"],
+"الفضالة":["القيام بشأن عاجل لحساب الغير دون تكليف","رد مصروفات الفضولي","أجر الفضولي","تعويض الفضولي","مسؤولية الفضولي","إقرار رب العمل لتصرف الفضولي","التزامات رب العمل تجاه الفضولي"],
+"الالتزام بالإرادة المنفردة والوعد بجائزة":["المطالبة بالجائزة","استحقاق الجائزة","الرجوع عن الوعد بالجائزة","تعدد من قام بالعمل","سقوط المطالبة بالجائزة","التزام بإرادة منفردة آخر"],
+"تنفيذ الالتزامات والوفاء":["إلزام بأداء مبلغ","إلزام بتنفيذ عمل","إلزام بالامتناع عن عمل","التنفيذ العيني","التعويض بدل التنفيذ","التأخر في التنفيذ","الإعذار","الوفاء بالدين","إثبات الوفاء","الوفاء الجزئي","رفض الدائن استلام الوفاء","تحديد من يصح منه الوفاء","تحديد من يستحق استلام الوفاء","مكان الوفاء","زمن الوفاء","الأجل القضائي للوفاء","الوفاء البديل","خصم المدفوعات من عدة ديون","استرداد سند الدين بعد الوفاء"],
+"أوصاف الالتزام وتعدد أطرافه":["الالتزام المعلق على شرط","الشرط الواقف","الشرط الفاسخ","الالتزام المضاف إلى أجل","سقوط الأجل","تعدد محل الالتزام","الالتزام التخييري","الالتزام البدلي","تعدد الدائنين","تعدد المدينين","التضامن بين المدينين","التضامن بين الدائنين","الدين المشترك","عدم قابلية الالتزام للانقسام","رجوع المدين المتضامن على الباقين"],
+"انتقال الحقوق والديون":["حوالة الحق","نفاذ حوالة الحق","ضمان المحيل","دفوع المدين تجاه المحال له","تعدد حوالات الحق","حوالة الدين","موافقة الدائن على حوالة الدين","انتقال ضمانات الدين","انتقال الدين مع الكفالة","حوالة العقد أو المركز التعاقدي متى كان لها محل"],
+"انقضاء الالتزام":["الوفاء","الوفاء البديل","المقاصة","المقاصة القضائية","المقاصة الاتفاقية","اتحاد الذمة","الإبراء","استحالة التنفيذ","انقضاء الالتزام دون وفاء","عدم سماع الدعوى لمرور الزمن","وقف مدة عدم السماع","انقطاع مدة عدم السماع","الإقرار بالحق وأثره في المدة"],
+"العقارات والملكية":["إثبات ملكية عقار","نفي ملكية عقار","نقل ملكية عقار","إفراغ عقار","إلزام بالإفراغ","الامتناع عن الإفراغ","رد ثمن عقار","فسخ بيع عقار","بيع عقار غير مملوك","بطلان تصرف عقاري","عدم نفاذ تصرف عقاري","النزاع على صك ملكية","النزاع على سند ملكية","عدم وجود صك","نزاع في حدود العقار","نزاع في مساحة العقار","تداخل عقارين","إزالة تعدٍ على عقار","رفع يد عن عقار","منع التعرض للملكية","تسليم عقار","إخلاء عقار على أساس حق موضوعي","ثمار العقار وغلاته","أجرة مثل الانتفاع بعقار","بناء في أرض الغير","غراس في أرض الغير","الالتصاق","هدم منشآت","إزالة منشآت","مصروفات ضرورية على العقار","مصروفات نافعة على العقار","ملكية الوحدات العقارية","الأجزاء المشتركة","حقوق الملاك في العقار المشترك"],
+"الملكية الشائعة والقسمة":["إثبات حصة شائعة","إدارة المال الشائع","الانتفاع بالمال الشائع","تصرف الشريك في حصته","تصرف الشريك في جزء مفرز","نفقات المال الشائع","المهايأة المكانية","المهايأة الزمنية","إنهاء الشيوع","القسمة الرضائية","القسمة القضائية","قسمة العين","بيع المال الشائع عند تعذر القسمة","الاعتراض على القسمة","قسمة منافع المال الشائع"],
+"أسباب كسب الملكية والالتصاق":["إحراز المباح","انتقال الملكية بالعقد","انتقال الملكية بالإرث في الحدود الداخلة في الاختصاص","انتقال الملكية بالوصية في الحدود الداخلة في الاختصاص","الالتصاق الطبيعي","بناء المالك بمواد الغير","البناء في أرض الغير بحسن نية","البناء في أرض الغير بسوء نية","الغراس في أرض الغير","اشتراط التسجيل لانتقال الملكية","النزاع في وقت انتقال الملكية"],
+"الشفعة":["ثبوت الشفعة","نفي الشفعة","سقوط الشفعة","التنازل عن الشفعة","فوات مهلة الشفعة","عدم سماع دعوى الشفعة","إيداع الثمن","تعدد الشفعاء","تعدد المشترين","بيع العقار مرة أخرى قبل الأخذ بالشفعة","منشآت المشتري في العقار المشفوع","تصرفات المشتري بعد العلم بالشفعة","آثار الحكم بالشفعة"],
+"الحيازة":["إثبات الحيازة","استرداد الحيازة موضوعيًا","منازعة في حيازة منقول","قرينة حيازة المنقول","حسن نية الحائز","سوء نية الحائز","ثمار الشيء المحوز","مصروفات الحائز الضرورية","مصروفات الحائز النافعة","مصروفات الحائز الكمالية","مسؤولية الحائز عن الهلاك","مسؤولية الحائز عن التلف","رد المال إلى مالكه"],
+"الانتفاع والاستعمال والسكنى والارتفاق":["إثبات حق الانتفاع","إنهاء حق الانتفاع","استعمال المنتفع للعين","غلة العين محل الانتفاع","مصروفات المنتفع","تلف العين محل الانتفاع","حق الاستعمال","حق السكنى","إثبات حق الارتفاق","نفي حق الارتفاق","حق ممر","حق مجرى","حق مسيل","حق شرب","مرور المرافق","استعمال حق الارتفاق","صيانة محل الارتفاق","تعديل موضع الارتفاق","إنهاء حق الارتفاق"],
+"الرهن والحقوق العينية التبعية وحقوق الامتياز":["إثبات الرهن","بطلان الرهن","انقضاء الرهن","فك الرهن","أولوية الدائن المرتهن","النزاع في المال المرهون","حق الامتياز","أولوية صاحب الامتياز","تزاحم الحقوق العينية التبعية"],
+"الاتصالات والخدمات الرقمية":["فاتورة اتصالات","مديونية جوال","أجهزة بالتقسيط","شرائح اتصال","باقات","إلغاء خدمة","استمرار الفوترة بعد الإلغاء","خدمة لم تقدم","اعتراض على فاتورة","إثبات تعاقد إلكتروني","استخدام غير مصرح به","تعويض عن انقطاع الخدمة","استرداد مبلغ","أجهزة مرتبطة بعقد الخدمة","خدمات رقمية أخرى"],
+"الكهرباء والمياه والمرافق":["قيمة استهلاك","فاتورة متنازع عليها","عداد","نقل عداد","نقل ملكية عداد","توصيل خدمة","فصل خدمة","إعادة خدمة","رسوم التوصيل","تكاليف التوصيل","استهلاك غير مشروع","تلف أجهزة بسبب الخدمة","تعويض عن انقطاع الخدمة","تعويض عن خلل في الخدمة","مديونية سابقة على المالك أو المستفيد","استرداد مبلغ"],
+"أتعاب المحاماة والخبرة والمهن":["أتعاب محاماة باتفاق","أتعاب محاماة دون اتفاق","باقي أتعاب محاماة","استرداد أتعاب محاماة","فسخ اتفاق أتعاب","أتعاب مرحلة من مراحل القضية","مصروفات المحامي","التعويض عن إخلال المحامي","أتعاب خبير","تحميل أتعاب الخبرة","استرداد أتعاب الخبرة","أتعاب تقييم","أتعاب هندسية","أتعاب محاسبة","أتعاب خدمات مهنية"],
+"الأشخاص والأهلية والتمثيل المدني":["انعدام الأهلية","نقص الأهلية","تصرف ناقص الأهلية","إبطال تصرف ناقص الأهلية","النيابة النظامية","تجاوز النائب حدود النيابة","النزاع في صحة التمثيل","موطن الشخص","موطن العمل","الشخص الاعتباري في الحدود الداخلة في اختصاص المحكمة","مسائل الغائب أو المفقود المدنية في الحدود الداخلة في الاختصاص"],
+"القضاء المستعجل":["معاينة لإثبات الحالة","استرداد الحيازة المستعجل","منع التعرض للحيازة","وقف الأعمال الجديدة","منع من السفر","الحراسة القضائية","أجرة الأجير اليومية","طلب مستعجل مقرر بنظام خاص","إجراء تحفظي مستعجل","طلب مستعجل آخر مقرر نظامًا"],
+};
+const PROCEDURAL_RESULTS=["عدم الاختصاص الدولي","عدم الاختصاص الولائي","عدم الاختصاص النوعي","عدم الاختصاص المكاني","عدم الاختصاص القيمي متى كان له محل","عدم قبول الدعوى لانعدام صفة المدعي","عدم قبول الدعوى لانعدام صفة المدعى عليه","عدم قبول الدعوى لانعدام الأهلية","عدم قبول الدعوى لانعدام المصلحة","عدم قبول الدعوى لسبب آخر","عدم جواز نظر الدعوى لسبق الفصل فيها","شرط التحكيم","الدعوى السابقة لأوانها","عدم تحقق شرط لازم لقبول الدعوى","عدم تحرير الدعوى","بطلان صحيفة الدعوى","بطلان التبليغ","بطلان إجراء في الخصومة","تعذر التبليغ","غياب المدعي","غياب المدعى عليه","غياب الطرفين","السير في الدعوى في غيبة المدعى عليه","الحكم الحضوري حكمًا بحسب الحالة","شطب الدعوى","السير بعد الشطب","اعتبار الدعوى كأن لم تكن متى انطبق النص","ترك الخصومة","ترك إجراء من إجراءات الخصومة","وقف السير باتفاق الخصوم","الوقف التعليقي","استئناف السير بعد الوقف","انقطاع الخصومة بوفاة الخصم","انقطاع الخصومة بفقد الأهلية","انقطاع الخصومة بزوال صفة النائب","استئناف السير بعد الانقطاع","استمرار نظر الدعوى في مواجهة الخلف","إدخال خصم بطلب أحد الأطراف","إدخال خصم بأمر المحكمة","إضافة مدعى عليه","تصحيح الخصومة","تدخل انضمامي","تدخل هجومي","عدم قبول التدخل","تصحيح الطلب الأصلي","تعديل الطلب","طلب مكمل","طلب مترتب على الطلب الأصلي","طلب متصل بالطلب الأصلي","تغيير سبب الدعوى مع بقاء الطلب","طلب مقابل","مقاصة قضائية","إجراء تحفظي أو وقتي","عدم صلاحية القاضي","تنحي القاضي","طلب رد القاضي","قبول طلب رد القاضي","رفض طلب رد القاضي","فتح باب المرافعة","قفل باب المرافعة","ندب خبير","اعتراض على الخبير","رد الخبير","اعتراض على تقرير الخبير","استكمال تقرير الخبير","خبرة إضافية","عدم إيداع أتعاب الخبرة","معاينة","توجيه يمين حاسمة","قبول توجيه اليمين","رد اليمين","أداء اليمين الحاسمة","النكول عن اليمين","الامتناع عن اليمين","الرجوع عن توجيه اليمين قبل قبولها متى صح ذلك","توجيه يمين متممة","أداء اليمين المتممة","الامتناع عن اليمين المتممة","حكم في الموضوع","إجابة الدعوى كليًا","إجابة الدعوى جزئيًا","رد الدعوى موضوعيًا","رفض الدعوى موضوعيًا","عدم قبول الدعوى","عدم سماع الدعوى","عدم جواز نظر الدعوى","عدم الاختصاص","إثبات صلح","إثبات تنازل","إثبات ترك الخصومة","حكم جزئي","حكم وقتي","حكم مستعجل","النفاذ المعجل","رفض النفاذ المعجل","تصحيح الحكم","تفسير الحكم","طلب الفصل في طلب مغفل","اعتراض بالاستئناف","طلب تدقيق","عدم قبول الاعتراض شكلًا","فوات مدة الاعتراض","تأييد الحكم","تعديل الحكم","إلغاء الحكم","نقض الحكم كليًا","نقض الحكم جزئيًا","إعادة القضية","طلب نقض أمام المحكمة العليا","رفض النقض","عدم قبول النقض","نقض الحكم أمام المحكمة العليا","التماس إعادة النظر","قبول الالتماس","رفض الالتماس","عدم قبول الالتماس","وقف التنفيذ بسبب الالتماس"];
+const EVIDENCE_METHODS=["إقرار قضائي","إقرار غير قضائي","تجزئة الإقرار","الرجوع عن الإقرار","استجواب الخصم","امتناع الخصم عن الإجابة","محرر رسمي","محرر عادي","حجية المحرر الرسمي","إنكار الخط","إنكار التوقيع","إنكار الختم","إنكار البصمة","إلزام الخصم بتقديم محرر","الامتناع عن تقديم محرر","تحقيق الخطوط","الادعاء بالتزوير","دعوى تزوير أصلية","استبعاد محرر","دليل رقمي","مراسلات إلكترونية","رسائل جوال","محادثات إلكترونية","تسجيل صوتي","بريد إلكتروني","مستخرجات رقمية","شهادة","اعتراض على شاهد","تعارض الشهادة","شهادة سماعية متى جازت نظامًا","قرائن","عرف","حجية الأمر المقضي","معاينة","خبرة","ندب خبير","تقرير خبير","اعتراض على تقرير خبير","استكمال الخبرة","خبرة إضافية","يمين حاسمة","رد اليمين","أداء اليمين","نكول عن اليمين","يمين متممة","أداء اليمين المتممة","الامتناع عنها"];
+const SUGGESTED_TAGS_NEW=["عقار","أرض","منزل","شقة","عمارة","محل","مزرعة","مركبة","سيارة","تأجير سيارات","حادث مروري","ورشة","صيانة","اتصالات","STC","أجهزة","خدمات رقمية","كهرباء","مياه","مرافق","قرض","حوالة","دين","إيجار","بيع","مقاولة","تصميم","محاماة","خبير","شركة","شراكة","مضاربة","تأمين","جهة حكومية"];
 
-  // ===== الشركات والخدمات =====
-  { oldMain:'الشركات والخدمات', oldSub:'أجرة نقل', newMain:'الخدمات والأعمال المهنية', newSub:'النقل', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'الشركات والخدمات', oldSub:'محاسبة بين الشركاء', newMain:'الشركات المدنية والمشاركة', newSub:'تقديم الحساب (شركة)', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'الشركات والخدمات', oldSub:'مستحقات شريك', newMain:'الشركات المدنية والمشاركة', newSub:'حصة الشريك', proceduralResult:null, status:'migrated_medium' },
-  { oldMain:'الشركات والخدمات', oldSub:'مطالبة بموجب فواتير', newMain:null, newSub:null, proceduralResult:null, status:'needs_review', note:'fallback عام جدًا — أي نوع فاتورة؟ يحتاج مراجعة النص الأصلي.' },
-  { oldMain:'الشركات والخدمات', oldSub:'عقد خدمات', newMain:'الخدمات والأعمال المهنية', newSub:'مقابل خدمة', proceduralResult:null, status:'migrated_medium' },
-
-  // ===== الكهرباء / الاتصالات =====
-  { oldMain:'الكهرباء', oldSub:'مطالبة بفواتير كهرباء غير مسددة', newMain:'الكهرباء والمياه والمرافق', newSub:'قيمة استهلاك (كهرباء/مياه)', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'الاتصالات', oldSub:'مطالبة بفواتير اتصالات غير مسددة', newMain:'الاتصالات والخدمات الرقمية', newSub:'فاتورة اتصالات', proceduralResult:null, status:'migrated_high' },
-
-  // ===== العقارات والملكية =====
-  { oldMain:'العقارات والملكية', oldSub:'رد ثمن العقار لعدم وجود صك ملكية', newMain:'العقارات والملكية', newSub:'رد ثمن عقار', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'العقارات والملكية', oldSub:'فسخ عقد بيع عقار ورد الثمن', newMain:'العقارات والملكية', newSub:'فسخ بيع عقار', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'العقارات والملكية', oldSub:'فسخ عقد متعلق بعقار غير مملوك للمدعى عليه', newMain:'العقارات والملكية', newSub:'بيع عقار غير مملوك', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'العقارات والملكية', oldSub:'نقل ملكية عقار', newMain:'العقارات والملكية', newSub:'نقل ملكية عقار', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'العقارات والملكية', oldSub:'إخلاء عقار', newMain:'العقارات والملكية', newSub:'إخلاء عقار على أساس الحق الموضوعي', proceduralResult:null, status:'needs_review', note:'قد يكون سببه إيجاريًا لا ملكيًا — القديم لا يميز.' },
-  { oldMain:'العقارات والملكية', oldSub:'إلزام بإفراغ جزء من عقار', newMain:'العقارات والملكية', newSub:'إفراغ عقار', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'العقارات والملكية', oldSub:'رفع يد عن عقار متداخل', newMain:'العقارات والملكية', newSub:'رفع يد عن عقار', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'العقارات والملكية', oldSub:'إصلاح عقار مستأجر من قبل المؤجر', newMain:'الإيجار', newSub:'إلزام المؤجر بالإصلاح', proceduralResult:null, status:'migrated_high', note:'أُعيد تصنيفها رئيسيًا تحت الإيجار لأنها عقد إيجار قائم فعليًا.' },
-  { oldMain:'العقارات والملكية', oldSub:'مطالبة بنسبة من أرباح عقار', newMain:'العقارات والملكية', newSub:'غلات العقار', proceduralResult:null, status:'migrated_medium' },
-  { oldMain:'العقارات والملكية', oldSub:'نزاع على صك ملكية', newMain:'العقارات والملكية', newSub:'النزاع على صك أو سند ملكية', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'العقارات والملكية', oldSub:'عدم وجود صك', newMain:'العقارات والملكية', newSub:'عدم وجود صك', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'العقارات والملكية', oldSub:'إثبات ملكية عقار', newMain:'العقارات والملكية', newSub:'إثبات ملكية عقار', proceduralResult:null, status:'migrated_high', note:'هذا هو المثال الذي ذكرتِه بالضبط — يبقى موضوعيًا عقاريًا دائمًا بصرف النظر عن أي نتيجة إجرائية لاحقة.' },
-
-  // ===== الإيجار =====
-  { oldMain:'الإيجار', oldSub:'مطالبة بأجرة متبقية من عقد إيجار', newMain:'الإيجار', newSub:'باقي الأجرة', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'الإيجار', oldSub:'أجرة زائدة عن عقد إيجار', newMain:'الإيجار', newSub:null, proceduralResult:null, status:'needs_review', note:'لا يوجد فرع "أجرة زائدة" صريح — أقترح إضافته.' },
-  { oldMain:'الإيجار', oldSub:'فسخ وإخلاء', newMain:'الإيجار', newSub:'فسخ عقد الإيجار', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'الإيجار', oldSub:'فسخ عقد إيجار', newMain:'الإيجار', newSub:'فسخ عقد الإيجار', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'الإيجار', oldSub:'إخلاء مأجور', newMain:'الإيجار', newSub:'إخلاء المأجور', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'الإيجار', oldSub:'عدم سداد الأجرة', newMain:'الإيجار', newSub:'المطالبة بالأجرة', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'الإيجار', oldSub:'أجرة عقار', newMain:'الإيجار', newSub:'المطالبة بالأجرة', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'الإيجار', oldSub:'مطالبة بأجرة', newMain:'الإيجار', newSub:'المطالبة بالأجرة', proceduralResult:null, status:'migrated_high' },
-
-  // ===== القروض والديون =====
-  { oldMain:'القروض والديون', oldSub:'قرض مع إنكار الاستلام', newMain:'القروض والديون', newSub:'نفي القرض', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'القروض والديون', oldSub:'إقرار بالقرض', newMain:'القروض والديون', newSub:null, proceduralResult:null, status:'needs_review', note:'يحتاج فرعًا جديدًا صريحًا "إقرار بالقرض".' },
-  { oldMain:'القروض والديون', oldSub:'إقرار بمديونية', newMain:'القروض والديون', newSub:null, proceduralResult:null, status:'needs_review', note:'يحتاج فرعًا جديدًا صريحًا "إقرار بمديونية".' },
-  { oldMain:'القروض والديون', oldSub:'مطالبة برد قرض', newMain:'القروض والديون', newSub:'المطالبة برد قرض', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'القروض والديون', oldSub:'منازعة في سبب المديونية', newMain:'القروض والديون', newSub:'النزاع في وصف المبلغ (قرض/شراكة/هبة)', proceduralResult:null, status:'migrated_medium' },
-  { oldMain:'القروض والديون', oldSub:'إثبات قرض', newMain:'القروض والديون', newSub:'إثبات قرض', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'القروض والديون', oldSub:'سلفة', newMain:'القروض والديون', newSub:null, proceduralResult:null, status:'needs_review', note:'يحتاج فرعًا جديدًا صريحًا "سلفة".' },
-  { oldMain:'القروض والديون', oldSub:'سند لأمر', newMain:'القروض والديون', newSub:null, proceduralResult:null, status:'needs_review', note:'يحتاج فرعًا جديدًا صريحًا "سند لأمر".' },
-  { oldMain:'القروض والديون', oldSub:'مطالبة بسداد قرض', newMain:'القروض والديون', newSub:'المطالبة برد قرض', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'القروض والديون', oldSub:'مطالبة بدين', newMain:'القروض والديون', newSub:'مطالبة دين مدني أخرى', proceduralResult:null, status:'migrated_medium' },
-
-  // ===== الكفالة والضمان =====
-  { oldMain:'الكفالة والضمان', oldSub:'الحكم على الكفيل الغارم', newMain:'الكفالة والضمان', newSub:'مطالبة الكفيل', proceduralResult:null, status:'migrated_medium', note:'"الحكم على الكفيل" نتيجة حكم أكثر منه موضوعًا؛ الموضوع الفعلي مطالبة الكفيل.' },
-  { oldMain:'الكفالة والضمان', oldSub:'رجوع الكفيل على المدين', newMain:'الكفالة والضمان', newSub:'رجوع الكفيل على المدين', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'الكفالة والضمان', oldSub:'إنكار الكفالة', newMain:'الكفالة والضمان', newSub:'إثبات الكفالة', proceduralResult:null, status:'needs_review', note:'"إنكار" وصف لموقف الخصم لا للموضوع؛ الموضوع الحقيقي إثبات الكفالة من عدمه.' },
-  { oldMain:'الكفالة والضمان', oldSub:'مطالبة كفيل', newMain:'الكفالة والضمان', newSub:'مطالبة الكفيل', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'الكفالة والضمان', oldSub:'ضمان مالي', newMain:'الكفالة والضمان', newSub:'الضمان الشخصي', proceduralResult:null, status:'migrated_medium' },
-
-  // ===== الصلح والتنازل =====
-  { oldMain:'الصلح والتنازل', oldSub:'تنفيذ اتفاق صلح', newMain:'الصلح والتنازل والإسقاط', newSub:'تنفيذ الصلح', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'الصلح والتنازل', oldSub:'إثبات صلح', newMain:'الصلح والتنازل والإسقاط', newSub:'إثبات الصلح', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'الصلح والتنازل', oldSub:'إثبات تنازل', newMain:'الصلح والتنازل والإسقاط', newSub:'إثبات التنازل', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'الصلح والتنازل', oldSub:'تنازل عن الدعوى', newMain:null, newSub:null, proceduralResult:'ترك الخصومة', status:'needs_review', note:'هذا إجرائي فعليًا (يعادل ترك الخصومة) — ينتقل لخانة النتيجة الإجرائية، والموضوع الحقيقي غير معروف من هذا التصنيف وحده.' },
-  { oldMain:'الصلح والتنازل', oldSub:'تنازل عن مطالبة', newMain:'الصلح والتنازل والإسقاط', newSub:'إثبات إسقاط الحق', proceduralResult:null, status:'migrated_medium' },
-  { oldMain:'الصلح والتنازل', oldSub:'مخالصة', newMain:'الصلح والتنازل والإسقاط', newSub:null, proceduralResult:null, status:'needs_review', note:'يحتاج فرعًا جديدًا صريحًا "مخالصة".' },
-
-  // ===== أتعاب المحاماة والخبرة =====
-  { oldMain:'أتعاب المحاماة والخبرة', oldSub:'رفض أتعاب محاماة', newMain:'أتعاب المحاماة والخبرة والمهن', newSub:'أتعاب محاماة دون اتفاق', proceduralResult:null, status:'migrated_medium' },
-  { oldMain:'أتعاب المحاماة والخبرة', oldSub:'نزاع في مقدار الأتعاب', newMain:'أتعاب المحاماة والخبرة والمهن', newSub:'باقي الأتعاب', proceduralResult:null, status:'migrated_medium' },
-  { oldMain:'أتعاب المحاماة والخبرة', oldSub:'أتعاب خبير', newMain:'أتعاب المحاماة والخبرة والمهن', newSub:'أتعاب خبير', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'أتعاب المحاماة والخبرة', oldSub:'مطالبة بأتعاب محاماة', newMain:'أتعاب المحاماة والخبرة والمهن', newSub:'أتعاب محاماة باتفاق', proceduralResult:null, status:'migrated_high' },
-
-  // ===== البيع والمبيع =====
-  { oldMain:'البيع والمبيع', oldSub:'عيب مبيع', newMain:'البيع والمقايضة', newSub:'العيب الخفي', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'البيع والمبيع', oldSub:'مطالبة بثمن مبيع', newMain:'البيع والمقايضة', newSub:'المطالبة بالثمن', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'البيع والمبيع', oldSub:'تسليم المبيع', newMain:'البيع والمقايضة', newSub:'تسليم المبيع', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'البيع والمبيع', oldSub:'فسخ عقد بيع', newMain:'البيع والمقايضة', newSub:'فسخ البيع', proceduralResult:null, status:'migrated_high' },
-
-  // ===== العقود والالتزامات =====
-  { oldMain:'العقود والالتزامات', oldSub:'عدم إتمام العقد', newMain:'العقود وأحكامها العامة', newSub:'عدم انعقاد العقد', proceduralResult:null, status:'migrated_medium' },
-  { oldMain:'العقود والالتزامات', oldSub:'عدم تنفيذ العقد', newMain:'العقود وأحكامها العامة', newSub:'الامتناع عن التنفيذ', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'العقود والالتزامات', oldSub:'فسخ العقد', newMain:'العقود وأحكامها العامة', newSub:'فسخ العقد', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'العقود والالتزامات', oldSub:'تنفيذ الالتزام', newMain:'تنفيذ الالتزامات والوفاء', newSub:'التنفيذ العيني', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'العقود والالتزامات', oldSub:'التعويض عن الإخلال بالعقد', newMain:'العقود وأحكامها العامة', newSub:'التعويض عن الإخلال بالعقد', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'العقود والالتزامات', oldSub:'مطالبة مالية ناشئة عن عقد', newMain:null, newSub:null, proceduralResult:null, status:'needs_review', note:'fallback عام جدًا — يحتاج مراجعة النص الأصلي لتحديد نوع العقد.' },
-
-  // ===== المنقولات والودائع =====
-  { oldMain:'المنقولات والودائع', oldSub:'استرداد وديعة', newMain:'الوديعة والأمانات', newSub:'رد الوديعة', proceduralResult:null, status:'migrated_high' },
-  { oldMain:'المنقولات والودائع', oldSub:'استرداد منقول', newMain:'الحيازة', newSub:'استرداد الحيازة موضوعيًا', proceduralResult:null, status:'needs_review' },
-  { oldMain:'المنقولات والودائع', oldSub:'استرداد عين', newMain:'الحيازة', newSub:'استرداد الحيازة موضوعيًا', proceduralResult:null, status:'needs_review' },
-
-  // ===== الالتزامات المالية =====
-  { oldMain:'الالتزامات المالية', oldSub:'استرداد مبلغ', newMain:'الإثراء بلا سبب ودفع غير المستحق', newSub:'استرداد مبلغ دفع خطأ', proceduralResult:null, status:'needs_review', note:'ليس كل استرداد مبلغ بالضرورة "إثراء بلا سبب"؛ يحتاج مراجعة السبب الفعلي.' },
-  { oldMain:'الالتزامات المالية', oldSub:'رد طلب التعويض المعنوي', newMain:'المسؤولية المدنية والتعويض', newSub:'ضرر معنوي', proceduralResult:'رفض الدعوى موضوعًا', status:'needs_review', note:'خلط واضح بين الموضوع (ضرر معنوي) والنتيجة (رد الطلب) — تمامًا كالمثال الذي حذّرتِ منه.' },
-  { oldMain:'الالتزامات المالية', oldSub:'مطالبة بتعويض', newMain:'المسؤولية المدنية والتعويض', newSub:null, proceduralResult:null, status:'needs_review', note:'عام جدًا؛ يحتاج تحديد نوع الضرر من النص الأصلي.' },
-
-  // ===== الدفوع الشكلية والإجرائية — كلها تنتقل لخانة النتيجة الإجرائية، لا تصنيف موضوعي =====
-  { oldMain:'الدفوع الشكلية والإجرائية', oldSub:'رد الدعوى لعدم سداد رسوم الخبير', newMain:null, newSub:null, proceduralResult:'عدم إيداع أتعاب الخبرة', status:'needs_review', note:'إجرائي بحت + نتيجة حكم (رد الدعوى)؛ الموضوع الحقيقي غير معروف.' },
-  { oldMain:'الدفوع الشكلية والإجرائية', oldSub:'عدم اختصاص مكاني', newMain:null, newSub:null, proceduralResult:'عدم الاختصاص المكاني', status:'needs_review', note:'هذا مثالك بالضبط في البند ثانيًا — لا يجوز تخمين الموضوع.' },
-  { oldMain:'الدفوع الشكلية والإجرائية', oldSub:'سبق الفصل في الدعوى', newMain:null, newSub:null, proceduralResult:'عدم جواز نظر الدعوى لسبق الفصل فيها', status:'needs_review' },
-  { oldMain:'الدفوع الشكلية والإجرائية', oldSub:'رفض التماس إعادة النظر', newMain:null, newSub:null, proceduralResult:'رفض الالتماس', status:'needs_review' },
-  { oldMain:'الدفوع الشكلية والإجرائية', oldSub:'صرف النظر عن دعوى مستعجلة', newMain:'القضاء المستعجل', newSub:null, proceduralResult:null, status:'needs_review', note:'يبقى موضوعه "مستعجل" لكن النتيجة "صرف النظر" غير موجودة صراحة في قائمة النتائج الجديدة — أقترح إضافتها.' },
-  { oldMain:'الدفوع الشكلية والإجرائية', oldSub:'عدم الاختصاص', newMain:null, newSub:null, proceduralResult:'عدم الاختصاص', status:'needs_review' },
-  { oldMain:'الدفوع الشكلية والإجرائية', oldSub:'عدم القبول', newMain:null, newSub:null, proceduralResult:'عدم القبول', status:'needs_review' },
-  { oldMain:'الدفوع الشكلية والإجرائية', oldSub:'عدم الصفة', newMain:null, newSub:null, proceduralResult:'عدم قبول الدعوى لانعدام صفة المدعي', status:'needs_review', note:'القديم لا يميز صفة المدعي عن المدعى عليه؛ يحتاج تأكيدًا يدويًا لكل حالة.' },
-
-  // ===== الأيمان والبينة — كلها تنتقل لخانة وسائل الإثبات، لا تصنيف موضوعي =====
-  { oldMain:'الأيمان والبينة', oldSub:'نكول المدعى عليه بسبب غيابه', newMain:null, newSub:null, proceduralResult:null, evidenceMethod:'النكول عن اليمين', status:'needs_review' },
-  { oldMain:'الأيمان والبينة', oldSub:'نكول عن اليمين', newMain:null, newSub:null, proceduralResult:null, evidenceMethod:'النكول عن اليمين', status:'needs_review' },
-  { oldMain:'الأيمان والبينة', oldSub:'توجيه اليمين', newMain:null, newSub:null, proceduralResult:null, evidenceMethod:'اليمين الحاسمة', status:'needs_review', note:'يحتاج تحديد نوع اليمين (حاسمة/متممة) من الحقل oathType المحفوظ أصلًا بالقضية.' },
-  { oldMain:'الأيمان والبينة', oldSub:'شهادة شاهد', newMain:null, newSub:null, proceduralResult:null, evidenceMethod:'شهادة', status:'needs_review' },
-  { oldMain:'الأيمان والبينة', oldSub:'عدم تقديم بينة', newMain:null, newSub:null, proceduralResult:null, evidenceMethod:null, status:'needs_review', note:'يحتاج إضافة "عدم تقديم بينة" لقائمة وسائل الإثبات (كحالة سلبية).' },
-
-  // ===== غير مصنف بدقة =====
-  { oldMain:'غير مصنف بدقة', oldSub:'يحتاج مراجعة يدوية', newMain:null, newSub:null, proceduralResult:null, status:'not_migrated', note:'يُستبدل مستقبلًا بـ"يحتاج إنشاء تصنيف جديد" مع الاحتفاظ الكامل بالـLegacy — لا حذف.' }
+const MIGRATION_MAPPING=[
+{oldMain:"المركبات والحوادث",oldSub:"حادث مركبة دون تأمين",newMain:"المركبات والحوادث المرورية",newSub:null,proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"لا يوجد فرع جديد مطابق لـ\"دون تأمين\" — يحتاج فرعًا جديدًا."},
+{oldMain:"المركبات والحوادث",oldSub:"تعويض عن حادث مروري",newMain:"المركبات والحوادث المرورية",newSub:"تعويض حادث مروري",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"المركبات والحوادث",oldSub:"أرش إصابة في حادث مروري",newMain:"المركبات والحوادث المرورية",newSub:"تعويض حادث مروري",proceduralResult:null,evidenceMethod:null,status:"migrated_medium",note:"يُحفظ \"أرش\" كوسم؛ لا يوجد فرع \"أرش إصابة\" صريح."},
+{oldMain:"المركبات والحوادث",oldSub:"اعتراض على نسبة الخطأ في حادث مروري",newMain:"المركبات والحوادث المرورية",newSub:"النزاع في نسبة الخطأ",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"المركبات والحوادث",oldSub:"تلفيات مركبة",newMain:"المركبات والحوادث المرورية",newSub:"تلفيات مركبة",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"المركبات والحوادث",oldSub:"أجرة زائدة لمركبة",newMain:null,newSub:null,proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"لا يوجد فرع \"أجرة زائدة\" صريح؛ قد ينتمي للإيجار أو المركبات."},
+{oldMain:"المركبات والحوادث",oldSub:"أجرة المثل للمركبة",newMain:"المركبات والحوادث المرورية",newSub:"أجرة مثل مركبة",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"المركبات والحوادث",oldSub:"أجرة مركبة",newMain:"الإيجار",newSub:"إيجار المركبة",proceduralResult:null,evidenceMethod:null,status:"migrated_medium",note:"أُعيد تصنيفها رئيسيًا تحت الإيجار."},
+{oldMain:"المركبات والحوادث",oldSub:"نقل مخالفات المركبة",newMain:"المركبات والحوادث المرورية",newSub:"مخالفات مرورية مرتبطة باستعمال المركبة أو التصرف فيها متى انعقد الاختصاص",proceduralResult:null,evidenceMethod:null,status:"migrated_medium"},
+{oldMain:"المركبات والحوادث",oldSub:"مطالبة بقيمة إصلاح مركبة",newMain:"المركبات والحوادث المرورية",newSub:"تكلفة إصلاح مركبة",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"المركبات والحوادث",oldSub:"عدم صفة قائد المركبة",newMain:"المركبات والحوادث المرورية",newSub:null,proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"يحتاج فرعًا جديدًا صريحًا؛ واقعة موضوعية خاصة بالحادث لا دفعًا إجرائيًا عامًا."},
+{oldMain:"المركبات والحوادث",oldSub:"رد مركبة / استرداد عين مركبة",newMain:"المركبات والحوادث المرورية",newSub:"استرداد حيازة مركبة",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"المركبات والحوادث",oldSub:"حادث مروري غير محدد",newMain:"المركبات والحوادث المرورية",newSub:"تعويض حادث مروري",proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"fallback عام سابق؛ يُفضَّل مراجعة النص الأصلي."},
+{oldMain:"الشركات والخدمات",oldSub:"أجرة نقل",newMain:"الخدمات والأعمال المهنية",newSub:"نقل",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"الشركات والخدمات",oldSub:"محاسبة بين الشركاء",newMain:"الشركات المدنية والمشاركة",newSub:"محاسبة الشريك",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"الشركات والخدمات",oldSub:"مستحقات شريك",newMain:"الشركات المدنية والمشاركة",newSub:"حصة الشريك",proceduralResult:null,evidenceMethod:null,status:"migrated_medium"},
+{oldMain:"الشركات والخدمات",oldSub:"مطالبة بموجب فواتير",newMain:null,newSub:null,proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"fallback عام جدًا — أي نوع فاتورة؟"},
+{oldMain:"الشركات والخدمات",oldSub:"عقد خدمات",newMain:"الخدمات والأعمال المهنية",newSub:"المطالبة بمقابل خدمة",proceduralResult:null,evidenceMethod:null,status:"migrated_medium"},
+{oldMain:"الكهرباء",oldSub:"مطالبة بفواتير كهرباء غير مسددة",newMain:"الكهرباء والمياه والمرافق",newSub:"قيمة استهلاك",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"الاتصالات",oldSub:"مطالبة بفواتير اتصالات غير مسددة",newMain:"الاتصالات والخدمات الرقمية",newSub:"فاتورة اتصالات",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"العقارات والملكية",oldSub:"رد ثمن العقار لعدم وجود صك ملكية",newMain:"العقارات والملكية",newSub:"رد ثمن عقار",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"العقارات والملكية",oldSub:"فسخ عقد بيع عقار ورد الثمن",newMain:"العقارات والملكية",newSub:"فسخ بيع عقار",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"العقارات والملكية",oldSub:"فسخ عقد متعلق بعقار غير مملوك للمدعى عليه",newMain:"العقارات والملكية",newSub:"بيع عقار غير مملوك",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"العقارات والملكية",oldSub:"نقل ملكية عقار",newMain:"العقارات والملكية",newSub:"نقل ملكية عقار",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"العقارات والملكية",oldSub:"إخلاء عقار",newMain:"العقارات والملكية",newSub:"إخلاء عقار على أساس حق موضوعي",proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"قد يكون سببه إيجاريًا لا ملكيًا."},
+{oldMain:"العقارات والملكية",oldSub:"إلزام بإفراغ جزء من عقار",newMain:"العقارات والملكية",newSub:"إلزام بالإفراغ",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"العقارات والملكية",oldSub:"رفع يد عن عقار متداخل",newMain:"العقارات والملكية",newSub:"رفع يد عن عقار",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"العقارات والملكية",oldSub:"إصلاح عقار مستأجر من قبل المؤجر",newMain:"الإيجار",newSub:"إلزام المؤجر بالإصلاح",proceduralResult:null,evidenceMethod:null,status:"migrated_high",note:"أُعيد تصنيفها تحت الإيجار."},
+{oldMain:"العقارات والملكية",oldSub:"مطالبة بنسبة من أرباح عقار",newMain:"العقارات والملكية",newSub:"ثمار العقار وغلاته",proceduralResult:null,evidenceMethod:null,status:"migrated_medium"},
+{oldMain:"العقارات والملكية",oldSub:"نزاع على صك ملكية",newMain:"العقارات والملكية",newSub:"النزاع على صك ملكية",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"العقارات والملكية",oldSub:"عدم وجود صك",newMain:"العقارات والملكية",newSub:"عدم وجود صك",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"العقارات والملكية",oldSub:"إثبات ملكية عقار",newMain:"العقارات والملكية",newSub:"إثبات ملكية عقار",proceduralResult:null,evidenceMethod:null,status:"migrated_high",note:"مثال المستخدم الحرفي."},
+{oldMain:"الإيجار",oldSub:"مطالبة بأجرة متبقية من عقد إيجار",newMain:"الإيجار",newSub:"المطالبة بباقي الأجرة",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"الإيجار",oldSub:"أجرة زائدة عن عقد إيجار",newMain:null,newSub:null,proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"لا يوجد فرع \"أجرة زائدة\" صريح — يحتاج إضافته."},
+{oldMain:"الإيجار",oldSub:"فسخ وإخلاء",newMain:"الإيجار",newSub:"فسخ عقد الإيجار",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"الإيجار",oldSub:"فسخ عقد إيجار",newMain:"الإيجار",newSub:"فسخ عقد الإيجار",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"الإيجار",oldSub:"إخلاء مأجور",newMain:"الإيجار",newSub:"إخلاء المأجور",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"الإيجار",oldSub:"عدم سداد الأجرة",newMain:"الإيجار",newSub:"المطالبة بالأجرة",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"الإيجار",oldSub:"أجرة عقار",newMain:"الإيجار",newSub:"المطالبة بالأجرة",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"الإيجار",oldSub:"مطالبة بأجرة",newMain:"الإيجار",newSub:"المطالبة بالأجرة",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"القروض والديون",oldSub:"قرض مع إنكار الاستلام",newMain:"القروض والديون",newSub:"نفي القرض",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"القروض والديون",oldSub:"إقرار بالقرض",newMain:null,newSub:null,proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"يحتاج فرعًا جديدًا \"إقرار بالقرض\"."},
+{oldMain:"القروض والديون",oldSub:"إقرار بمديونية",newMain:null,newSub:null,proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"يحتاج فرعًا جديدًا \"إقرار بمديونية\"."},
+{oldMain:"القروض والديون",oldSub:"مطالبة برد قرض",newMain:"القروض والديون",newSub:"المطالبة برد قرض",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"القروض والديون",oldSub:"منازعة في سبب المديونية",newMain:"القروض والديون",newSub:"النزاع في وصف المبلغ",proceduralResult:null,evidenceMethod:null,status:"migrated_medium"},
+{oldMain:"القروض والديون",oldSub:"إثبات قرض",newMain:"القروض والديون",newSub:"إثبات قرض",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"القروض والديون",oldSub:"سلفة",newMain:null,newSub:null,proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"يحتاج فرعًا جديدًا \"سلفة\"."},
+{oldMain:"القروض والديون",oldSub:"سند لأمر",newMain:null,newSub:null,proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"يحتاج فرعًا جديدًا \"سند لأمر\"."},
+{oldMain:"القروض والديون",oldSub:"مطالبة بسداد قرض",newMain:"القروض والديون",newSub:"المطالبة برد قرض",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"القروض والديون",oldSub:"مطالبة بدين",newMain:"القروض والديون",newSub:"مطالبة بدين مدني",proceduralResult:null,evidenceMethod:null,status:"migrated_medium"},
+{oldMain:"الكفالة والضمان",oldSub:"الحكم على الكفيل الغارم",newMain:"الكفالة والضمان",newSub:"مطالبة الكفيل",proceduralResult:null,evidenceMethod:null,status:"migrated_medium",note:"النتيجة القضائية لا الموضوع."},
+{oldMain:"الكفالة والضمان",oldSub:"رجوع الكفيل على المدين",newMain:"الكفالة والضمان",newSub:"رجوع الكفيل على المدين",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"الكفالة والضمان",oldSub:"إنكار الكفالة",newMain:"الكفالة والضمان",newSub:"إثبات الكفالة",proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"\"إنكار\" وصف لموقف الخصم لا للموضوع."},
+{oldMain:"الكفالة والضمان",oldSub:"مطالبة كفيل",newMain:"الكفالة والضمان",newSub:"مطالبة الكفيل",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"الكفالة والضمان",oldSub:"ضمان مالي",newMain:"الكفالة والضمان",newSub:"الضمان الشخصي",proceduralResult:null,evidenceMethod:null,status:"migrated_medium"},
+{oldMain:"الصلح والتنازل",oldSub:"تنفيذ اتفاق صلح",newMain:"الصلح والتنازل والإسقاط",newSub:"تنفيذ الصلح",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"الصلح والتنازل",oldSub:"إثبات صلح",newMain:"الصلح والتنازل والإسقاط",newSub:"إثبات الصلح",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"الصلح والتنازل",oldSub:"إثبات تنازل",newMain:"الصلح والتنازل والإسقاط",newSub:"إثبات التنازل عن الحق",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"الصلح والتنازل",oldSub:"تنازل عن الدعوى",newMain:null,newSub:null,proceduralResult:"إثبات ترك الخصومة",evidenceMethod:null,status:"needs_review",note:"إجرائي فعليًا؛ الموضوع الحقيقي غير معروف."},
+{oldMain:"الصلح والتنازل",oldSub:"تنازل عن مطالبة",newMain:"الصلح والتنازل والإسقاط",newSub:"إثبات إسقاط الحق",proceduralResult:null,evidenceMethod:null,status:"migrated_medium"},
+{oldMain:"الصلح والتنازل",oldSub:"مخالصة",newMain:null,newSub:null,proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"يحتاج فرعًا جديدًا \"مخالصة\"."},
+{oldMain:"أتعاب المحاماة والخبرة",oldSub:"رفض أتعاب محاماة",newMain:"أتعاب المحاماة والخبرة والمهن",newSub:"أتعاب محاماة دون اتفاق",proceduralResult:null,evidenceMethod:null,status:"migrated_medium"},
+{oldMain:"أتعاب المحاماة والخبرة",oldSub:"نزاع في مقدار الأتعاب",newMain:"أتعاب المحاماة والخبرة والمهن",newSub:"باقي أتعاب محاماة",proceduralResult:null,evidenceMethod:null,status:"migrated_medium"},
+{oldMain:"أتعاب المحاماة والخبرة",oldSub:"أتعاب خبير",newMain:"أتعاب المحاماة والخبرة والمهن",newSub:"أتعاب خبير",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"أتعاب المحاماة والخبرة",oldSub:"مطالبة بأتعاب محاماة",newMain:"أتعاب المحاماة والخبرة والمهن",newSub:"أتعاب محاماة باتفاق",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"البيع والمبيع",oldSub:"عيب مبيع",newMain:"البيع والمبيع",newSub:"العيب الخفي",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"البيع والمبيع",oldSub:"مطالبة بثمن مبيع",newMain:"البيع والمبيع",newSub:"المطالبة بالثمن",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"البيع والمبيع",oldSub:"تسليم المبيع",newMain:"البيع والمبيع",newSub:"تسليم المبيع",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"البيع والمبيع",oldSub:"فسخ عقد بيع",newMain:"البيع والمبيع",newSub:"فسخ البيع",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"العقود والالتزامات",oldSub:"عدم إتمام العقد",newMain:"العقود وأحكامها العامة",newSub:"عدم انعقاد العقد",proceduralResult:null,evidenceMethod:null,status:"migrated_medium"},
+{oldMain:"العقود والالتزامات",oldSub:"عدم تنفيذ العقد",newMain:"العقود وأحكامها العامة",newSub:"الامتناع عن تنفيذ العقد",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"العقود والالتزامات",oldSub:"فسخ العقد",newMain:"العقود وأحكامها العامة",newSub:"فسخ العقد",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"العقود والالتزامات",oldSub:"تنفيذ الالتزام",newMain:"تنفيذ الالتزامات والوفاء",newSub:"التنفيذ العيني",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"العقود والالتزامات",oldSub:"التعويض عن الإخلال بالعقد",newMain:"العقود وأحكامها العامة",newSub:"التعويض عن الإخلال بالعقد",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"العقود والالتزامات",oldSub:"مطالبة مالية ناشئة عن عقد",newMain:null,newSub:null,proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"fallback عام جدًا."},
+{oldMain:"المنقولات والودائع",oldSub:"استرداد وديعة",newMain:"الوديعة والأمانات",newSub:"رد الوديعة",proceduralResult:null,evidenceMethod:null,status:"migrated_high"},
+{oldMain:"المنقولات والودائع",oldSub:"استرداد منقول",newMain:"الحيازة",newSub:"استرداد الحيازة موضوعيًا",proceduralResult:null,evidenceMethod:null,status:"needs_review"},
+{oldMain:"المنقولات والودائع",oldSub:"استرداد عين",newMain:"الحيازة",newSub:"استرداد الحيازة موضوعيًا",proceduralResult:null,evidenceMethod:null,status:"needs_review"},
+{oldMain:"الالتزامات المالية",oldSub:"استرداد مبلغ",newMain:"الإثراء بلا سبب ودفع غير المستحق",newSub:"استرداد مبلغ دفع خطأ",proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"ليس كل استرداد مبلغ بالضرورة إثراء بلا سبب."},
+{oldMain:"الالتزامات المالية",oldSub:"رد طلب التعويض المعنوي",newMain:"المسؤولية المدنية والتعويض",newSub:"تعويض عن ضرر معنوي",proceduralResult:"رفض الدعوى موضوعيًا",evidenceMethod:null,status:"needs_review",note:"خلط قديم بين الموضوع والنتيجة."},
+{oldMain:"الالتزامات المالية",oldSub:"مطالبة بتعويض",newMain:"المسؤولية المدنية والتعويض",newSub:null,proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"عام جدًا؛ يحتاج تحديد نوع الضرر."},
+{oldMain:"الدفوع الشكلية والإجرائية",oldSub:"رد الدعوى لعدم سداد رسوم الخبير",newMain:null,newSub:null,proceduralResult:"عدم إيداع أتعاب الخبرة",evidenceMethod:null,status:"needs_review"},
+{oldMain:"الدفوع الشكلية والإجرائية",oldSub:"عدم اختصاص مكاني",newMain:null,newSub:null,proceduralResult:"عدم الاختصاص المكاني",evidenceMethod:null,status:"needs_review",note:"مثال المستخدم الحرفي."},
+{oldMain:"الدفوع الشكلية والإجرائية",oldSub:"سبق الفصل في الدعوى",newMain:null,newSub:null,proceduralResult:"عدم جواز نظر الدعوى لسبق الفصل فيها",evidenceMethod:null,status:"needs_review"},
+{oldMain:"الدفوع الشكلية والإجرائية",oldSub:"رفض التماس إعادة النظر",newMain:null,newSub:null,proceduralResult:"رفض الالتماس",evidenceMethod:null,status:"needs_review"},
+{oldMain:"الدفوع الشكلية والإجرائية",oldSub:"صرف النظر عن دعوى مستعجلة",newMain:"القضاء المستعجل",newSub:null,proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"النتيجة \"صرف النظر\" غير موجودة صراحة — تحتاج إضافة."},
+{oldMain:"الدفوع الشكلية والإجرائية",oldSub:"عدم الاختصاص",newMain:null,newSub:null,proceduralResult:"عدم الاختصاص",evidenceMethod:null,status:"needs_review"},
+{oldMain:"الدفوع الشكلية والإجرائية",oldSub:"عدم القبول",newMain:null,newSub:null,proceduralResult:"عدم قبول الدعوى",evidenceMethod:null,status:"needs_review"},
+{oldMain:"الدفوع الشكلية والإجرائية",oldSub:"عدم الصفة",newMain:null,newSub:null,proceduralResult:"عدم قبول الدعوى لانعدام صفة المدعي",evidenceMethod:null,status:"needs_review",note:"القديم لا يميز صفة المدعي عن المدعى عليه."},
+{oldMain:"الأيمان والبينة",oldSub:"نكول المدعى عليه بسبب غيابه",newMain:null,newSub:null,proceduralResult:null,evidenceMethod:"نكول عن اليمين",status:"needs_review"},
+{oldMain:"الأيمان والبينة",oldSub:"نكول عن اليمين",newMain:null,newSub:null,proceduralResult:null,evidenceMethod:"نكول عن اليمين",status:"needs_review"},
+{oldMain:"الأيمان والبينة",oldSub:"توجيه اليمين",newMain:null,newSub:null,proceduralResult:null,evidenceMethod:"يمين حاسمة",status:"needs_review",note:"يحتاج تحديد النوع من حقل oathType المحفوظ أصلًا."},
+{oldMain:"الأيمان والبينة",oldSub:"شهادة شاهد",newMain:null,newSub:null,proceduralResult:null,evidenceMethod:"شهادة",status:"needs_review"},
+{oldMain:"الأيمان والبينة",oldSub:"عدم تقديم بينة",newMain:null,newSub:null,proceduralResult:null,evidenceMethod:null,status:"needs_review",note:"لا توجد قيمة \"عدم تقديم بينة\" في قائمة وسائل الإثبات الجديدة."},
+{oldMain:"غير مصنف بدقة",oldSub:"يحتاج مراجعة يدوية",newMain:null,newSub:null,proceduralResult:null,evidenceMethod:null,status:"not_migrated",note:"يُستبدل مستقبلًا بـ\"يحتاج إنشاء تصنيف جديد\" مع الاحتفاظ الكامل بالـLegacy."},
 ];
 
 function analyzeNewTaxonomyMigration(){
@@ -1512,7 +1740,7 @@ function getVisibleCaseRows(){
   if(activeSubFilter)rows=rows.filter(x=>x.subCategory===activeSubFilter);
   if(activeHijriMonthFilter)rows=rows.filter(x=>x.hijriMonthKey===activeHijriMonthFilter);
   if(activeCaseStatusFilter)rows=rows.filter(x=>x.caseStatus===activeCaseStatusFilter);
-  if(activeNeedsReviewFilter)rows=rows.filter(x=>x.mainCategory==='غير مصنف بدقة');
+  if(activeNeedsReviewFilter)rows=rows.filter(x=>x.mainCategory==='غير مصنف بدقة'||!x.main_category_new||x.migrationStatus==='needs_review');
   rows.sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));
   return rows;
 }
@@ -1607,6 +1835,180 @@ function renderTrash(){
   let rows=records.filter(x=>x.isDeleted);
   document.getElementById('trashList').innerHTML=rows.length?rows.map(x=>`<article class="card"><strong>#${esc(x.caseNumber)}</strong><h3>${esc(x.subCategory)}</h3><div class="meta">حُذفت: ${fmtDate(x.updatedAt)}</div><footer><span>${esc(x.mainCategory)}</span><button onclick="trash('${esc(x.caseNumber)}',true)">استعادة</button></footer></article>`).join(''):'<div class="empty">السلة فارغة</div>';
 }
+/* ============================= صفحة مراجعة تصنيفات القضايا ============================= */
+let reauditSuggestions=[]; // قائمة اقتراحات في الذاكرة فقط — لا تُكتب على Firestore إلا عند اعتماد صريح
+let reviewSelectedCaseNumbers=new Set();
+
+function computeReviewStats(){
+  const active=records.filter(r=>!r.isDeleted);
+  const needsReview=active.filter(r=>!r.main_category_new||r.migrationStatus==='needs_review');
+  const high=reauditSuggestions.filter(s=>s.confidence==='اقتراح تغيير - ثقة عالية').length;
+  const medium=reauditSuggestions.filter(s=>s.confidence==='اقتراح تغيير - ثقة متوسطة').length;
+  const insufficient=reauditSuggestions.filter(s=>s.confidence==='لا توجد معلومات كافية').length;
+  const reviewedApproved=active.filter(r=>r.migrationStatus==='migrated').length;
+  return{total:active.length,needsReview:needsReview.length,high,medium,insufficient,reviewedApproved};
+}
+
+function renderReviewPage(){
+  if(!reauditSuggestions.length){
+    const active=records.filter(r=>!r.isDeleted&&(!r.main_category_new||r.migrationStatus==='needs_review'));
+    reauditSuggestions.length=0;reauditSuggestions.push(...active.map(generateReclassificationSuggestion));
+  }
+  const s=computeReviewStats();
+  document.getElementById('reviewStatGrid').innerHTML=
+    `<div class="statcard"><b>${s.total}</b><span>إجمالي القضايا</span></div>
+     <div class="statcard"><b>${s.needsReview}</b><span>تحتاج مراجعة</span></div>
+     <div class="statcard"><b>${s.high}</b><span>اقتراحات ثقة عالية</span></div>
+     <div class="statcard"><b>${s.medium}</b><span>اقتراحات ثقة متوسطة</span></div>
+     <div class="statcard"><b>${s.insufficient}</b><span>لا معلومات كافية</span></div>
+     <div class="statcard"><b>${s.reviewedApproved}</b><span>رُوجعت واعتُمدت</span></div>`;
+  renderReviewList();
+}
+
+async function runFullReaudit(){
+  const active=records.filter(r=>!r.isDeleted);
+  reauditSuggestions.length=0;reauditSuggestions.push(...active.map(generateReclassificationSuggestion));
+  reviewSelectedCaseNumbers.clear();
+  renderReviewPage();
+  alert('تمت إعادة تدقيق '+active.length+' قضية. لم يتغيّر أي تصنيف — راجع القائمة أدناه واعتمد ما تريد يدويًا.');
+}
+
+function renderReviewList(){
+  const onlyHigh=document.getElementById('highConfidenceOnlyFilter').checked;
+  const list=onlyHigh?reauditSuggestions.filter(s=>s.confidence==='اقتراح تغيير - ثقة عالية'):reauditSuggestions;
+  const el=document.getElementById('reviewList');
+  if(!list.length){el.innerHTML='<div class="empty">لا توجد قضايا للمراجعة حاليًا 🎉</div>';updateBulkBar();return}
+
+  const confClass={'اقتراح تغيير - ثقة عالية':'confidence-high','اقتراح تغيير - ثقة متوسطة':'confidence-medium','يحتاج قرارًا يدويًا':'confidence-manual','لا توجد معلومات كافية':'confidence-insufficient','التصنيف الحالي يبدو صحيحًا':'confidence-high'};
+
+  el.innerHTML=`<div class="grid">`+list.map(s=>`
+    <article class="card" style="cursor:default">
+      <div class="card-head"><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" ${reviewSelectedCaseNumbers.has(s.caseNumber)?'checked':''} onchange="toggleReviewSelection('${esc(s.caseNumber)}',this.checked)"><strong>#${esc(s.caseNumber)}</strong></label><span class="confidence-badge ${confClass[s.confidence]||''}">${esc(s.confidence)}</span></div>
+      <p style="margin:8px 0 4px"><b>الحالي:</b> ${esc(s.oldMain)} ← ${esc(s.oldSub)}</p>
+      ${s.suggestedMain?'<p style="margin:4px 0"><b>المقترح:</b> '+esc(s.suggestedMain)+' ← '+esc(s.suggestedSub||'(يحتاج تحديد فرع)')+'</p>':''}
+      <p style="font-size:11px;color:var(--text-secondary)">${esc(s.reason)}</p>
+      <footer><span></span><button class="soft" onclick="openReclassifySuggestion('${esc(s.caseNumber)}')">فتح التفاصيل والاعتماد</button></footer>
+    </article>`).join('')+`</div>`;
+  updateBulkBar();
+}
+function toggleReviewSelection(caseNumber,checked){
+  if(checked)reviewSelectedCaseNumbers.add(caseNumber);else reviewSelectedCaseNumbers.delete(caseNumber);
+  updateBulkBar();
+}
+function updateBulkBar(){
+  const n=reviewSelectedCaseNumbers.size;
+  document.getElementById('bulkSelectedCount').textContent=n?('محدَّد: '+n+' قضية'):'';
+  document.getElementById('btnApproveSelected').style.display=n?'inline-block':'none';
+}
+
+/* بطاقة اقتراح إعادة تصنيف قضية واحدة، بأزرارها الخمسة — لا يُطبَّق شيء إلا بعد اعتماد صريح */
+function openReclassifySuggestion(caseNumber){
+  const record=records.find(r=>String(r.caseNumber)===String(caseNumber));
+  if(!record){alert('تعذّر العثور على القضية.');return}
+  const suggestion=generateReclassificationSuggestion(record);
+  renderSuggestionCard(suggestion);
+  document.getElementById('reportModal').style.display='flex';
+}
+function renderSuggestionCard(s){
+  const box=document.getElementById('reportModalBox');
+  box.innerHTML=`<h3 style="color:var(--mint-dark);margin-top:0">إعادة فحص التصنيف</h3>
+    <div class="suggestion-card">
+      <p><b>رقم القضية:</b> ${esc(s.caseNumber)}</p>
+      <p><b>التصنيف الحالي:</b> ${esc(s.currentMainNew||s.oldMain)} ← ${esc(s.currentSubNew||s.oldSub)}</p>
+      <p><b>التصنيف الموضوعي المقترح:</b> ${s.suggestedMain?esc(s.suggestedMain)+' ← '+esc(s.suggestedSub||'(يحتاج تحديد فرع)'):'لا يوجد اقتراح كافٍ'}</p>
+      ${s.proceduralSuggested.length?'<p><b>النتيجة الإجرائية المقترحة:</b> '+s.proceduralSuggested.map(esc).join('، ')+'</p>':''}
+      ${s.evidenceSuggested.length?'<p><b>وسيلة الإثبات المقترحة:</b> '+s.evidenceSuggested.map(esc).join('، ')+'</p>':''}
+      <p><b>درجة الثقة:</b> <span class="confidence-badge ${({'اقتراح تغيير - ثقة عالية':'confidence-high','اقتراح تغيير - ثقة متوسطة':'confidence-medium','يحتاج قرارًا يدويًا':'confidence-manual','لا توجد معلومات كافية':'confidence-insufficient','التصنيف الحالي يبدو صحيحًا':'confidence-high'})[s.confidence]||''}">${esc(s.confidence)}</span></p>
+      <p><b>سبب الاقتراح:</b> ${esc(s.reason)}</p>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
+      ${s.suggestedMain?'<button class="primary" onclick="acceptSuggestion(\''+esc(s.caseNumber)+'\')">اعتماد التعديل</button>':''}
+      <button class="soft" onclick="closeReport();openCaseDetail('${esc(s.caseNumber)}');enterCaseEditMode()">تعديل الاقتراح</button>
+      <button class="soft" onclick="keepCurrentClassification('${esc(s.caseNumber)}')">إبقاء التصنيف الحالي</button>
+      <button class="soft" onclick="skipCaseForNow('${esc(s.caseNumber)}')">تخطي الآن</button>
+      ${s.suggestedMain?'<button class="soft" onclick="acceptSuggestionAndNext(\''+esc(s.caseNumber)+'\')">اعتماد والانتقال للتالي</button>':''}
+    </div>`;
+}
+async function applySuggestionToCase(s,source){
+  const record=records.find(r=>String(r.caseNumber)===String(s.caseNumber));
+  if(!record)return;
+  const beforeMain=record.main_category_new||null,beforeSub=record.sub_category_new||null;
+  const patch={
+    main_category_new:s.suggestedMain,sub_category_new:s.suggestedSub||null,
+    procedural_results:[...new Set([...(record.procedural_results||[]),...s.proceduralSuggested])],
+    evidence_methods:[...new Set([...(record.evidence_methods||[]),...s.evidenceSuggested])],
+    legacy_main_category:record.legacy_main_category||s.oldMain,
+    legacy_sub_category:record.legacy_sub_category||s.oldSub,
+    migrationStatus:'migrated',
+    updatedAt:new Date().toISOString()
+  };
+  await window.__cloudUpdateCase(s.caseNumber,patch);
+  Object.assign(record,patch);
+  await writeAuditLogEntry({
+    caseNumber:s.caseNumber,oldMain:beforeMain,oldSub:beforeSub,newMain:s.suggestedMain,newSub:s.suggestedSub,
+    proceduralResultsAfter:patch.procedural_results,evidenceMethodsAfter:patch.evidence_methods,
+    reason:s.reason,source,confidence:s.confidence
+  });
+  console.log('تم تغيير القضية رقم ('+s.caseNumber+') من: '+(beforeMain||'—')+' ← '+(beforeSub||'—')+' إلى: '+s.suggestedMain+' ← '+(s.suggestedSub||'—')+(patch.procedural_results.length?' — وتمت إضافة النتيجة الإجرائية: '+patch.procedural_results.join('، '):''));
+  const __idx1=reauditSuggestions.findIndex(x=>x.caseNumber===s.caseNumber);if(__idx1>-1)reauditSuggestions.splice(__idx1,1);
+  reviewSelectedCaseNumbers.delete(s.caseNumber);
+}
+async function acceptSuggestion(caseNumber){
+  if(!window.__authUid){alert('سجّل الدخول أولًا.');return}
+  const s=reauditSuggestions.find(x=>x.caseNumber===caseNumber)||generateReclassificationSuggestion(records.find(r=>String(r.caseNumber)===String(caseNumber)));
+  await applySuggestionToCase(s,'suggestion_accepted');
+  closeReport();renderCases();renderReviewPage();
+}
+async function acceptSuggestionAndNext(caseNumber){
+  await acceptSuggestion(caseNumber);
+  const next=reauditSuggestions[0];
+  if(next)openReclassifySuggestion(next.caseNumber);
+}
+async function keepCurrentClassification(caseNumber){
+  if(!window.__authUid){alert('سجّل الدخول أولًا.');return}
+  const record=records.find(r=>String(r.caseNumber)===String(caseNumber));
+  if(record){
+    const patch={migrationStatus:'migrated',updatedAt:new Date().toISOString()};
+    await window.__cloudUpdateCase(caseNumber,patch);
+    Object.assign(record,patch);
+    await writeAuditLogEntry({caseNumber,oldMain:record.main_category_new,oldSub:record.sub_category_new,newMain:record.main_category_new,newSub:record.sub_category_new,proceduralResultsAfter:record.procedural_results||[],evidenceMethodsAfter:record.evidence_methods||[],reason:'أبقى المستخدم التصنيف الحالي دون تغيير بعد المراجعة',source:'manual',confidence:null});
+  }
+  const __idx2=reauditSuggestions.findIndex(x=>x.caseNumber===caseNumber);if(__idx2>-1)reauditSuggestions.splice(__idx2,1);
+  closeReport();renderCases();renderReviewPage();
+}
+function skipCaseForNow(caseNumber){
+  closeReport();
+  // لا تُحذف من قائمة المراجعة نهائيًا، فقط تُعاد للنهاية لتُراجَع لاحقًا في نفس الجلسة
+  const idx=reauditSuggestions.findIndex(x=>x.caseNumber===caseNumber);
+  if(idx>-1){const [item]=reauditSuggestions.splice(idx,1);reauditSuggestions.push(item);}
+  renderReviewList();
+}
+
+/* المراجعة الجماعية: شاشة تأكيد تعرض كل قضية قبل التنفيذ — لا اعتماد جماعي صامت */
+function openBulkApproveConfirm(){
+  const selected=reauditSuggestions.filter(s=>reviewSelectedCaseNumbers.has(s.caseNumber)&&s.suggestedMain);
+  if(!selected.length){alert('لم تُحدَّد أي قضية لها اقتراح صالح.');return}
+  const box=document.getElementById('reportModalBox');
+  box.innerHTML=`<h3 style="color:var(--mint-dark);margin-top:0">تأكيد الاعتماد الجماعي (${selected.length} قضية)</h3>
+    <div style="overflow-x:auto;max-height:50vh;overflow-y:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
+    <thead><tr style="text-align:right;color:var(--text-secondary)"><th style="padding:6px">القضية</th><th style="padding:6px">الحالي</th><th style="padding:6px">المقترح</th><th style="padding:6px">نتائج إجرائية ستُضاف</th></tr></thead><tbody>`+
+    selected.map(s=>`<tr style="border-top:1px solid var(--border)"><td style="padding:6px">#${esc(s.caseNumber)}</td><td style="padding:6px">${esc(s.oldMain)} ← ${esc(s.oldSub)}</td><td style="padding:6px;font-weight:700">${esc(s.suggestedMain)} ← ${esc(s.suggestedSub||'—')}</td><td style="padding:6px">${s.proceduralSuggested.join('، ')||'—'}</td></tr>`).join('')+
+    `</tbody></table></div>
+    <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">
+      <button class="soft" onclick="closeReport()">إلغاء</button>
+      <button class="primary" onclick="confirmBulkApprove()">تأكيد الاعتماد الجماعي</button>
+    </div>`;
+  document.getElementById('reportModal').style.display='flex';
+}
+async function confirmBulkApprove(){
+  if(!window.__authUid){alert('سجّل الدخول أولًا.');return}
+  const selected=reauditSuggestions.filter(s=>reviewSelectedCaseNumbers.has(s.caseNumber)&&s.suggestedMain);
+  let done=0;
+  for(const s of selected){await applySuggestionToCase(s,'bulk_accepted');done++;}
+  closeReport();renderCases();renderReviewPage();
+  alert('تم اعتماد '+done+' قضية بنجاح.');
+}
+
 function goToSub(sub){activeSubFilter=sub;show('cases');}
 
 /* ============================= الرئيسية (لوحة المعلومات) ============================= */
@@ -1670,27 +2072,29 @@ function fieldRow(label,value){
 function renderCaseDetail(r){
   const box=document.getElementById('caseDetailBox');
   if(!detailEditMode){
+    const hasNew=!!r.main_category_new;
     box.innerHTML=
       `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
         <div><div style="font-size:11px;color:var(--muted)">رقم القضية</div><h3 style="margin:4px 0;color:var(--g)">#${esc(r.caseNumber)}</h3></div>
         <button class="soft" onclick="closeCaseDetail()">إغلاق ✕</button>
       </div>
-      <div class="classification" style="margin-top:12px">${esc(r.mainCategory)}<b>←</b>${esc(r.subCategory)}</div>
+      ${hasNew?`<div class="classification" style="margin-top:12px">${esc(r.main_category_new)}<b>←</b>${esc(r.sub_category_new||'(يحتاج تحديد فرع)')}</div>`:''}
+      ${fieldRow('التصنيف القديم (Legacy)',esc(r.legacy_main_category||r.mainCategory)+' ← '+esc(r.legacy_sub_category||r.subCategory))}
+      ${!hasNew?'<div class="badge" style="background:'+ (r.mainCategory==='غير مصنف بدقة'?'#FFF3A6;color:#8a6d1a':'var(--mint-soft);color:var(--mint-dark)') +'">'+(r.mainCategory==='غير مصنف بدقة'?'قضية قديمة — يحتاج إنشاء تصنيف جديد':'قضية قديمة — لم تُرحَّل للنظام الجديد بعد')+'</div>':''}
+      ${fieldRow('النتيجة / المسألة الإجرائية',(r.procedural_results||[]).length?'<div class="chipsline">'+(r.procedural_results||[]).map(p=>'<span>'+esc(p)+'</span>').join('')+'</div>':'')}
+      ${fieldRow('وسائل الإثبات',(r.evidence_methods||[]).length?'<div class="chipsline">'+(r.evidence_methods||[]).map(p=>'<span>'+esc(p)+'</span>').join('')+'</div>':'')}
+      ${fieldRow('الوسوم',(r.tags_new&&r.tags_new.length?r.tags_new:(r.tags||[])).map(t=>esc(t)).join('، '))}
       ${fieldRow('تاريخ الإضافة الكامل',esc(fmtDate(r.createdAt))+(r.hijriMonthKey?' — '+esc(r.hijriMonth)+' '+esc(r.hijriYear)+'هـ':''))}
       ${fieldRow('النص الأصلي',esc(r.originalText||''))}
       ${fieldRow('نوع القضية',esc(r.caseType||''))}
-      ${fieldRow('الصياغة المنظمة',esc(norm(r.originalText||'')))}
-      ${fieldRow('السبب',esc(r.judgmentReason||''))}
       ${fieldRow('نتيجة الحكم',esc(r.judgmentResult||''))}
-      ${fieldRow('البينة',esc(r.evidenceType||''))}
-      ${fieldRow('نوع اليمين',esc(r.oathType||''))}
-      ${fieldRow('حالة الأطراف',esc(r.partyStatus||''))}
-      ${fieldRow('الوسوم',(r.tags||[]).map(t=>esc(t)).join('، '))}
+      ${fieldRow('السبب',esc(r.judgmentReason||''))}
       ${fieldRow('الحالة',r.caseStatus?esc(r.caseStatus):'')}
       ${fieldRow('درجة الثقة',r.confidence!=null?r.confidence+'%':'')}
       ${fieldRow('حالة المراجعة',r.manuallyReviewed?'<span class="badge">تمت المراجعة يدويًا</span>':'<span class="badge" style="background:#FFF3A6;color:#8a6d1a;border-color:#D4B93E">لم تُراجَع بعد</span>')}
       <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
         <button class="primary" onclick="enterCaseEditMode()">تعديل ومراجعة</button>
+        ${!hasNew||r.migrationStatus==='needs_review'?'<button class="soft" onclick="openReclassifySuggestion(\''+esc(r.caseNumber)+'\')">إعادة فحص التصنيف</button>':''}
         <button class="soft" onclick="trashFromDetail('${esc(r.caseNumber)}')" style="color:#b5564a">نقل إلى السلة</button>
       </div>`;
   } else {
@@ -1710,11 +2114,19 @@ function renderCaseDetail(r){
           <option value="نهائية" ${d.caseStatus==='نهائية'?'selected':''}>نهائية</option>
           <option value="قابلة للاعتراض" ${d.caseStatus==='قابلة للاعتراض'?'selected':''}>غير نهائية / قابلة للاعتراض</option>
         </select></div>
-        <div><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي</label><select id="dfMain" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px">${mainOptionsHTML(d.mainCategory)}</select></div>
-        <div><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي</label><select id="dfSub" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px">${subOptionsHTML(d.mainCategory,d.subCategory)}</select></div>
+        <div style="grid-column:1/-1"><hr style="border:0;border-top:1px solid var(--border);margin:4px 0"><small style="color:var(--text-secondary)">التصنيف القديم (Legacy — يبقى محفوظًا دائمًا لأغراض المحرك والتوافق)</small></div>
+        <div><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي (قديم)</label><select id="dfMain" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px">${mainOptionsHTML(d.mainCategory)}</select></div>
+        <div><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي (قديم)</label><select id="dfSub" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px">${subOptionsHTML(d.mainCategory,d.subCategory)}</select></div>
+        <div style="grid-column:1/-1"><hr style="border:0;border-top:1px solid var(--border);margin:4px 0"><small style="color:var(--mint-dark);font-weight:700">التصنيف الجديد — ابحث واختر (اكتب مثلًا: شفعة، إخلاء، عيب، قرض)</small></div>
+        <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي الجديد</label>${buildSearchableSelect('dfMainNew',NEW_MAIN_CATEGORIES,d.main_category_new,'onDfMainNewChange')}</div>
+        <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي الجديد</label><div id="dfSubNewWrap">${buildSearchableSelect('dfSubNew',NEW_TAXONOMY[d.main_category_new]||[],d.sub_category_new,null)}</div></div>
+        <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">النتيجة / المسألة الإجرائية (اختيارات متعددة)</label>${buildMultiChecklist('dfProcedural',PROCEDURAL_RESULTS,d.procedural_results)}</div>
+        <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">وسائل الإثبات (اختيارات متعددة)</label>${buildMultiChecklist('dfEvidenceMethods',EVIDENCE_METHODS,d.evidence_methods)}</div>
+        <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">الوسوم (اختيارات متعددة)</label>${buildMultiChecklist('dfTagsNew',SUGGESTED_TAGS_NEW,d.tags_new)}</div>
+        <div style="grid-column:1/-1"><hr style="border:0;border-top:1px solid var(--border);margin:4px 0"></div>
         <div><label style="font-size:11px;color:var(--muted)">نتيجة الحكم</label><input id="dfJudgResult" value="${esc(d.judgmentResult)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
         <div><label style="font-size:11px;color:var(--muted)">السبب</label><input id="dfJudgReason" value="${esc(d.judgmentReason)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
-        <div><label style="font-size:11px;color:var(--muted)">البينة</label><input id="dfEvidence" value="${esc(d.evidenceType)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
+        <div><label style="font-size:11px;color:var(--muted)">البينة (نص حر إضافي)</label><input id="dfEvidence" value="${esc(d.evidenceType)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
         <div><label style="font-size:11px;color:var(--muted)">نوع اليمين</label><input id="dfOath" value="${esc(d.oathType)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
         <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">حالة الأطراف</label><input id="dfParty" value="${esc(d.partyStatus)}" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
       </div>
@@ -1728,6 +2140,9 @@ function renderCaseDetail(r){
     };
   }
 }
+function onDfMainNewChange(mainValue){
+  document.getElementById('dfSubNewWrap').innerHTML=buildSearchableSelect('dfSubNew',NEW_TAXONOMY[mainValue]||[],'',null);
+}
 
 function enterCaseEditMode(){
   const r=records.find(x=>String(x.caseNumber)===String(currentDetailCaseNumber));
@@ -1735,7 +2150,9 @@ function enterCaseEditMode(){
   detailDraftFields={
     originalText:r.originalText||'',caseType:r.caseType||'',mainCategory:r.mainCategory||'',subCategory:r.subCategory||'',
     judgmentResult:r.judgmentResult||'',judgmentReason:r.judgmentReason||'',evidenceType:r.evidenceType||'',
-    oathType:r.oathType||'',partyStatus:r.partyStatus||'',caseStatus:r.caseStatus||''
+    oathType:r.oathType||'',partyStatus:r.partyStatus||'',caseStatus:r.caseStatus||'',
+    main_category_new:r.main_category_new||'يحتاج إنشاء تصنيف جديد',sub_category_new:r.sub_category_new||'',
+    procedural_results:r.procedural_results||[],evidence_methods:r.evidence_methods||[],tags_new:r.tags_new||[]
   };
   detailEditMode=true;
   renderCaseDetail(r);
@@ -1752,7 +2169,7 @@ function reanalyzeSingleCase(){
   const text=document.getElementById('dfText').value;
   const fields=reanalyzeFields(text);
   const box=document.getElementById('reanalyzeSuggestionBox');
-  box.innerHTML=`<div class="classification" style="margin-top:12px">اقتراح إعادة التحليل: ${esc(fields.mainCategory)}<b>←</b>${esc(fields.subCategory)} — ثقة ${fields.confidence}%
+  box.innerHTML=`<div class="classification" style="margin-top:12px">اقتراح إعادة التحليل (قديم): ${esc(fields.mainCategory)}<b>←</b>${esc(fields.subCategory)} — ثقة ${fields.confidence}%
     <div style="margin-top:8px"><button class="soft" type="button" onclick="applyReanalyzeSuggestion()">اعتماد هذا الاقتراح في النموذج</button></div>
   </div>`;
   window.__lastReanalyzeSuggestion=fields;
@@ -1772,6 +2189,10 @@ function applyReanalyzeSuggestion(){
 
 async function saveCaseReview(caseNumber){
   if(!window.__authUid){alert('سجّل الدخول أولًا لحفظ المراجعة سحابيًا.');return}
+  const local=records.find(x=>String(x.caseNumber)===String(caseNumber));
+  const beforeMain=local?local.main_category_new:null, beforeSub=local?local.sub_category_new:null;
+  const newMain=sselValue('dfMainNew')||'يحتاج إنشاء تصنيف جديد';
+  const newSub=sselValue('dfSubNew')||null;
   const patch={
     originalText:document.getElementById('dfText').value,
     caseType:document.getElementById('dfType').value,
@@ -1783,6 +2204,14 @@ async function saveCaseReview(caseNumber){
     oathType:document.getElementById('dfOath').value,
     partyStatus:document.getElementById('dfParty').value,
     caseStatus:document.getElementById('dfStatus').value,
+    main_category_new:newMain,
+    sub_category_new:newSub,
+    procedural_results:mclValues('dfProcedural'),
+    evidence_methods:mclValues('dfEvidenceMethods'),
+    tags_new:mclValues('dfTagsNew'),
+    legacy_main_category:(local&&local.legacy_main_category)||document.getElementById('dfMain').value,
+    legacy_sub_category:(local&&local.legacy_sub_category)||document.getElementById('dfSub').value,
+    migrationStatus:'migrated',
     manuallyReviewed:true,
     updatedAt:new Date().toISOString()
   };
@@ -1790,10 +2219,17 @@ async function saveCaseReview(caseNumber){
   try{
     // updateDoc: تحديث جزئي — لا يمس caseNumber ولا createdAt ولا isDeleted ولا معرّف المستند
     await window.__cloudUpdateCase(caseNumber,patch);
-    const local=records.find(x=>String(x.caseNumber)===String(caseNumber));
     if(local)Object.assign(local,patch);
     // حفظ التصحيح كـ classificationAlias (مطابقة نصية دقيقة فقط، لا قاعدة عامة)
     saveClassificationAlias(patch.originalText,patch.mainCategory,patch.subCategory,patch.caseType);
+    // سجل تدقيق: فقط إذا تغيّر التصنيف الجديد فعليًا
+    if(beforeMain!==newMain||beforeSub!==newSub){
+      await writeAuditLogEntry({
+        caseNumber,oldMain:beforeMain,oldSub:beforeSub,newMain,newSub,
+        proceduralResultsAfter:patch.procedural_results,evidenceMethodsAfter:patch.evidence_methods,
+        reason:'تعديل يدوي من صفحة تفاصيل القضية',source:'manual',confidence:null
+      });
+    }
     setSync('تم الحفظ ☁️');
     renderCases();renderTrash();renderTree();
     detailEditMode=false;detailDraftFields=null;
@@ -1858,7 +2294,7 @@ function deleteCustomCategory(main,sub){
   renderTree();
 }
 function newCase(){document.getElementById('search').value='';draft=[];document.getElementById('preview').innerHTML='';show('home')}
-function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===id));if(id==='cases')renderCases();if(id==='trash')renderTrash();if(id==='taxonomy')renderTree();if(id==='dashboard')renderDashboard()}
+function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===id));if(id==='cases')renderCases();if(id==='trash')renderTrash();if(id==='taxonomy')renderTree();if(id==='dashboard')renderDashboard();if(id==='review')renderReviewPage()}
 function initNav(where){document.getElementById(where).innerHTML=navItems.map(x=>`<button data-page="${x[0]}" onclick="show('${x[0]}')">${x[1]}</button>`).join('')}
 function setSync(text){const l=document.getElementById('syncLine');if(l)l.textContent=text;}
 initNav('nav');initNav('mobile');show('dashboard');
@@ -1870,6 +2306,14 @@ window.classificationAliases=classificationAliases;
 window.wordImportPreviewData=wordImportPreviewData;
 window.MIGRATION_MAPPING=MIGRATION_MAPPING;
 window.catalog=catalog;
+window.NEW_TAXONOMY=NEW_TAXONOMY;
+window.NEW_MAIN_CATEGORIES=NEW_MAIN_CATEGORIES;
+window.PROCEDURAL_RESULTS=PROCEDURAL_RESULTS;
+window.EVIDENCE_METHODS=EVIDENCE_METHODS;
+window.SUGGESTED_TAGS_NEW=SUGGESTED_TAGS_NEW;
+window.reauditSuggestions=reauditSuggestions;
+window.reviewSelectedCaseNumbers=reviewSelectedCaseNumbers;
+window.auditLogCache=auditLogCache;
 window.hijriMigrationPreviewData=hijriMigrationPreviewData;
 window.selectedCaseNumbers=selectedCaseNumbers;
 </script>
@@ -1883,7 +2327,7 @@ import {
   getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 import {
-  getFirestore, doc, setDoc, updateDoc, collection, onSnapshot
+  getFirestore, doc, setDoc, updateDoc, collection, onSnapshot, addDoc
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 // FIREBASE_CONFIG_START
@@ -1954,6 +2398,10 @@ if(!configLooksReal){
   window.__cloudUpdateCase = async (caseNumber, patch) => {
     if(!window.__authUid) throw new Error('غير مسجَّل الدخول');
     await updateDoc(doc(db,'users',window.__authUid,'cases',String(caseNumber)), patch);
+  };
+  window.__cloudAddAuditLog = async (entry) => {
+    if(!window.__authUid) return;
+    await addDoc(collection(db,'users',window.__authUid,'classificationAuditLog'), entry);
   };
   window.__cloudSaveCustomCategories = async (list) => {
     if(!window.__authUid) return;

@@ -910,22 +910,24 @@ function runAnalysis(){
         <div><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي</label>${buildSearchableSelect('addMain'+i,NEW_MAIN_CATEGORIES,hasSuggestion?x.main_category_new:'','onAddMainChange')}</div>
         <div><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي</label><div id="addSubWrap${i}">${buildSearchableSelect('addSub'+i,hasSuggestion?(NEW_TAXONOMY[x.main_category_new]||[]):[],hasSuggestion?x.sub_category_new:'','onAddSubChange')}</div></div>
       </div>
-      <div style="margin:10px 0"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px">حالة القضية${x.caseStatus?' <span style="color:var(--g)">— اكتُشفت تلقائيًا من النص ✓</span>':''}</label>
-        <div style="display:flex;gap:8px">
-          <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
-            <input type="radio" name="caseStatus${i}" class="caseStatusRadio" value="نهائية" ${x.caseStatus==='نهائية'?'checked':''}> نهائية
-          </label>
-          <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
-            <input type="radio" name="caseStatus${i}" class="caseStatusRadio" value="قابلة للاعتراض" ${x.caseStatus==='قابلة للاعتراض'?'checked':''}> قابلة للاعتراض
-          </label>
-        </div>
-      </div>
+      <div style="margin:10px 0"><label style="font-size:11px;color:var(--muted)">الاختصاص${x.jurisdiction_status&&x.jurisdiction_status!=='غير محدد'?' <span style="color:var(--g)">— اكتُشف تلقائيًا من النص ✓</span>':''}</label>${buildSearchableSelect('addJurisdiction'+i,JURISDICTION_OPTIONS,x.jurisdiction_status||'غير محدد',null)}</div>
       <p>${esc(x.originalText)||'لا يوجد وصف'}</p>
       <details style="margin-top:15px"><summary style="cursor:pointer;color:var(--g)">تفاصيل إضافية (اختياري)</summary>
         <p style="margin-top:10px">نوع القضية: <span class="typeShow">${esc(x.caseType)}</span></p>
         <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">النتيجة / المسألة الإجرائية</label>${buildMultiChecklist('addProcedural'+i,PROCEDURAL_RESULTS,x.procedural_results)}</div>
         <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">وسائل الإثبات</label>${buildMultiChecklist('addEvidence'+i,EVIDENCE_METHODS,x.evidence_methods)}</div>
         <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">حالة سير القضية (اختياري)</label>${buildSearchableSelect('addProgress'+i,CASE_PROGRESS_STATUS,x.case_progress_status||'',null)}</div>
+        <div style="margin:10px 0"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px">حالة الحكم${x.caseStatus?' <span style="color:var(--g)">— اكتُشفت تلقائيًا من النص ✓</span>':''}</label>
+          <div style="display:flex;gap:8px">
+            <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
+              <input type="radio" name="caseStatus${i}" class="caseStatusRadio" value="نهائية" ${x.caseStatus==='نهائية'?'checked':''}> نهائية
+            </label>
+            <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
+              <input type="radio" name="caseStatus${i}" class="caseStatusRadio" value="قابلة للاعتراض" ${x.caseStatus==='قابلة للاعتراض'?'checked':''}> قابلة للاعتراض
+            </label>
+          </div>
+        </div>
+        <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">الوسوم</label>${buildMultiChecklist('addTagsNew'+i,SUGGESTED_TAGS_NEW,x.tags_new||[])}</div>
       </details></article>`;
     }).join('')+
     `<button class="primary save" id="btnSaveDraft" ${window.__authUid?'':'disabled'} onclick="saveDraft()">${window.__authUid?'اعتماد وحفظ سحابيًا ☁️':'سجّل الدخول أولًا لحفظ القضية سحابيًا'}</button>`;
@@ -1023,6 +1025,7 @@ function generateReclassificationSuggestion(record){
     caseNumber:record.caseNumber,originalText:text,
     oldMain,oldSub,
     currentMainNew:record.main_category_new||null,currentSubNew:record.sub_category_new||null,
+    jurisdictionStatus:record.jurisdiction_status||'غير محدد',
     suggestedMain,suggestedSub,
     proceduralSuggested,evidenceSuggested,
     confidence,reason,
@@ -1045,6 +1048,18 @@ function getClassificationState(record){
 const CLASSIFICATION_STATE_LABELS={classified:'✅ مصنفة',needs_review:'🟠 تحتاج مراجعة',unclassified:'⚪ غير مصنفة'};
 function classificationStateLabel(record){return CLASSIFICATION_STATE_LABELS[getClassificationState(record)];}
 const CLASSIFICATION_SOURCE_LABELS={auto:'تصنيف تلقائي',manual:'تصنيف يدوي',legacy_migration:'مُرحَّل من النظام القديم'};
+
+/* استخراج حقل الاختصاص من النص الأصلي — صريح فقط، لا يُفترض "مختص" أبدًا إن لم يوجد نص واضح؛
+   يبقى "غير محدد" حتى يختاره المستخدم يدويًا. حقل مستقل تمامًا عن procedural_results. */
+function extractJurisdictionStatus(text){
+  const n=norm(text||'');
+  if(n.includes(norm('عدم الاختصاص الدولي'))||n.includes(norm('عدم اختصاص دولي')))return 'عدم الاختصاص الدولي';
+  if(n.includes(norm('عدم الاختصاص الولائي'))||n.includes(norm('عدم اختصاص ولائي')))return 'عدم الاختصاص الولائي';
+  if(n.includes(norm('عدم الاختصاص النوعي'))||n.includes(norm('عدم اختصاص نوعي')))return 'عدم الاختصاص النوعي';
+  if(n.includes(norm('عدم الاختصاص المكاني'))||n.includes(norm('عدم اختصاص مكاني')))return 'عدم الاختصاص المكاني';
+  if(n.includes(norm('عدم الاختصاص القيمي'))||n.includes(norm('عدم اختصاص قيمي')))return 'عدم الاختصاص القيمي';
+  return 'غير محدد';
+}
 
 function computeNewTaxonomyFields(oldMain,oldSub,originalText){
   const mapping=MIGRATION_MAPPING.find(m=>m.oldMain===oldMain&&m.oldSub===oldSub);
@@ -1079,6 +1094,7 @@ function computeNewTaxonomyFields(oldMain,oldSub,originalText){
     evidence_methods:evidenceMethods,
     tags_new:[],
     case_progress_status:'', // حالة سير القضية — حقل مستقل، لا تخمين آلي، يُدخله المستخدم يدويًا
+    jurisdiction_status:extractJurisdictionStatus(originalText),
     legacy_main_category:oldMain,
     legacy_sub_category:oldSub,
     migrationStatus, // قديم — يُحتفَظ به للتوافق فقط، لا يقود الواجهة
@@ -1109,6 +1125,8 @@ async function saveDraft(){
     c.procedural_results=mclValues('addProcedural'+i);
     c.evidence_methods=mclValues('addEvidence'+i);
     c.case_progress_status=sselValue('addProgress'+i)||'';
+    c.jurisdiction_status=sselValue('addJurisdiction'+i)||'غير محدد';
+    c.tags_new=mclValues('addTagsNew'+i);
     if(mainVal&&subVal){
       c.classification_status='classified';
       if(!c.classification_source)c.classification_source='auto'; // بقي كما اقترحه النظام دون تعديل المستخدم
@@ -1618,6 +1636,7 @@ const NEW_TAXONOMY={
 const NEW_MAIN_CATEGORIES=Object.keys(NEW_TAXONOMY); // مُشتقّة تلقائيًا — مصدر واحد للحقيقة، لا يمكن أن يختلف عن NEW_TAXONOMY
 const PROCEDURAL_RESULTS=["عدم الاختصاص الدولي","عدم الاختصاص الولائي","عدم الاختصاص النوعي","عدم الاختصاص المكاني","عدم الاختصاص القيمي","الإحالة للمحكمة المختصة","الإحالة لقيام نزاع سابق","الإحالة للارتباط","ضم الدعاوى","رفض الإحالة","عدم قبول الدعوى لانعدام صفة المدعي","عدم قبول الدعوى لانعدام صفة المدعى عليه","عدم قبول الدعوى لانعدام الأهلية","عدم قبول الدعوى لانعدام المصلحة","عدم قبول الدعوى لسبب إجرائي آخر","عدم قبول الطلب العارض عند انتفاء المصلحة","عدم قبول الدفع عند انتفاء المصلحة","عدم جواز نظر الدعوى لسبق الفصل فيها","حجية الحكم السابق","حجية الأمر المقضي","وجود دعوى سابقة مرتبطة","الدفع بوجود شرط تحكيم","الدفع باتفاق تحكيم","رفض الدفع بالتحكيم","التنازل عن التمسك بشرط التحكيم","الدعوى السابقة لأوانها لعدم حلول الأجل","الدعوى السابقة لأوانها لعدم تحقق الشرط","عدم استكمال إجراء سابق لازم","عدم تحقق شرط سابق لرفع الدعوى","عدم تحرير الدعوى","طلب تحرير الدعوى","غموض الطلبات","نقص بيانات الصحيفة","بطلان صحيفة الدعوى","تصحيح صحيفة الدعوى","تعديل صحيفة الدعوى","التبليغ للشخص","التبليغ الإلكتروني","التبليغ النظامي","تعذر التبليغ","بطلان التبليغ","إعادة التبليغ","عدم ثبوت التبليغ","ثبوت التبليغ","غياب المدعي","غياب المدعى عليه","غياب الطرفين","السير في الدعوى في غيبة المدعى عليه","الحكم الحضوري حكمًا بحسب الحالة","طلب إعادة التبليغ","شطب الدعوى","السير بعد الشطب","عدم السير بعد الشطب","اعتبار الدعوى كأن لم تكن متى انطبق النظام","طلب ترك الخصومة","قبول ترك الخصومة","عدم قبول ترك الخصومة","ترك إجراء من إجراءات الخصومة","التنازل عن إجراء","التنازل عن دليل","التنازل عن طلب عارض","وقف السير باتفاق الخصوم","الوقف التعليقي","وقف السير لحين الفصل في مسألة أخرى","وقف السير لحين الفصل في دعوى أخرى","انتهاء وقف السير","استئناف السير بعد الوقف","رفض طلب الوقف","انقطاع الخصومة بوفاة الخصم","انقطاع الخصومة بفقد الأهلية","انقطاع الخصومة بزوال صفة النائب","استئناف السير بعد الانقطاع","تبليغ الخلف","استمرار نظر الدعوى في مواجهة الخلف","إدخال خصم بطلب أحد الأطراف","الإدخال بأمر المحكمة","إضافة مدعى عليه","إدخال صاحب الصفة","رفض طلب الإدخال","عدم قبول الإدخال","تدخل انضمامي","تدخل هجومي","قبول التدخل","رفض التدخل","عدم قبول التدخل","تصحيح اسم الخصم","تصحيح صفة الخصم","استبدال الخصم","إضافة صاحب الصفة","استمرار الخصومة في مواجهة الخلف","تصحيح الطلب الأصلي","تعديل الطلب","طلب مكمل","طلب مترتب على الطلب الأصلي","تغيير سبب الدعوى مع بقاء الطلب","طلب وقتي","طلب تحفظي","عدم قبول الطلب العارض","طلب مقابل","مقاصة قضائية","طلب مقابل يؤدي لرفض دعوى المدعي كليًا","طلب مقابل يؤدي لرفض دعوى المدعي جزئيًا","طلب تعويض عن الدعوى","طلب تعويض عن إجراء فيها","صحة الوكالة","عدم ثبوت الوكالة","قصور الوكالة","انتهاء الوكالة","عزل الوكيل","اعتزال الوكيل","صحة تمثيل الشخص الاعتباري","عدم صحة التمثيل","عدم صلاحية القاضي","تنحي القاضي","طلب رد القاضي","قبول طلب رد القاضي","رفض طلب رد القاضي","عدم قبول طلب رد القاضي","استئناف السير بعد الفصل في طلب الرد","فتح باب المرافعة","إعادة فتح باب المرافعة","قفل باب المرافعة","حجز القضية للحكم","منح مهلة","رفض طلب المهلة","تمكين الخصم من الرد","انتهاء مهلة الرد","الاكتفاء بما قُدِّم","ندب خبير","تعيين خبير","تحديد مهمة الخبير","إيداع أتعاب الخبرة","عدم إيداع أتعاب الخبرة","رد الخبير","الاعتراض على الخبير","الاعتراض على تقرير الخبير","استكمال تقرير الخبير","خبرة إضافية","ندب خبير آخر","الأخذ بتقرير الخبير","عدم الأخذ بتقرير الخبير","طلب معاينة","الأمر بالمعاينة","إجراء المعاينة","رفض طلب المعاينة","إثبات الحالة (إجراء)","طلب توجيه يمين حاسمة","توجيه اليمين الحاسمة","قبول توجيه اليمين","رد اليمين","أداء اليمين الحاسمة","النكول عن اليمين الحاسمة","الامتناع عن اليمين الحاسمة","الرجوع عن توجيه اليمين قبل قبولها","طلب يمين متممة","توجيه اليمين المتممة","أداء اليمين المتممة","الامتناع عن اليمين المتممة","قبول الطلب المستعجل","رفض الطلب المستعجل","عدم قبول الطلب المستعجل","انتفاء الاستعجال","الإجراء التحفظي","رفع الإجراء التحفظي","تعديل الإجراء التحفظي","منع من السفر","رفع المنع من السفر","استرداد الحيازة (مستعجل)","منع التعرض للحيازة","وقف الأعمال الجديدة","إثبات الحالة (مستعجل)","الحراسة القضائية","حكم في الموضوع","إجابة الدعوى كليًا","إجابة الدعوى جزئيًا","رفض الدعوى موضوعيًا","عدم قبول الدعوى (حكم)","عدم سماع الدعوى","عدم جواز نظر الدعوى (حكم)","الحكم بعدم الاختصاص","إثبات صلح (حكم)","إثبات تنازل (حكم)","إثبات ترك الخصومة (حكم)","حكم جزئي","حكم وقتي","حكم مستعجل","حكم نهائي","حكم قابل للاعتراض","النفاذ المعجل","رفض النفاذ المعجل","تصحيح خطأ مادي في الحكم","تصحيح خطأ كتابي في الحكم","تصحيح خطأ حسابي في الحكم","رفض طلب التصحيح","تفسير الحكم","رفض طلب التفسير","الفصل في طلب مغفل","اعتراض بالاستئناف","طلب تدقيق","قبول الاعتراض شكلًا","عدم قبول الاعتراض شكلًا","فوات مدة الاعتراض","تأييد الحكم","تعديل الحكم","إلغاء الحكم","نقض الحكم كليًا","نقض الحكم جزئيًا","إعادة القضية (استئناف)","وقف التنفيذ المعجل","طلب النقض أمام المحكمة العليا","عدم قبول النقض","رفض النقض","قبول النقض","نقض الحكم كليًا أمام المحكمة العليا","نقض الحكم جزئيًا أمام المحكمة العليا","النقض للخطأ في التكييف","النقض للخطأ في الوصف","النقض لعدم الاختصاص","النقض لتشكيل المحكمة غير الصحيح","وقف التنفيذ (نقض)","إعادة القضية (نقض)","تقديم التماس إعادة النظر","قبول الالتماس شكلًا","عدم قبول الالتماس","رفض الالتماس","قبول الالتماس موضوعًا","وقف التنفيذ (التماس)","فوات مدة الالتماس","الالتماس للتزوير","الالتماس لشهادة الزور","الالتماس لظهور أوراق قاطعة","الالتماس للغش","الالتماس للحكم بما لم يُطلب","الالتماس للحكم بأكثر مما طُلب","الالتماس لتناقض المنطوق","الالتماس لعدم التمثيل الصحيح","فوات مدة الاستئناف","فوات مدة النقض","فوات مدة إجراء","سقوط حق إجرائي بفوات المدة","عدم سماع الدعوى لمرور الزمن","عدم سماع الدعوى لمدة نظامية خاصة","عدم سماع دعوى الشفعة","وقف مدة عدم السماع","انقطاع مدة عدم السماع","إيداع أتعاب الخبرة (مصاريف)","عدم إيداع أتعاب الخبرة (مصاريف)","تحميل أحد الأطراف أتعاب الخبرة","توزيع أتعاب الخبرة","استرداد أتعاب الخبرة","الحكم بأتعاب الخبرة","مصاريف الدعوى","وفاة المدعي","وفاة المدعى عليه","فقد أهلية أحد الخصوم","زوال صفة الممثل","إدخال الورثة","إدخال الخلف","استئناف السير بعد تغير حالة الخصم","تعدد المدعين","تعدد المدعى عليهم","فصل الدعوى بالنسبة لأحد الخصوم","استمرار الدعوى بالنسبة للبقية","إضافة مدعى عليه (تعدد)","إيداع مذكرة جوابية","إيداع مذكرة رد","تمكين الخصم من الرد (مذكرات)","عدم الرد في المهلة","تقديم مستندات","منح مهلة لتقديم مستند","قبول مستند متأخر","رفض مستند متأخر"];
 const CASE_PROGRESS_STATUS=["منظورة","مؤجلة","موقوفة","منقطعة","مشطوبة","متروكة","محجوزة للحكم","صدر فيها حكم","قيد الاعتراض","مؤيدة","منقوضة","معادة من الاستئناف","معادة من المحكمة العليا"];
+const JURISDICTION_OPTIONS=["مختص","عدم الاختصاص الدولي","عدم الاختصاص الولائي","عدم الاختصاص النوعي","عدم الاختصاص المكاني","عدم الاختصاص القيمي","غير محدد"];
 const EVIDENCE_METHODS=["إقرار قضائي","إقرار غير قضائي","تجزئة الإقرار","الرجوع عن الإقرار","استجواب الخصم","امتناع الخصم عن الإجابة","محرر رسمي","محرر عادي","حجية المحرر الرسمي","إنكار الخط","إنكار التوقيع","إنكار الختم","إنكار البصمة","إلزام الخصم بتقديم محرر","الامتناع عن تقديم محرر","تحقيق الخطوط","الادعاء بالتزوير","دعوى تزوير أصلية","استبعاد محرر","دليل رقمي","مراسلات إلكترونية","رسائل جوال","محادثات إلكترونية","تسجيل صوتي","بريد إلكتروني","مستخرجات رقمية","شهادة","اعتراض على شاهد","تعارض الشهادة","شهادة سماعية متى جازت نظامًا","قرائن","عرف","حجية الأمر المقضي","معاينة","خبرة","ندب خبير","تقرير خبير","اعتراض على تقرير خبير","استكمال الخبرة","خبرة إضافية","يمين حاسمة","رد اليمين","أداء اليمين","نكول عن اليمين","يمين متممة","أداء اليمين المتممة","الامتناع عنها"];
 const SUGGESTED_TAGS_NEW=["عقار","أرض","منزل","شقة","عمارة","محل","مزرعة","مركبة","سيارة","تأجير سيارات","حادث مروري","ورشة","صيانة","اتصالات","STC","أجهزة","خدمات رقمية","كهرباء","مياه","مرافق","قرض","حوالة","دين","إيجار","بيع","مقاولة","تصميم","محاماة","خبير","شركة","شراكة","مضاربة","تأمين","جهة حكومية"];
 
@@ -1826,12 +1845,13 @@ let activeCaseStatusFilter=null; // 'نهائية' | 'قابلة للاعترا�
 let activeClassificationStateFilter=null; // 'classified' | 'needs_review' | 'unclassified' | null
 let activeProceduralFilter=null;
 let activeProgressStatusFilter=null;
+let activeJurisdictionFilter=null;
 
 function hasActiveFilters(){
-  return !!(activeSubFilter||activeMainFilter||activeHijriMonthFilter||activeCaseStatusFilter||activeClassificationStateFilter||activeProceduralFilter||activeProgressStatusFilter);
+  return !!(activeSubFilter||activeMainFilter||activeHijriMonthFilter||activeCaseStatusFilter||activeClassificationStateFilter||activeProceduralFilter||activeProgressStatusFilter||activeJurisdictionFilter);
 }
 function clearAllFilters(){
-  activeSubFilter=null;activeMainFilter=null;activeHijriMonthFilter=null;activeCaseStatusFilter=null;activeClassificationStateFilter=null;activeProceduralFilter=null;activeProgressStatusFilter=null;
+  activeSubFilter=null;activeMainFilter=null;activeHijriMonthFilter=null;activeCaseStatusFilter=null;activeClassificationStateFilter=null;activeProceduralFilter=null;activeProgressStatusFilter=null;activeJurisdictionFilter=null;
   renderFilterPanel();renderCases();updateFilterIndicator();
 }
 function toggleFilterPanel(){
@@ -1879,6 +1899,10 @@ function renderFilterPanel(){
       <option value="needs_review" ${activeClassificationStateFilter==='needs_review'?'selected':''}>🟠 تحتاج مراجعة</option>
       <option value="unclassified" ${activeClassificationStateFilter==='unclassified'?'selected':''}>⚪ غير مصنفة</option>
     </select></div>
+    <div><label>الاختصاص</label><select id="fJurisdiction" onchange="setJurisdictionFilter(this.value)">
+      <option value="">الكل</option>
+      ${JURISDICTION_OPTIONS.map(s=>`<option value="${esc(s)}" ${activeJurisdictionFilter===s?'selected':''}>${esc(s)}</option>`).join('')}
+    </select></div>
     <div><label>النتيجة / المسألة الإجرائية</label>${buildSearchableSelect('fProcedural',PROCEDURAL_RESULTS,activeProceduralFilter||'','onFProceduralChange')}</div>
     <div><label>حالة سير القضية</label><select id="fProgress" onchange="setProgressStatusFilter(this.value)">
       <option value="">الكل</option>
@@ -1888,6 +1912,7 @@ function renderFilterPanel(){
 }
 function onFProceduralChange(v){activeProceduralFilter=v||null;renderCases();updateFilterIndicator();}
 function setProgressStatusFilter(v){activeProgressStatusFilter=v||null;renderCases();updateFilterIndicator();}
+function setJurisdictionFilter(v){activeJurisdictionFilter=v||null;renderCases();updateFilterIndicator();}
 function setClassificationStateFilter(v){activeClassificationStateFilter=v||null;renderCases();updateFilterIndicator();}
 function updateFilterIndicator(){
   document.getElementById('filterIconBtn').classList.toggle('hasFilter',hasActiveFilters());
@@ -1896,7 +1921,7 @@ function toggleExportMenu(){document.getElementById('exportMenu').classList.togg
 function closeExportMenu(){document.getElementById('exportMenu').classList.remove('open');}
 
 /* الفلاتر الحالية بالضبط (بحث + تصنيف رئيسي/فرعي جديد + فترة هجرية + حالة الحكم + حالة التصنيف الموحّدة
-   + النتيجة الإجرائية + حالة سير القضية) — مصدر واحد للحقيقة يستخدمه العرض والتصدير معًا. البحث يشمل
+   + الاختصاص + النتيجة الإجرائية + حالة سير القضية) — مصدر واحد للحقيقة يستخدمه العرض والتصدير معًا. البحث يشمل
    الحقول القديمة (Legacy) داخليًا تلقائيًا عبر JSON.stringify، دون عرضها في نتائج الواجهة. */
 function getVisibleCaseRows(){
   let q=document.getElementById('search').value,
@@ -1908,6 +1933,7 @@ function getVisibleCaseRows(){
   if(activeClassificationStateFilter)rows=rows.filter(x=>getClassificationState(x)===activeClassificationStateFilter);
   if(activeProceduralFilter)rows=rows.filter(x=>(x.procedural_results||[]).includes(activeProceduralFilter));
   if(activeProgressStatusFilter)rows=rows.filter(x=>x.case_progress_status===activeProgressStatusFilter);
+  if(activeJurisdictionFilter)rows=rows.filter(x=>(x.jurisdiction_status||'غير محدد')===activeJurisdictionFilter);
   rows.sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));
   return rows;
 }
@@ -1955,7 +1981,7 @@ function renderCases(){
     const checkbox=selectionMode?`<input type="checkbox" onclick="event.stopPropagation();toggleCaseSelection('${esc(x.caseNumber)}',this.checked)" ${selectedCaseNumbers.has(String(x.caseNumber))?'checked':''} style="width:17px;height:17px;margin-inline-end:6px">`:'';
     const state=getClassificationState(x);
     const catLine=state==='classified'?(esc(x.main_category_new)+' ← '+esc(x.sub_category_new||'')):'<span style="color:var(--text-secondary)">لم يُحدَّد تصنيف بعد</span>';
-    return `<article class="card" onclick="${selectionMode?'':`openCaseDetail('${esc(x.caseNumber)}')`}" style="cursor:pointer"><div class="card-head"><strong>${checkbox}#${esc(x.caseNumber)}</strong><span class="badge">${CLASSIFICATION_STATE_LABELS[state]}</span></div><h3 style="font-size:15px">${catLine}</h3><p>${esc((x.originalText||'').slice(0,110))}</p><div class="meta">${dateLine}${x.caseStatus?' — <span style="color:'+(x.caseStatus==='نهائية'?'var(--mint-dark)':'var(--lemon-text)')+'">'+esc(x.caseStatus)+'</span>':''}</div><footer><span></span><span style="color:var(--muted);font-size:11px">${selectionMode?'اضغط المربع للتحديد':'اضغط لفتح التفاصيل ←'}</span></footer></article>`;
+    return `<article class="card" onclick="${selectionMode?'':`openCaseDetail('${esc(x.caseNumber)}')`}" style="cursor:pointer"><div class="card-head"><strong>${checkbox}#${esc(x.caseNumber)}</strong><span class="badge">${CLASSIFICATION_STATE_LABELS[state]}</span></div><h3 style="font-size:15px">${catLine}</h3><p>${esc((x.originalText||'').slice(0,110))}</p><div class="meta">${dateLine}${x.caseStatus?' — <span style="color:'+(x.caseStatus==='نهائية'?'var(--mint-dark)':'var(--lemon-text)')+'">'+esc(x.caseStatus)+'</span>':''}${x.jurisdiction_status&&x.jurisdiction_status!=='غير محدد'?' — <span style="color:'+(x.jurisdiction_status==='مختص'?'var(--mint-dark)':'#b5564a')+'">'+esc(x.jurisdiction_status)+'</span>':''}</div><footer><span></span><span style="color:var(--muted);font-size:11px">${selectionMode?'اضغط المربع للتحديد':'اضغط لفتح التفاصيل ←'}</span></footer></article>`;
   }).join('')}</div>`:(window.__authUid?'<div class="empty">لا توجد قضايا مطابقة</div>':'<div class="empty">سجّل الدخول بحساب Google من الأعلى لعرض قضاياك المحفوظة سحابيًا</div>'));
 }
 
@@ -1993,12 +2019,12 @@ async function exportToWord(){
   const rows=getExportScopeRows();
   if(!rows.length){alert('لا توجد قضايا لتصديرها بالفلتر أو التحديد الحالي.');return}
   const {Document,Packer,Paragraph,Table,TableRow,TableCell,TextRun,WidthType}=docx;
-  const headerRow=new TableRow({children:['رقم القضية','نوع/وصف القضية','الحالة','شهر الأرشفة'].map(h=>
+  const headerRow=new TableRow({children:['رقم القضية','نوع/وصف القضية','الاختصاص','الحالة','شهر الأرشفة'].map(h=>
     new TableCell({children:[new Paragraph({children:[new TextRun({text:h,bold:true})]})]})
   )});
   const dataRows=rows.map(r=>{
     const hijri=r.hijriMonthKey?(r.hijriMonth+' '+r.hijriYear+'هـ'):'';
-    return new TableRow({children:[r.caseNumber,r.originalText||'',r.caseStatus||'',hijri].map(v=>
+    return new TableRow({children:[r.caseNumber,r.originalText||'',r.jurisdiction_status||'غير محدد',r.caseStatus||'',hijri].map(v=>
       new TableCell({children:[new Paragraph(String(v||''))]})
     )});
   });
@@ -2065,6 +2091,7 @@ function renderQuickReviewCard(){
     <p style="font-size:11px;color:var(--text-secondary);margin-top:0">تمت مراجعة ${quickReviewReviewedCount} من ${quickReviewQueue.length}</p>
     <p><b>#${esc(s.caseNumber)}</b> — ${esc((s.originalText||'').slice(0,90))}</p>
     <p><b>الحالي:</b> ${s.currentMainNew?esc(s.currentMainNew)+' ← '+esc(s.currentSubNew||''):'لا يوجد تصنيف بعد'}</p>
+    ${s.jurisdictionStatus&&s.jurisdictionStatus!=='غير محدد'?'<p><b>الاختصاص:</b> '+esc(s.jurisdictionStatus)+'</p>':''}
     ${s.suggestedMain?'<p><b>المقترح:</b> '+esc(s.suggestedMain)+' ← '+esc(s.suggestedSub||'')+' <span class="confidence-badge '+confClass+'">'+esc(s.confidence)+'</span></p>':'<p><span class="confidence-badge confidence-insufficient">'+esc(s.confidence)+'</span></p>'}
     <p style="font-size:11px;color:var(--text-secondary)">${esc(s.reason)}</p>
     <div id="quickReviewChooseWrap"></div>
@@ -2121,6 +2148,7 @@ function renderSuggestionCard(s){
   box.innerHTML=`<h3 style="color:var(--mint-dark);margin-top:0">إعادة فحص التصنيف</h3>
     <div class="suggestion-card">
       <p><b>الحالي:</b> ${s.currentMainNew?esc(s.currentMainNew)+' ← '+esc(s.currentSubNew||''):'لا يوجد تصنيف بعد'}</p>
+      ${s.jurisdictionStatus&&s.jurisdictionStatus!=='غير محدد'?'<p><b>الاختصاص:</b> '+esc(s.jurisdictionStatus)+'</p>':''}
       <p><b>المقترح:</b> ${s.suggestedMain?esc(s.suggestedMain)+' ← '+esc(s.suggestedSub||''):'لا يوجد اقتراح كافٍ'}</p>
       <p><b>الثقة:</b> <span class="confidence-badge ${confClass}">${esc(s.confidence)}</span></p>
       <p><b>السبب:</b> ${esc(s.reason)}</p>
@@ -2270,11 +2298,12 @@ function renderCaseDetail(r){
       </div>
       <div style="margin-top:10px"><span class="badge" style="font-size:12px;padding:6px 12px">${CLASSIFICATION_STATE_LABELS[state]}</span>${r.classification_reviewed_at?' <span style="font-size:11px;color:var(--text-secondary)">— اعتمد التصنيف يدويًا</span>':''}</div>
       ${state==='classified'?`<div class="classification" style="margin-top:12px">${esc(r.main_category_new)}<b>←</b>${esc(r.sub_category_new||'')}</div>`:''}
+      ${fieldRow('الاختصاص',r.jurisdiction_status&&r.jurisdiction_status!=='غير محدد'?esc(r.jurisdiction_status):'')}
       ${fieldRow('النتيجة / المسألة الإجرائية',(r.procedural_results||[]).length?'<div class="chipsline">'+(r.procedural_results||[]).map(p=>'<span>'+esc(p)+'</span>').join('')+'</div>':'')}
       ${fieldRow('وسائل الإثبات',(r.evidence_methods||[]).length?'<div class="chipsline">'+(r.evidence_methods||[]).map(p=>'<span>'+esc(p)+'</span>').join('')+'</div>':'')}
       ${fieldRow('حالة سير القضية',r.case_progress_status?esc(r.case_progress_status):'')}
-      ${fieldRow('الوسوم',(r.tags_new||[]).map(t=>esc(t)).join('، '))}
       ${fieldRow('حالة الحكم',r.caseStatus?esc(r.caseStatus):'')}
+      ${fieldRow('الوسوم',(r.tags_new||[]).map(t=>esc(t)).join('، '))}
       ${fieldRow('النص الأصلي',esc(r.originalText||''))}
       ${fieldRow('تاريخ الإضافة',esc(fmtDate(r.createdAt))+(r.hijriMonthKey?' — '+esc(r.hijriMonth)+' '+esc(r.hijriYear)+'هـ':''))}
       <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
@@ -2299,15 +2328,16 @@ function renderCaseDetail(r){
         <div style="grid-column:1/-1"><button class="soft" type="button" onclick="reanalyzeSingleCase()">إعادة التحليل (على النص أعلاه فقط)</button></div>
         <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي (اكتب للبحث — مثلًا: شفعة، إخلاء، عيب، قرض)</label>${buildSearchableSelect('dfMainNew',NEW_MAIN_CATEGORIES,d.main_category_new,'onDfMainNewChange')}</div>
         <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي</label><div id="dfSubNewWrap">${buildSearchableSelect('dfSubNew',NEW_TAXONOMY[d.main_category_new]||[],d.sub_category_new,null)}</div></div>
+        <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">الاختصاص</label>${buildSearchableSelect('dfJurisdiction',JURISDICTION_OPTIONS,d.jurisdiction_status||'غير محدد',null)}</div>
         <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">النتيجة / المسألة الإجرائية</label>${buildMultiChecklist('dfProcedural',PROCEDURAL_RESULTS,d.procedural_results)}</div>
         <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">وسائل الإثبات</label>${buildMultiChecklist('dfEvidenceMethods',EVIDENCE_METHODS,d.evidence_methods)}</div>
         <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">حالة سير القضية</label>${buildSearchableSelect('dfProgress',CASE_PROGRESS_STATUS,d.case_progress_status||'',null)}</div>
-        <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">الوسوم</label>${buildMultiChecklist('dfTagsNew',SUGGESTED_TAGS_NEW,d.tags_new)}</div>
         <div><label style="font-size:11px;color:var(--muted)">حالة الحكم</label><select id="dfStatus" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px">
           <option value="" ${!d.caseStatus?'selected':''}>غير محددة</option>
           <option value="نهائية" ${d.caseStatus==='نهائية'?'selected':''}>نهائية</option>
           <option value="قابلة للاعتراض" ${d.caseStatus==='قابلة للاعتراض'?'selected':''}>غير نهائية / قابلة للاعتراض</option>
         </select></div>
+        <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">الوسوم</label>${buildMultiChecklist('dfTagsNew',SUGGESTED_TAGS_NEW,d.tags_new)}</div>
       </div>
       <div id="reanalyzeSuggestionBox"></div>
       <div style="display:flex;gap:8px;margin-top:16px">
@@ -2329,7 +2359,8 @@ function enterCaseEditMode(){
     oathType:r.oathType||'',partyStatus:r.partyStatus||'',caseStatus:r.caseStatus||'',
     main_category_new:r.main_category_new||'يحتاج إنشاء تصنيف جديد',sub_category_new:r.sub_category_new||'',
     procedural_results:r.procedural_results||[],evidence_methods:r.evidence_methods||[],tags_new:r.tags_new||[],
-    case_progress_status:r.case_progress_status||''
+    case_progress_status:r.case_progress_status||'',
+    jurisdiction_status:r.jurisdiction_status||'غير محدد'
   };
   detailEditMode=true;
   renderCaseDetail(r);
@@ -2375,6 +2406,7 @@ async function saveCaseReview(caseNumber){
     evidence_methods:mclValues('dfEvidenceMethods'),
     tags_new:mclValues('dfTagsNew'),
     case_progress_status:sselValue('dfProgress')||'',
+    jurisdiction_status:sselValue('dfJurisdiction')||'غير محدد',
     legacy_main_category:(local&&local.legacy_main_category)||(local&&local.mainCategory),
     legacy_sub_category:(local&&local.legacy_sub_category)||(local&&local.subCategory),
     classification_status:classified?'classified':(newMain==='يحتاج إنشاء تصنيف جديد'?'unclassified':'needs_review'),
@@ -2481,6 +2513,7 @@ window.PROCEDURAL_RESULTS=PROCEDURAL_RESULTS;
 window.CASE_PROGRESS_STATUS=CASE_PROGRESS_STATUS;
 window.THEMES=THEMES;
 window.THEME_STORAGE_KEY=THEME_STORAGE_KEY;
+window.JURISDICTION_OPTIONS=JURISDICTION_OPTIONS;
 window.EVIDENCE_METHODS=EVIDENCE_METHODS;
 window.SUGGESTED_TAGS_NEW=SUGGESTED_TAGS_NEW;
 window.reauditSuggestions=reauditSuggestions;

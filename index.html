@@ -2086,46 +2086,71 @@ function renderQuickReviewCard(){
     return;
   }
   const s=quickReviewQueue[quickReviewIndex];
+  const record=records.find(r=>String(r.caseNumber)===String(s.caseNumber))||{};
   const confClass={'اقتراح تغيير - ثقة عالية':'confidence-high','اقتراح تغيير - ثقة متوسطة':'confidence-medium','يحتاج قرارًا يدويًا':'confidence-manual','لا توجد معلومات كافية':'confidence-insufficient','التصنيف الحالي يبدو صحيحًا':'confidence-high'}[s.confidence]||'';
+  const mainVal=(record.main_category_new&&record.main_category_new!=='يحتاج إنشاء تصنيف جديد')?record.main_category_new:(s.suggestedMain||'');
+  const subVal=(record.main_category_new&&record.main_category_new!=='يحتاج إنشاء تصنيف جديد')?(record.sub_category_new||''):(s.suggestedSub||'');
+  const proceduralPrefill=[...new Set([...(record.procedural_results||[]),...(s.proceduralSuggested||[])])];
+  const evidencePrefill=[...new Set([...(record.evidence_methods||[]),...(s.evidenceSuggested||[])])];
   bar.innerHTML=`<div class="suggestion-card">
     <p style="font-size:11px;color:var(--text-secondary);margin-top:0">تمت مراجعة ${quickReviewReviewedCount} من ${quickReviewQueue.length}</p>
     <p><b>#${esc(s.caseNumber)}</b> — ${esc((s.originalText||'').slice(0,90))}</p>
-    <p><b>الحالي:</b> ${s.currentMainNew?esc(s.currentMainNew)+' ← '+esc(s.currentSubNew||''):'لا يوجد تصنيف بعد'}</p>
-    ${s.jurisdictionStatus&&s.jurisdictionStatus!=='غير محدد'?'<p><b>الاختصاص:</b> '+esc(s.jurisdictionStatus)+'</p>':''}
-    ${s.suggestedMain?'<p><b>المقترح:</b> '+esc(s.suggestedMain)+' ← '+esc(s.suggestedSub||'')+' <span class="confidence-badge '+confClass+'">'+esc(s.confidence)+'</span></p>':'<p><span class="confidence-badge confidence-insufficient">'+esc(s.confidence)+'</span></p>'}
-    <p style="font-size:11px;color:var(--text-secondary)">${esc(s.reason)}</p>
-    <div id="quickReviewChooseWrap"></div>
+    ${s.suggestedMain?'<p style="font-size:11px;color:var(--text-secondary)">اقتراح النظام: '+esc(s.suggestedMain)+' ← '+esc(s.suggestedSub||'')+' <span class="confidence-badge '+confClass+'">'+esc(s.confidence)+'</span> — '+esc(s.reason)+'</p>':'<p style="font-size:11px;color:var(--text-secondary)"><span class="confidence-badge confidence-insufficient">'+esc(s.confidence)+'</span> '+esc(s.reason)+'</p>'}
+    <div style="margin-top:10px"><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي</label>${buildSearchableSelect('qrMain',NEW_MAIN_CATEGORIES,mainVal,'onQrMainChangeFull')}</div>
+    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي</label><div id="qrSubWrap">${buildSearchableSelect('qrSub',NEW_TAXONOMY[mainVal]||[],subVal,null)}</div></div>
+    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">الاختصاص</label>${buildSearchableSelect('qrJurisdiction',JURISDICTION_OPTIONS,record.jurisdiction_status||'غير محدد',null)}</div>
+    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">النتيجة / المسألة الإجرائية</label>${buildMultiChecklist('qrProcedural',PROCEDURAL_RESULTS,proceduralPrefill)}</div>
+    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">وسائل الإثبات</label>${buildMultiChecklist('qrEvidence',EVIDENCE_METHODS,evidencePrefill)}</div>
+    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">حالة سير القضية</label>${buildSearchableSelect('qrProgress',CASE_PROGRESS_STATUS,record.case_progress_status||'',null)}</div>
+    <div style="margin:10px 0"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px">حالة الحكم</label>
+      <div style="display:flex;gap:8px">
+        <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
+          <input type="radio" name="qrCaseStatus" value="نهائية" ${record.caseStatus==='نهائية'?'checked':''}> نهائية
+        </label>
+        <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
+          <input type="radio" name="qrCaseStatus" value="قابلة للاعتراض" ${record.caseStatus==='قابلة للاعتراض'?'checked':''}> قابلة للاعتراض
+        </label>
+      </div>
+    </div>
+    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">الوسوم</label>${buildMultiChecklist('qrTags',SUGGESTED_TAGS_NEW,record.tags_new||[])}</div>
     <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-      ${s.suggestedMain?'<button class="primary" onclick="quickReviewAccept()">اعتماد الاقتراح</button>':''}
-      <button class="soft" onclick="quickReviewChooseOther()">اختيار تصنيف آخر</button>
+      <button class="primary" onclick="quickReviewAcceptFull()">اعتماد</button>
       <button class="soft" onclick="quickReviewSkip()">لاحقًا</button>
     </div>
   </div>`;
 }
-async function quickReviewAccept(){
-  const s=quickReviewQueue[quickReviewIndex];
-  if(!window.__authUid){alert('سجّل الدخول أولًا.');return}
-  await applySuggestionToCase(s,'suggestion_accepted');
-  quickReviewIndex++;quickReviewReviewedCount++;
-  renderQuickReviewCard();
-}
-function quickReviewChooseOther(){
-  const s=quickReviewQueue[quickReviewIndex];
-  const wrap=document.getElementById('quickReviewChooseWrap');
-  wrap.innerHTML=`<div style="margin-top:10px"><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي</label>${buildSearchableSelect('qrMain',NEW_MAIN_CATEGORIES,'','onQrMainChange')}</div>
-    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي</label><div id="qrSubWrap">${buildSearchableSelect('qrSub',[],'',null)}</div></div>
-    <button class="primary" style="margin-top:10px" onclick="quickReviewSaveChosen()">حفظ واعتماد</button>`;
-}
-function onQrMainChange(value){
+function onQrMainChangeFull(value){
   document.getElementById('qrSubWrap').innerHTML=buildSearchableSelect('qrSub',NEW_TAXONOMY[value]||[],'',null);
 }
-async function quickReviewSaveChosen(){
+async function quickReviewAcceptFull(){
   if(!window.__authUid){alert('سجّل الدخول أولًا.');return}
   const s=quickReviewQueue[quickReviewIndex];
-  const main=sselValue('qrMain'),sub=sselValue('qrSub');
-  if(!main||!sub){alert('اختر التصنيف الرئيسي والفرعي أولًا.');return}
-  s.suggestedMain=main;s.suggestedSub=sub;s.confidence='يحتاج قرارًا يدويًا';s.reason='اختاره المستخدم يدويًا أثناء المراجعة.';
-  await applySuggestionToCase(s,'manual');
+  const record=records.find(r=>String(r.caseNumber)===String(s.caseNumber));
+  if(!record){quickReviewIndex++;renderQuickReviewCard();return}
+  const mainVal=sselValue('qrMain')||'يحتاج إنشاء تصنيف جديد';
+  const subVal=sselValue('qrSub')||null;
+  const checkedRadio=document.querySelector('input[name="qrCaseStatus"]:checked');
+  const beforeMain=record.main_category_new||null,beforeSub=record.sub_category_new||null;
+  const patch={
+    main_category_new:mainVal,
+    sub_category_new:subVal,
+    jurisdiction_status:sselValue('qrJurisdiction')||'غير محدد',
+    procedural_results:mclValues('qrProcedural'),
+    evidence_methods:mclValues('qrEvidence'),
+    case_progress_status:sselValue('qrProgress')||'',
+    caseStatus:checkedRadio?checkedRadio.value:(record.caseStatus||''),
+    tags_new:mclValues('qrTags'),
+    legacy_main_category:record.legacy_main_category||s.oldMain,
+    legacy_sub_category:record.legacy_sub_category||s.oldSub,
+    classification_status:(mainVal&&mainVal!=='يحتاج إنشاء تصنيف جديد'&&subVal)?'classified':(mainVal!=='يحتاج إنشاء تصنيف جديد'?'needs_review':'unclassified'),
+    classification_source:'manual',
+    classification_reviewed_at:new Date().toISOString(),
+    migrationStatus:'migrated',
+    updatedAt:new Date().toISOString()
+  };
+  await window.__cloudUpdateCase(s.caseNumber,patch);
+  Object.assign(record,patch);
+  await writeAuditLogEntry({caseNumber:s.caseNumber,oldMain:beforeMain,oldSub:beforeSub,newMain:patch.main_category_new,newSub:patch.sub_category_new,proceduralResultsAfter:patch.procedural_results,evidenceMethodsAfter:patch.evidence_methods,reason:'مراجعة كاملة يدوية عبر المراجعة السريعة',source:'manual',confidence:s.confidence});
   quickReviewIndex++;quickReviewReviewedCount++;
   renderQuickReviewCard();
 }

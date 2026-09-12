@@ -2046,6 +2046,7 @@ let reviewSelectedCaseNumbers=new Set();
 let quickReviewQueue=[];
 let quickReviewIndex=0;
 let quickReviewReviewedCount=0;
+let quickReviewAdvancedOpen=false;
 
 function computeReviewStats(){
   const active=records.filter(r=>!r.isDeleted);
@@ -2073,8 +2074,15 @@ function renderNeedsReviewBar(){
 function startQuickReview(){
   const needsReviewCases=records.filter(r=>!r.isDeleted&&getClassificationState(r)!=='classified');
   quickReviewQueue=needsReviewCases.map(generateReclassificationSuggestion);
-  quickReviewIndex=0;quickReviewReviewedCount=0;
+  quickReviewIndex=0;quickReviewReviewedCount=0;quickReviewAdvancedOpen=false;
   renderQuickReviewCard();
+}
+/* اختصاص "له معنى فعلي" فقط — لا "مختص" ولا "غير محدد" ولا فراغ. يُفحص أولًا في البيانات المحفوظة، ثم في النص إن لم توجد */
+function getMeaningfulJurisdiction(record){
+  const real=['عدم الاختصاص الدولي','عدم الاختصاص الولائي','عدم الاختصاص النوعي','عدم الاختصاص المكاني','عدم الاختصاص القيمي'];
+  if(record.jurisdiction_status&&real.includes(record.jurisdiction_status))return record.jurisdiction_status;
+  const fromText=extractJurisdictionStatus(record.originalText||'');
+  return real.includes(fromText)?fromText:null;
 }
 function renderQuickReviewCard(){
   const bar=document.getElementById('quickReviewBar');
@@ -2090,17 +2098,22 @@ function renderQuickReviewCard(){
   const confClass={'اقتراح تغيير - ثقة عالية':'confidence-high','اقتراح تغيير - ثقة متوسطة':'confidence-medium','يحتاج قرارًا يدويًا':'confidence-manual','لا توجد معلومات كافية':'confidence-insufficient','التصنيف الحالي يبدو صحيحًا':'confidence-high'}[s.confidence]||'';
   const mainVal=(record.main_category_new&&record.main_category_new!=='يحتاج إنشاء تصنيف جديد')?record.main_category_new:(s.suggestedMain||'');
   const subVal=(record.main_category_new&&record.main_category_new!=='يحتاج إنشاء تصنيف جديد')?(record.sub_category_new||''):(s.suggestedSub||'');
-  const proceduralPrefill=[...new Set([...(record.procedural_results||[]),...(s.proceduralSuggested||[])])];
-  const evidencePrefill=[...new Set([...(record.evidence_methods||[]),...(s.evidenceSuggested||[])])];
-  bar.innerHTML=`<div class="suggestion-card">
-    <p style="font-size:11px;color:var(--text-secondary);margin-top:0">تمت مراجعة ${quickReviewReviewedCount} من ${quickReviewQueue.length}</p>
-    <p><b>#${esc(s.caseNumber)}</b> — ${esc((s.originalText||'').slice(0,90))}</p>
-    ${s.suggestedMain?'<p style="font-size:11px;color:var(--text-secondary)">اقتراح النظام: '+esc(s.suggestedMain)+' ← '+esc(s.suggestedSub||'')+' <span class="confidence-badge '+confClass+'">'+esc(s.confidence)+'</span> — '+esc(s.reason)+'</p>':'<p style="font-size:11px;color:var(--text-secondary)"><span class="confidence-badge confidence-insufficient">'+esc(s.confidence)+'</span> '+esc(s.reason)+'</p>'}
-    <div style="margin-top:10px"><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي</label>${buildSearchableSelect('qrMain',NEW_MAIN_CATEGORIES,mainVal,'onQrMainChangeFull')}</div>
-    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي</label><div id="qrSubWrap">${buildSearchableSelect('qrSub',NEW_TAXONOMY[mainVal]||[],subVal,null)}</div></div>
+  const jurisdiction=getMeaningfulJurisdiction(record);
+  const proceduralChips=[...new Set([...(record.procedural_results||[]),...(s.proceduralSuggested||[])])];
+  const evidenceChips=[...new Set([...(record.evidence_methods||[]),...(s.evidenceSuggested||[])])];
+
+  const briefLines=[];
+  if(jurisdiction)briefLines.push(`<p style="margin:6px 0;font-size:12.5px"><b>الاختصاص المقترح:</b> ${esc(jurisdiction)} <button class="soft" style="padding:2px 9px;font-size:10.5px;margin-inline-start:4px" onclick="toggleQrAdvanced()">تعديل</button></p>`);
+  if(proceduralChips.length)briefLines.push(`<p style="margin:6px 0;font-size:12.5px"><b>النتيجة الإجرائية:</b> <span class="chipsline" style="display:inline-flex;vertical-align:middle">${proceduralChips.map(p=>'<span>'+esc(p)+'</span>').join('')}</span></p>`);
+  if(evidenceChips.length)briefLines.push(`<p style="margin:6px 0;font-size:12.5px"><b>وسائل الإثبات:</b> <span class="chipsline" style="display:inline-flex;vertical-align:middle">${evidenceChips.map(p=>'<span>'+esc(p)+'</span>').join('')}</span></p>`);
+  if(record.case_progress_status)briefLines.push(`<p style="margin:6px 0;font-size:12.5px"><b>حالة سير القضية:</b> ${esc(record.case_progress_status)}</p>`);
+  if(record.caseStatus)briefLines.push(`<p style="margin:6px 0;font-size:12.5px"><b>حالة الحكم:</b> ${esc(record.caseStatus)}</p>`);
+  if((record.tags_new||[]).length)briefLines.push(`<p style="margin:6px 0;font-size:12.5px"><b>الوسوم:</b> ${(record.tags_new||[]).map(esc).join('، ')}</p>`);
+
+  const advancedHtml=`<div id="qrAdvancedWrap" style="${quickReviewAdvancedOpen?'':'display:none'};margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
     <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">الاختصاص</label>${buildSearchableSelect('qrJurisdiction',JURISDICTION_OPTIONS,record.jurisdiction_status||'غير محدد',null)}</div>
-    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">النتيجة / المسألة الإجرائية</label>${buildMultiChecklist('qrProcedural',PROCEDURAL_RESULTS,proceduralPrefill)}</div>
-    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">وسائل الإثبات</label>${buildMultiChecklist('qrEvidence',EVIDENCE_METHODS,evidencePrefill)}</div>
+    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">النتيجة / المسألة الإجرائية</label>${buildMultiChecklist('qrProcedural',PROCEDURAL_RESULTS,proceduralChips)}</div>
+    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">وسائل الإثبات</label>${buildMultiChecklist('qrEvidence',EVIDENCE_METHODS,evidenceChips)}</div>
     <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">حالة سير القضية</label>${buildSearchableSelect('qrProgress',CASE_PROGRESS_STATUS,record.case_progress_status||'',null)}</div>
     <div style="margin:10px 0"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px">حالة الحكم</label>
       <div style="display:flex;gap:8px">
@@ -2113,11 +2126,26 @@ function renderQuickReviewCard(){
       </div>
     </div>
     <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">الوسوم</label>${buildMultiChecklist('qrTags',SUGGESTED_TAGS_NEW,record.tags_new||[])}</div>
+  </div>`;
+
+  bar.innerHTML=`<div class="suggestion-card">
+    <p style="font-size:11px;color:var(--text-secondary);margin-top:0">تمت مراجعة ${quickReviewReviewedCount} من ${quickReviewQueue.length}</p>
+    <p><b>#${esc(s.caseNumber)}</b> — ${esc((s.originalText||'').slice(0,90))}</p>
+    <div style="margin-top:10px"><label style="font-size:11px;color:var(--muted)">التصنيف الرئيسي</label>${buildSearchableSelect('qrMain',NEW_MAIN_CATEGORIES,mainVal,'onQrMainChangeFull')}</div>
+    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي</label><div id="qrSubWrap">${buildSearchableSelect('qrSub',NEW_TAXONOMY[mainVal]||[],subVal,null)}</div></div>
+    ${s.suggestedMain?'<p style="font-size:11px;color:var(--text-secondary);margin-top:8px">اقتراح النظام: '+esc(s.suggestedMain)+' ← '+esc(s.suggestedSub||'')+' <span class="confidence-badge '+confClass+'">'+esc(s.confidence)+'</span> — '+esc(s.reason)+'</p>':'<p style="font-size:11px;color:var(--text-secondary);margin-top:8px"><span class="confidence-badge confidence-insufficient">'+esc(s.confidence)+'</span> '+esc(s.reason)+'</p>'}
+    ${briefLines.join('')}
+    <button class="soft" style="margin-top:8px;font-size:11px" onclick="toggleQrAdvanced()">${quickReviewAdvancedOpen?'إخفاء التفاصيل الإضافية ▴':'تفاصيل إضافية ▾'}</button>
+    ${advancedHtml}
     <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
       <button class="primary" onclick="quickReviewAcceptFull()">اعتماد</button>
       <button class="soft" onclick="quickReviewSkip()">لاحقًا</button>
     </div>
   </div>`;
+}
+function toggleQrAdvanced(){
+  quickReviewAdvancedOpen=!quickReviewAdvancedOpen;
+  renderQuickReviewCard();
 }
 function onQrMainChangeFull(value){
   document.getElementById('qrSubWrap').innerHTML=buildSearchableSelect('qrSub',NEW_TAXONOMY[value]||[],'',null);
@@ -2129,17 +2157,14 @@ async function quickReviewAcceptFull(){
   if(!record){quickReviewIndex++;renderQuickReviewCard();return}
   const mainVal=sselValue('qrMain')||'يحتاج إنشاء تصنيف جديد';
   const subVal=sselValue('qrSub')||null;
-  const checkedRadio=document.querySelector('input[name="qrCaseStatus"]:checked');
   const beforeMain=record.main_category_new||null,beforeSub=record.sub_category_new||null;
+
+  // Patch جزئي: التصنيف يُحدَّث دائمًا (هو أساس المراجعة السريعة). بقية الحقول لا تُضاف للـPatch
+  // إلا إذا كانت لها قيمة حقيقية معروضة فعلًا (مكتشفة أو محفوظة سابقًا)، أو إن فتح المستخدم "تفاصيل إضافية"
+  // وعدّلها بنفسه — فلا تُكتب أبدًا قيمة فارغة أو "غير محدد" أو [] فوق بيانات قديمة لم تُلمس.
   const patch={
     main_category_new:mainVal,
     sub_category_new:subVal,
-    jurisdiction_status:sselValue('qrJurisdiction')||'غير محدد',
-    procedural_results:mclValues('qrProcedural'),
-    evidence_methods:mclValues('qrEvidence'),
-    case_progress_status:sselValue('qrProgress')||'',
-    caseStatus:checkedRadio?checkedRadio.value:(record.caseStatus||''),
-    tags_new:mclValues('qrTags'),
     legacy_main_category:record.legacy_main_category||s.oldMain,
     legacy_sub_category:record.legacy_sub_category||s.oldSub,
     classification_status:(mainVal&&mainVal!=='يحتاج إنشاء تصنيف جديد'&&subVal)?'classified':(mainVal!=='يحتاج إنشاء تصنيف جديد'?'needs_review':'unclassified'),
@@ -2148,14 +2173,36 @@ async function quickReviewAcceptFull(){
     migrationStatus:'migrated',
     updatedAt:new Date().toISOString()
   };
+
+  if(quickReviewAdvancedOpen){
+    // فُتحت "تفاصيل إضافية" — كل الحقول المتقدمة أصبحت تحت تحكّم المستخدم صراحة
+    const checkedRadio=document.querySelector('input[name="qrCaseStatus"]:checked');
+    patch.jurisdiction_status=sselValue('qrJurisdiction')||'غير محدد';
+    patch.procedural_results=mclValues('qrProcedural');
+    patch.evidence_methods=mclValues('qrEvidence');
+    patch.case_progress_status=sselValue('qrProgress')||'';
+    if(checkedRadio)patch.caseStatus=checkedRadio.value;
+    patch.tags_new=mclValues('qrTags');
+  } else {
+    // لم تُفتح التفاصيل — أضِف فقط ما كان معروضًا فعلًا كقيمة حقيقية (تأكيد ضمني عبر "اعتماد")،
+    // ولا تُضِف أي حقل لم يكن له قيمة أصلًا حتى لا يُكتب فراغ فوق بيانات محتملة لاحقًا.
+    const jurisdiction=getMeaningfulJurisdiction(record);
+    if(jurisdiction)patch.jurisdiction_status=jurisdiction;
+    const proceduralChips=[...new Set([...(record.procedural_results||[]),...(s.proceduralSuggested||[])])];
+    if(proceduralChips.length)patch.procedural_results=proceduralChips;
+    const evidenceChips=[...new Set([...(record.evidence_methods||[]),...(s.evidenceSuggested||[])])];
+    if(evidenceChips.length)patch.evidence_methods=evidenceChips;
+    // case_progress_status، caseStatus, tags_new: كانت معروضة للعلم فقط (إن وُجدت) ولم تُغيَّر — لا تُعاد كتابتها
+  }
+
   await window.__cloudUpdateCase(s.caseNumber,patch);
   Object.assign(record,patch);
-  await writeAuditLogEntry({caseNumber:s.caseNumber,oldMain:beforeMain,oldSub:beforeSub,newMain:patch.main_category_new,newSub:patch.sub_category_new,proceduralResultsAfter:patch.procedural_results,evidenceMethodsAfter:patch.evidence_methods,reason:'مراجعة كاملة يدوية عبر المراجعة السريعة',source:'manual',confidence:s.confidence});
-  quickReviewIndex++;quickReviewReviewedCount++;
+  await writeAuditLogEntry({caseNumber:s.caseNumber,oldMain:beforeMain,oldSub:beforeSub,newMain:patch.main_category_new,newSub:patch.sub_category_new,proceduralResultsAfter:patch.procedural_results||record.procedural_results||[],evidenceMethodsAfter:patch.evidence_methods||record.evidence_methods||[],reason:'مراجعة سريعة',source:'manual',confidence:s.confidence});
+  quickReviewIndex++;quickReviewReviewedCount++;quickReviewAdvancedOpen=false;
   renderQuickReviewCard();
 }
 function quickReviewSkip(){
-  quickReviewIndex++;
+  quickReviewIndex++;quickReviewAdvancedOpen=false;
   renderQuickReviewCard();
 }
 

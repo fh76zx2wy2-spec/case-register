@@ -35,6 +35,7 @@
 .ssel-list{position:absolute;z-index:20;top:calc(100% + 4px);right:0;left:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;max-height:220px;overflow-y:auto;box-shadow:0 10px 24px #2f6f5220}
 .ssel-item{padding:9px 12px;cursor:pointer;font-size:13px;color:var(--text-primary)}
 .ssel-item:hover{background:var(--mint-pale);color:var(--mint-dark)}
+.ssel-item-active{background:var(--mint-pale);color:var(--mint-dark)}
 .multichecklist{border:1px solid var(--border);border-radius:10px;padding:10px;max-height:220px;overflow-y:auto;background:var(--surface)}
 .multichecklist label{display:flex;align-items:center;gap:7px;padding:5px 3px;font-size:12.5px;color:var(--text-primary);cursor:pointer}
 .multichecklist input[type=checkbox]{accent-color:var(--mint-dark)}
@@ -837,23 +838,77 @@ function fmtDate(iso){if(!iso)return '—';try{const d=new Date(iso);return d.to
 
 /* ============================= محرك القائمة المنسدلة القابلة للبحث (Searchable Dropdown) ============================= */
 let __sselRegistry={};
+let __sselHighlight={}; // id -> فهرس الخيار المظلَّل حاليًا ضمن النتائج المعروضة (-1 = لا شيء مظلَّل)
 function buildSearchableSelect(id,options,selected,onSelectFnName){
   __sselRegistry[id]={options,onSelectFnName};
   return `<div class="ssel" id="${id}">
-    <input type="text" class="ssel-input" data-value="${esc(selected||'')}" value="${esc(selected||'')}" placeholder="اكتب للبحث..." oninput="sselFilter('${id}')" onfocus="sselFilter('${id}')">
+    <input type="text" class="ssel-input" data-value="${esc(selected||'')}" value="${esc(selected||'')}" placeholder="اكتب للبحث..." oninput="sselFilter('${id}')" onfocus="sselOpenOnFocus('${id}')" onkeydown="sselKeyNav(event,'${id}')">
     <div class="ssel-list" style="display:none"></div>
   </div>`;
 }
-function sselFilter(id){
+/* المطابقات الحالية بحسب نص استعلام مُمرَّر صراحة (لا تعتمد على input.value دائمًا، لدعم "فتح القائمة كاملة" عند التركيز) */
+function sselMatches(id,query){
   const entry=__sselRegistry[id];
-  if(!entry)return;
+  if(!entry)return[];
+  const q=norm(query||'');
+  return entry.options.map((o,i)=>({o,i})).filter(x=>norm(x.o).includes(q)).slice(0,60);
+}
+function sselRenderList(id,query,highlightIdx){
   const container=document.getElementById(id);
-  const input=container.querySelector('.ssel-input');
+  if(!container)return;
   const list=container.querySelector('.ssel-list');
-  const q=norm(input.value);
-  const matches=entry.options.map((o,i)=>({o,i})).filter(x=>norm(x.o).includes(q)).slice(0,60);
-  list.innerHTML=matches.length?matches.map(x=>`<div class="ssel-item" onmousedown="sselChooseIndex('${id}',${x.i})">${esc(x.o)}</div>`).join(''):'<div class="ssel-item" style="color:var(--text-secondary)">لا توجد نتائج مطابقة</div>';
+  const matches=sselMatches(id,query);
+  __sselHighlight[id]=(highlightIdx!=null&&highlightIdx>=0&&highlightIdx<matches.length)?highlightIdx:-1;
+  list.innerHTML=matches.length?matches.map((x,pos)=>`<div class="ssel-item${pos===__sselHighlight[id]?' ssel-item-active':''}" onmousedown="sselChooseIndex('${id}',${x.i})">${esc(x.o)}</div>`).join(''):'<div class="ssel-item" style="color:var(--text-secondary)">لا توجد نتائج مطابقة</div>';
   list.style.display='block';
+}
+/* عند الضغط/التركيز على الحقل: تفتح القائمة كاملة فورًا (حتى لو كان الحقل يحمل قيمة مختارة بالفعل)،
+   دون الحاجة لمسح النص الموجود أولًا. القيمة الموجودة لا تُعتبر فلترًا إطلاقًا حتى يكتب المستخدم بنفسه. */
+let __sselUserTyped={}; // id -> هل كتب المستخدم فعليًا منذ آخر فتح/اختيار؟
+function sselOpenOnFocus(id){
+  __sselUserTyped[id]=false;
+  sselRenderList(id,'',-1);
+}
+function sselFilter(id){
+  const container=document.getElementById(id);
+  if(!container)return;
+  __sselUserTyped[id]=true; // كتابة فعلية من المستخدم — من الآن فالبحث يعتمد على ما يكتبه
+  const input=container.querySelector('.ssel-input');
+  sselRenderList(id,input.value,-1);
+}
+function sselKeyNav(e,id){
+  const container=document.getElementById(id);
+  if(!container)return;
+  const list=container.querySelector('.ssel-list');
+  const input=container.querySelector('.ssel-input');
+  const isOpen=list.style.display==='block';
+  const effectiveQuery=__sselUserTyped[id]?input.value:''; // لا تُعتبر القيمة الموجودة فلترًا إلا بعد كتابة فعلية
+  const matches=sselMatches(id,effectiveQuery);
+  if(e.key==='ArrowDown'){
+    e.preventDefault();
+    if(!isOpen){sselRenderList(id,effectiveQuery,0);return}
+    const next=Math.min((__sselHighlight[id]!=null?__sselHighlight[id]:-1)+1,matches.length-1);
+    sselRenderList(id,effectiveQuery,next);
+    sselScrollHighlightIntoView(id);
+  } else if(e.key==='ArrowUp'){
+    e.preventDefault();
+    if(!isOpen)return;
+    const prev=Math.max((__sselHighlight[id]!=null?__sselHighlight[id]:0)-1,0);
+    sselRenderList(id,effectiveQuery,prev);
+    sselScrollHighlightIntoView(id);
+  } else if(e.key==='Enter'){
+    if(!isOpen)return;
+    e.preventDefault();
+    const idx=__sselHighlight[id];
+    if(idx!=null&&idx>=0&&idx<matches.length)sselChooseIndex(id,matches[idx].i);
+  } else if(e.key==='Escape'){
+    list.style.display='none';
+  }
+}
+function sselScrollHighlightIntoView(id){
+  const container=document.getElementById(id);
+  const active=container&&container.querySelector('.ssel-item-active');
+  if(active&&typeof active.scrollIntoView==='function')active.scrollIntoView({block:'nearest'});
 }
 function sselChooseIndex(id,idx){
   const entry=__sselRegistry[id];
@@ -862,6 +917,8 @@ function sselChooseIndex(id,idx){
   const input=container.querySelector('.ssel-input');
   input.value=value;input.dataset.value=value;
   container.querySelector('.ssel-list').style.display='none';
+  __sselHighlight[id]=-1;
+  __sselUserTyped[id]=false;
   if(entry.onSelectFnName&&typeof window[entry.onSelectFnName]==='function')window[entry.onSelectFnName](value,id);
 }
 function sselValue(id){
@@ -911,24 +968,17 @@ function runAnalysis(){
         <div><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي</label><div id="addSubWrap${i}">${buildSearchableSelect('addSub'+i,hasSuggestion?(NEW_TAXONOMY[x.main_category_new]||[]):[],hasSuggestion?x.sub_category_new:'','onAddSubChange')}</div></div>
       </div>
       <div style="margin:10px 0"><label style="font-size:11px;color:var(--muted)">الاختصاص${x.jurisdiction_status&&x.jurisdiction_status!=='غير محدد'?' <span style="color:var(--g)">— اكتُشف تلقائيًا من النص ✓</span>':''}</label>${buildSearchableSelect('addJurisdiction'+i,JURISDICTION_OPTIONS,x.jurisdiction_status||'غير محدد',null)}</div>
-      <p>${esc(x.originalText)||'لا يوجد وصف'}</p>
-      <details style="margin-top:15px"><summary style="cursor:pointer;color:var(--g)">تفاصيل إضافية (اختياري)</summary>
-        <p style="margin-top:10px">نوع القضية: <span class="typeShow">${esc(x.caseType)}</span></p>
-        <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">النتيجة / المسألة الإجرائية</label>${buildMultiChecklist('addProcedural'+i,PROCEDURAL_RESULTS,x.procedural_results)}</div>
-        <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">وسائل الإثبات</label>${buildMultiChecklist('addEvidence'+i,EVIDENCE_METHODS,x.evidence_methods)}</div>
-        <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">حالة سير القضية (اختياري)</label>${buildSearchableSelect('addProgress'+i,CASE_PROGRESS_STATUS,x.case_progress_status||'',null)}</div>
-        <div style="margin:10px 0"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px">حالة الحكم${x.caseStatus?' <span style="color:var(--g)">— اكتُشفت تلقائيًا من النص ✓</span>':''}</label>
-          <div style="display:flex;gap:8px">
-            <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
-              <input type="radio" name="caseStatus${i}" class="caseStatusRadio" value="نهائية" ${x.caseStatus==='نهائية'?'checked':''}> نهائية
-            </label>
-            <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
-              <input type="radio" name="caseStatus${i}" class="caseStatusRadio" value="قابلة للاعتراض" ${x.caseStatus==='قابلة للاعتراض'?'checked':''}> قابلة للاعتراض
-            </label>
-          </div>
+      <div id="caseStatusWrap${i}" style="margin:10px 0${hasSuggestion&&x.main_category_new===FORMAL_DEFENSES_MAIN?';display:none':''}"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px">حالة الحكم${x.caseStatus?' <span style="color:var(--g)">— اكتُشفت تلقائيًا من النص ✓</span>':''}</label>
+        <div style="display:flex;gap:8px">
+          <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
+            <input type="radio" name="caseStatus${i}" class="caseStatusRadio" value="نهائية" ${x.caseStatus==='نهائية'?'checked':''}> نهائية
+          </label>
+          <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
+            <input type="radio" name="caseStatus${i}" class="caseStatusRadio" value="قابلة للاعتراض" ${x.caseStatus==='قابلة للاعتراض'?'checked':''}> قابلة للاعتراض
+          </label>
         </div>
-        <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">الوسوم</label>${buildMultiChecklist('addTagsNew'+i,SUGGESTED_TAGS_NEW,x.tags_new||[])}</div>
-      </details></article>`;
+      </div>
+      <p>${esc(x.originalText)||'لا يوجد وصف'}</p></article>`;
     }).join('')+
     `<button class="primary save" id="btnSaveDraft" ${window.__authUid?'':'disabled'} onclick="saveDraft()">${window.__authUid?'اعتماد وحفظ سحابيًا ☁️':'سجّل الدخول أولًا لحفظ القضية سحابيًا'}</button>`;
   el.querySelectorAll('.review').forEach(card=>{
@@ -944,6 +994,15 @@ function onAddMainChange(value,id){
   document.getElementById('addSubWrap'+i).innerHTML=buildSearchableSelect('addSub'+i,NEW_TAXONOMY[value]||[],'','onAddSubChange');
   const badge=document.querySelector('.review[data-i="'+i+'"] .badge');
   if(badge){badge.textContent='🟠 اختر الفرع';badge.style.background='var(--lemon-soft)';badge.style.color='var(--lemon-text)';}
+  const statusWrap=document.getElementById('caseStatusWrap'+i);
+  if(statusWrap){
+    if(value===FORMAL_DEFENSES_MAIN){
+      statusWrap.style.display='none';
+      draft[i].caseStatus='قابلة للاعتراض'; // فروع الدفوع والنتائج الشكلية تُعتبر تلقائيًا قابلة للاعتراض
+    } else {
+      statusWrap.style.display='';
+    }
+  }
 }
 function onAddSubChange(value,id){
   const i=+id.replace('addSub','');
@@ -953,7 +1012,6 @@ function onAddSubChange(value,id){
   draft[i].classification_source='manual';
   const card=document.querySelector('.review[data-i="'+i+'"]');
   if(card){
-    card.querySelector('.typeShow').textContent=draft[i].caseType;
     const badge=card.querySelector('.badge');
     if(badge){badge.textContent='✅ اقتراح جاهز';badge.style.background='';badge.style.color='';}
   }
@@ -1116,17 +1174,18 @@ async function saveDraft(){
   const btn=document.getElementById('btnSaveDraft');
   if(btn){btn.disabled=true;btn.textContent='جارٍ الحفظ سحابيًا... ☁️';}
   setSync('جارٍ الحفظ ☁️');
-  // قراءة القيم النهائية من شاشة المراجعة بالفهرس الأصلي في draft قبل أي تصفية
+  // قراءة القيم النهائية من شاشة المراجعة بالفهرس الأصلي في draft قبل أي تصفية.
+  // ملاحظة: procedural_results وevidence_methods وcase_progress_status وtags_new لم تعد تُقرأ من نموذج
+  // الإضافة (لا توجد عناصر واجهة لها بعد حذف "تفاصيل إضافية") — تبقى كما حسبها computeNewTaxonomyFields
+  // تلقائيًا عند التحليل، دون أي استبدال بقيم فارغة.
   draft.forEach((c,i)=>{
     const mainVal=sselValue('addMain'+i)||null;
     const subVal=sselValue('addSub'+i)||null;
     c.main_category_new=mainVal||'يحتاج إنشاء تصنيف جديد';
     c.sub_category_new=subVal||null;
-    c.procedural_results=mclValues('addProcedural'+i);
-    c.evidence_methods=mclValues('addEvidence'+i);
-    c.case_progress_status=sselValue('addProgress'+i)||'';
     c.jurisdiction_status=sselValue('addJurisdiction'+i)||'غير محدد';
-    c.tags_new=mclValues('addTagsNew'+i);
+    const checkedRadio=document.querySelector(`input[name="caseStatus${i}"]:checked`);
+    if(checkedRadio)c.caseStatus=checkedRadio.value;
     if(mainVal&&subVal){
       c.classification_status='classified';
       if(!c.classification_source)c.classification_source='auto'; // بقي كما اقترحه النظام دون تعديل المستخدم
@@ -1134,6 +1193,7 @@ async function saveDraft(){
       c.classification_status=(mainVal&&mainVal!=='يحتاج إنشاء تصنيف جديد')?'needs_review':'unclassified';
       c.classification_source='auto';
     }
+    if(mainVal===FORMAL_DEFENSES_MAIN)c.caseStatus='قابلة للاعتراض'; // شبكة أمان: فروع الدفوع الشكلية قابلة للاعتراض دائمًا
   });
   const existing=new Set(records.map(x=>String(x.caseNumber)));
   const toSave=draft.filter(x=>!existing.has(String(x.caseNumber)));
@@ -1633,8 +1693,15 @@ const NEW_TAXONOMY={
 "الأشخاص والأهلية والتمثيل المدني":["انعدام الأهلية","نقص الأهلية","تصرف ناقص الأهلية","إبطال تصرف ناقص الأهلية","النيابة النظامية","تجاوز النائب حدود النيابة","النزاع في صحة التمثيل","موطن الشخص","موطن العمل","الشخص الاعتباري في الحدود الداخلة في اختصاص المحكمة","مسائل الغائب أو المفقود المدنية في الحدود الداخلة في الاختصاص"],
 "القضاء المستعجل":["معاينة لإثبات الحالة","استرداد الحيازة المستعجل","منع التعرض للحيازة","وقف الأعمال الجديدة","منع من السفر","الحراسة القضائية","أجرة الأجير اليومية","طلب مستعجل مقرر بنظام خاص","إجراء تحفظي مستعجل","طلب مستعجل آخر مقرر نظامًا"],
 };
-const NEW_MAIN_CATEGORIES=Object.keys(NEW_TAXONOMY); // مُشتقّة تلقائيًا — مصدر واحد للحقيقة، لا يمكن أن يختلف عن NEW_TAXONOMY
 const PROCEDURAL_RESULTS=["عدم الاختصاص الدولي","عدم الاختصاص الولائي","عدم الاختصاص النوعي","عدم الاختصاص المكاني","عدم الاختصاص القيمي","الإحالة للمحكمة المختصة","الإحالة لقيام نزاع سابق","الإحالة للارتباط","ضم الدعاوى","رفض الإحالة","عدم قبول الدعوى لانعدام صفة المدعي","عدم قبول الدعوى لانعدام صفة المدعى عليه","عدم قبول الدعوى لانعدام الأهلية","عدم قبول الدعوى لانعدام المصلحة","عدم قبول الدعوى لسبب إجرائي آخر","عدم قبول الطلب العارض عند انتفاء المصلحة","عدم قبول الدفع عند انتفاء المصلحة","عدم جواز نظر الدعوى لسبق الفصل فيها","حجية الحكم السابق","حجية الأمر المقضي","وجود دعوى سابقة مرتبطة","الدفع بوجود شرط تحكيم","الدفع باتفاق تحكيم","رفض الدفع بالتحكيم","التنازل عن التمسك بشرط التحكيم","الدعوى السابقة لأوانها لعدم حلول الأجل","الدعوى السابقة لأوانها لعدم تحقق الشرط","عدم استكمال إجراء سابق لازم","عدم تحقق شرط سابق لرفع الدعوى","عدم تحرير الدعوى","طلب تحرير الدعوى","غموض الطلبات","نقص بيانات الصحيفة","بطلان صحيفة الدعوى","تصحيح صحيفة الدعوى","تعديل صحيفة الدعوى","التبليغ للشخص","التبليغ الإلكتروني","التبليغ النظامي","تعذر التبليغ","بطلان التبليغ","إعادة التبليغ","عدم ثبوت التبليغ","ثبوت التبليغ","غياب المدعي","غياب المدعى عليه","غياب الطرفين","السير في الدعوى في غيبة المدعى عليه","الحكم الحضوري حكمًا بحسب الحالة","طلب إعادة التبليغ","شطب الدعوى","السير بعد الشطب","عدم السير بعد الشطب","اعتبار الدعوى كأن لم تكن متى انطبق النظام","طلب ترك الخصومة","قبول ترك الخصومة","عدم قبول ترك الخصومة","ترك إجراء من إجراءات الخصومة","التنازل عن إجراء","التنازل عن دليل","التنازل عن طلب عارض","وقف السير باتفاق الخصوم","الوقف التعليقي","وقف السير لحين الفصل في مسألة أخرى","وقف السير لحين الفصل في دعوى أخرى","انتهاء وقف السير","استئناف السير بعد الوقف","رفض طلب الوقف","انقطاع الخصومة بوفاة الخصم","انقطاع الخصومة بفقد الأهلية","انقطاع الخصومة بزوال صفة النائب","استئناف السير بعد الانقطاع","تبليغ الخلف","استمرار نظر الدعوى في مواجهة الخلف","إدخال خصم بطلب أحد الأطراف","الإدخال بأمر المحكمة","إضافة مدعى عليه","إدخال صاحب الصفة","رفض طلب الإدخال","عدم قبول الإدخال","تدخل انضمامي","تدخل هجومي","قبول التدخل","رفض التدخل","عدم قبول التدخل","تصحيح اسم الخصم","تصحيح صفة الخصم","استبدال الخصم","إضافة صاحب الصفة","استمرار الخصومة في مواجهة الخلف","تصحيح الطلب الأصلي","تعديل الطلب","طلب مكمل","طلب مترتب على الطلب الأصلي","تغيير سبب الدعوى مع بقاء الطلب","طلب وقتي","طلب تحفظي","عدم قبول الطلب العارض","طلب مقابل","مقاصة قضائية","طلب مقابل يؤدي لرفض دعوى المدعي كليًا","طلب مقابل يؤدي لرفض دعوى المدعي جزئيًا","طلب تعويض عن الدعوى","طلب تعويض عن إجراء فيها","صحة الوكالة","عدم ثبوت الوكالة","قصور الوكالة","انتهاء الوكالة","عزل الوكيل","اعتزال الوكيل","صحة تمثيل الشخص الاعتباري","عدم صحة التمثيل","عدم صلاحية القاضي","تنحي القاضي","طلب رد القاضي","قبول طلب رد القاضي","رفض طلب رد القاضي","عدم قبول طلب رد القاضي","استئناف السير بعد الفصل في طلب الرد","فتح باب المرافعة","إعادة فتح باب المرافعة","قفل باب المرافعة","حجز القضية للحكم","منح مهلة","رفض طلب المهلة","تمكين الخصم من الرد","انتهاء مهلة الرد","الاكتفاء بما قُدِّم","ندب خبير","تعيين خبير","تحديد مهمة الخبير","إيداع أتعاب الخبرة","عدم إيداع أتعاب الخبرة","رد الخبير","الاعتراض على الخبير","الاعتراض على تقرير الخبير","استكمال تقرير الخبير","خبرة إضافية","ندب خبير آخر","الأخذ بتقرير الخبير","عدم الأخذ بتقرير الخبير","طلب معاينة","الأمر بالمعاينة","إجراء المعاينة","رفض طلب المعاينة","إثبات الحالة (إجراء)","طلب توجيه يمين حاسمة","توجيه اليمين الحاسمة","قبول توجيه اليمين","رد اليمين","أداء اليمين الحاسمة","النكول عن اليمين الحاسمة","الامتناع عن اليمين الحاسمة","الرجوع عن توجيه اليمين قبل قبولها","طلب يمين متممة","توجيه اليمين المتممة","أداء اليمين المتممة","الامتناع عن اليمين المتممة","قبول الطلب المستعجل","رفض الطلب المستعجل","عدم قبول الطلب المستعجل","انتفاء الاستعجال","الإجراء التحفظي","رفع الإجراء التحفظي","تعديل الإجراء التحفظي","منع من السفر","رفع المنع من السفر","استرداد الحيازة (مستعجل)","منع التعرض للحيازة","وقف الأعمال الجديدة","إثبات الحالة (مستعجل)","الحراسة القضائية","حكم في الموضوع","إجابة الدعوى كليًا","إجابة الدعوى جزئيًا","رفض الدعوى موضوعيًا","عدم قبول الدعوى (حكم)","عدم سماع الدعوى","عدم جواز نظر الدعوى (حكم)","الحكم بعدم الاختصاص","إثبات صلح (حكم)","إثبات تنازل (حكم)","إثبات ترك الخصومة (حكم)","حكم جزئي","حكم وقتي","حكم مستعجل","حكم نهائي","حكم قابل للاعتراض","النفاذ المعجل","رفض النفاذ المعجل","تصحيح خطأ مادي في الحكم","تصحيح خطأ كتابي في الحكم","تصحيح خطأ حسابي في الحكم","رفض طلب التصحيح","تفسير الحكم","رفض طلب التفسير","الفصل في طلب مغفل","اعتراض بالاستئناف","طلب تدقيق","قبول الاعتراض شكلًا","عدم قبول الاعتراض شكلًا","فوات مدة الاعتراض","تأييد الحكم","تعديل الحكم","إلغاء الحكم","نقض الحكم كليًا","نقض الحكم جزئيًا","إعادة القضية (استئناف)","وقف التنفيذ المعجل","طلب النقض أمام المحكمة العليا","عدم قبول النقض","رفض النقض","قبول النقض","نقض الحكم كليًا أمام المحكمة العليا","نقض الحكم جزئيًا أمام المحكمة العليا","النقض للخطأ في التكييف","النقض للخطأ في الوصف","النقض لعدم الاختصاص","النقض لتشكيل المحكمة غير الصحيح","وقف التنفيذ (نقض)","إعادة القضية (نقض)","تقديم التماس إعادة النظر","قبول الالتماس شكلًا","عدم قبول الالتماس","رفض الالتماس","قبول الالتماس موضوعًا","وقف التنفيذ (التماس)","فوات مدة الالتماس","الالتماس للتزوير","الالتماس لشهادة الزور","الالتماس لظهور أوراق قاطعة","الالتماس للغش","الالتماس للحكم بما لم يُطلب","الالتماس للحكم بأكثر مما طُلب","الالتماس لتناقض المنطوق","الالتماس لعدم التمثيل الصحيح","فوات مدة الاستئناف","فوات مدة النقض","فوات مدة إجراء","سقوط حق إجرائي بفوات المدة","عدم سماع الدعوى لمرور الزمن","عدم سماع الدعوى لمدة نظامية خاصة","عدم سماع دعوى الشفعة","وقف مدة عدم السماع","انقطاع مدة عدم السماع","إيداع أتعاب الخبرة (مصاريف)","عدم إيداع أتعاب الخبرة (مصاريف)","تحميل أحد الأطراف أتعاب الخبرة","توزيع أتعاب الخبرة","استرداد أتعاب الخبرة","الحكم بأتعاب الخبرة","مصاريف الدعوى","وفاة المدعي","وفاة المدعى عليه","فقد أهلية أحد الخصوم","زوال صفة الممثل","إدخال الورثة","إدخال الخلف","استئناف السير بعد تغير حالة الخصم","تعدد المدعين","تعدد المدعى عليهم","فصل الدعوى بالنسبة لأحد الخصوم","استمرار الدعوى بالنسبة للبقية","إضافة مدعى عليه (تعدد)","إيداع مذكرة جوابية","إيداع مذكرة رد","تمكين الخصم من الرد (مذكرات)","عدم الرد في المهلة","تقديم مستندات","منح مهلة لتقديم مستند","قبول مستند متأخر","رفض مستند متأخر"];
+/* التصنيف الرئيسي الأربعون: "الدفوع والنتائج الشكلية" — فروعه المباشرة هي نفس قائمة الردود الشكلية بالضبط،
+   يظهر كتصنيف موضوعي عادي قابل للاختيار كبقية الـ39، وليس نافذة أو قسمًا منفصلًا. */
+const FORMAL_DEFENSES_MAIN='الدفوع والنتائج الشكلية';
+/* لا تُربط بكامل PROCEDURAL_RESULTS — فقط الردود الشكلية المحددة (استبعاد صريح: الخبرة، اليمين، المهل،
+   التبليغات الروتينية، الاستئناف والنقض الموضوعيان). 60 بندًا منتقاة، كلها موجودة فعليًا ضمن PROCEDURAL_RESULTS. */
+const FORMAL_DEFENSES_SUBCATS=["عدم الاختصاص الدولي","عدم الاختصاص الولائي","عدم الاختصاص النوعي","عدم الاختصاص المكاني","عدم الاختصاص القيمي","الإحالة للمحكمة المختصة","الإحالة لقيام نزاع سابق","الإحالة للارتباط","ضم الدعاوى","رفض الإحالة","عدم قبول الدعوى لانعدام صفة المدعي","عدم قبول الدعوى لانعدام صفة المدعى عليه","عدم قبول الدعوى لانعدام الأهلية","عدم قبول الدعوى لانعدام المصلحة","عدم قبول الدعوى لسبب إجرائي آخر","عدم قبول الطلب العارض عند انتفاء المصلحة","عدم قبول الدفع عند انتفاء المصلحة","عدم جواز نظر الدعوى لسبق الفصل فيها","حجية الحكم السابق","حجية الأمر المقضي","وجود دعوى سابقة مرتبطة","الدفع بوجود شرط تحكيم","الدفع باتفاق تحكيم","رفض الدفع بالتحكيم","التنازل عن التمسك بشرط التحكيم","الدعوى السابقة لأوانها لعدم حلول الأجل","الدعوى السابقة لأوانها لعدم تحقق الشرط","عدم استكمال إجراء سابق لازم","عدم تحقق شرط سابق لرفع الدعوى","عدم تحرير الدعوى","طلب تحرير الدعوى","غموض الطلبات","نقص بيانات الصحيفة","بطلان صحيفة الدعوى","تصحيح صحيفة الدعوى","تعديل صحيفة الدعوى","تعذر التبليغ","بطلان التبليغ","عدم ثبوت التبليغ","شطب الدعوى","السير بعد الشطب","عدم السير بعد الشطب","اعتبار الدعوى كأن لم تكن متى انطبق النظام","طلب ترك الخصومة","قبول ترك الخصومة","عدم قبول ترك الخصومة","ترك إجراء من إجراءات الخصومة","التنازل عن إجراء","التنازل عن دليل","التنازل عن طلب عارض","فوات مدة الاعتراض","فوات مدة الاستئناف","فوات مدة النقض","فوات مدة إجراء","سقوط حق إجرائي بفوات المدة","عدم سماع الدعوى لمرور الزمن","عدم سماع الدعوى لمدة نظامية خاصة","عدم سماع دعوى الشفعة","وقف مدة عدم السماع","انقطاع مدة عدم السماع"];
+NEW_TAXONOMY[FORMAL_DEFENSES_MAIN]=FORMAL_DEFENSES_SUBCATS;
+const NEW_MAIN_CATEGORIES=Object.keys(NEW_TAXONOMY); // مُشتقّة تلقائيًا بعد إضافة التصنيف الأربعين — مصدر واحد للحقيقة
 const CASE_PROGRESS_STATUS=["منظورة","مؤجلة","موقوفة","منقطعة","مشطوبة","متروكة","محجوزة للحكم","صدر فيها حكم","قيد الاعتراض","مؤيدة","منقوضة","معادة من الاستئناف","معادة من المحكمة العليا"];
 const JURISDICTION_OPTIONS=["مختص","عدم الاختصاص الدولي","عدم الاختصاص الولائي","عدم الاختصاص النوعي","عدم الاختصاص المكاني","عدم الاختصاص القيمي","غير محدد"];
 const EVIDENCE_METHODS=["إقرار قضائي","إقرار غير قضائي","تجزئة الإقرار","الرجوع عن الإقرار","استجواب الخصم","امتناع الخصم عن الإجابة","محرر رسمي","محرر عادي","حجية المحرر الرسمي","إنكار الخط","إنكار التوقيع","إنكار الختم","إنكار البصمة","إلزام الخصم بتقديم محرر","الامتناع عن تقديم محرر","تحقيق الخطوط","الادعاء بالتزوير","دعوى تزوير أصلية","استبعاد محرر","دليل رقمي","مراسلات إلكترونية","رسائل جوال","محادثات إلكترونية","تسجيل صوتي","بريد إلكتروني","مستخرجات رقمية","شهادة","اعتراض على شاهد","تعارض الشهادة","شهادة سماعية متى جازت نظامًا","قرائن","عرف","حجية الأمر المقضي","معاينة","خبرة","ندب خبير","تقرير خبير","اعتراض على تقرير خبير","استكمال الخبرة","خبرة إضافية","يمين حاسمة","رد اليمين","أداء اليمين","نكول عن اليمين","يمين متممة","أداء اليمين المتممة","الامتناع عنها"];
@@ -2046,7 +2113,6 @@ let reviewSelectedCaseNumbers=new Set();
 let quickReviewQueue=[];
 let quickReviewIndex=0;
 let quickReviewReviewedCount=0;
-let quickReviewAdvancedOpen=false;
 
 function computeReviewStats(){
   const active=records.filter(r=>!r.isDeleted);
@@ -2072,9 +2138,11 @@ function renderNeedsReviewBar(){
   }
 }
 function startQuickReview(){
-  const needsReviewCases=records.filter(r=>!r.isDeleted&&getClassificationState(r)!=='classified');
+  // حماية ثابتة: أي قضية اعتُمدت مراجعتها سابقًا (classification_reviewed_at موجود) تُستبعد نهائيًا من هذا الطابور،
+  // بصرف النظر عن أي شيء آخر — لا تُعاد مراجعتها أبدًا آليًا.
+  const needsReviewCases=records.filter(r=>!r.isDeleted&&!r.classification_reviewed_at&&getClassificationState(r)!=='classified');
   quickReviewQueue=needsReviewCases.map(generateReclassificationSuggestion);
-  quickReviewIndex=0;quickReviewReviewedCount=0;quickReviewAdvancedOpen=false;
+  quickReviewIndex=0;quickReviewReviewedCount=0;
   renderQuickReviewCard();
 }
 /* اختصاص "له معنى فعلي" فقط — لا "مختص" ولا "غير محدد" ولا فراغ. يُفحص أولًا في البيانات المحفوظة، ثم في النص إن لم توجد */
@@ -2102,31 +2170,14 @@ function renderQuickReviewCard(){
   const proceduralChips=[...new Set([...(record.procedural_results||[]),...(s.proceduralSuggested||[])])];
   const evidenceChips=[...new Set([...(record.evidence_methods||[]),...(s.evidenceSuggested||[])])];
 
+  // أسطر ذكية شرطية — تظهر فقط عند وجود قيمة حقيقية فعلًا، وإلا لا شيء إطلاقًا
   const briefLines=[];
-  if(jurisdiction)briefLines.push(`<p style="margin:6px 0;font-size:12.5px"><b>الاختصاص المقترح:</b> ${esc(jurisdiction)} <button class="soft" style="padding:2px 9px;font-size:10.5px;margin-inline-start:4px" onclick="toggleQrAdvanced()">تعديل</button></p>`);
+  if(jurisdiction)briefLines.push(`<p style="margin:6px 0;font-size:12.5px"><b>الاختصاص المقترح:</b> ${esc(jurisdiction)}</p>`);
   if(proceduralChips.length)briefLines.push(`<p style="margin:6px 0;font-size:12.5px"><b>النتيجة الإجرائية:</b> <span class="chipsline" style="display:inline-flex;vertical-align:middle">${proceduralChips.map(p=>'<span>'+esc(p)+'</span>').join('')}</span></p>`);
   if(evidenceChips.length)briefLines.push(`<p style="margin:6px 0;font-size:12.5px"><b>وسائل الإثبات:</b> <span class="chipsline" style="display:inline-flex;vertical-align:middle">${evidenceChips.map(p=>'<span>'+esc(p)+'</span>').join('')}</span></p>`);
   if(record.case_progress_status)briefLines.push(`<p style="margin:6px 0;font-size:12.5px"><b>حالة سير القضية:</b> ${esc(record.case_progress_status)}</p>`);
   if(record.caseStatus)briefLines.push(`<p style="margin:6px 0;font-size:12.5px"><b>حالة الحكم:</b> ${esc(record.caseStatus)}</p>`);
   if((record.tags_new||[]).length)briefLines.push(`<p style="margin:6px 0;font-size:12.5px"><b>الوسوم:</b> ${(record.tags_new||[]).map(esc).join('، ')}</p>`);
-
-  const advancedHtml=`<div id="qrAdvancedWrap" style="${quickReviewAdvancedOpen?'':'display:none'};margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
-    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">الاختصاص</label>${buildSearchableSelect('qrJurisdiction',JURISDICTION_OPTIONS,record.jurisdiction_status||'غير محدد',null)}</div>
-    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">النتيجة / المسألة الإجرائية</label>${buildMultiChecklist('qrProcedural',PROCEDURAL_RESULTS,proceduralChips)}</div>
-    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">وسائل الإثبات</label>${buildMultiChecklist('qrEvidence',EVIDENCE_METHODS,evidenceChips)}</div>
-    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">حالة سير القضية</label>${buildSearchableSelect('qrProgress',CASE_PROGRESS_STATUS,record.case_progress_status||'',null)}</div>
-    <div style="margin:10px 0"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px">حالة الحكم</label>
-      <div style="display:flex;gap:8px">
-        <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
-          <input type="radio" name="qrCaseStatus" value="نهائية" ${record.caseStatus==='نهائية'?'checked':''}> نهائية
-        </label>
-        <label style="flex:1;display:flex;align-items:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
-          <input type="radio" name="qrCaseStatus" value="قابلة للاعتراض" ${record.caseStatus==='قابلة للاعتراض'?'checked':''}> قابلة للاعتراض
-        </label>
-      </div>
-    </div>
-    <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">الوسوم</label>${buildMultiChecklist('qrTags',SUGGESTED_TAGS_NEW,record.tags_new||[])}</div>
-  </div>`;
 
   bar.innerHTML=`<div class="suggestion-card">
     <p style="font-size:11px;color:var(--text-secondary);margin-top:0">تمت مراجعة ${quickReviewReviewedCount} من ${quickReviewQueue.length}</p>
@@ -2135,17 +2186,11 @@ function renderQuickReviewCard(){
     <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">التصنيف الفرعي</label><div id="qrSubWrap">${buildSearchableSelect('qrSub',NEW_TAXONOMY[mainVal]||[],subVal,null)}</div></div>
     ${s.suggestedMain?'<p style="font-size:11px;color:var(--text-secondary);margin-top:8px">اقتراح النظام: '+esc(s.suggestedMain)+' ← '+esc(s.suggestedSub||'')+' <span class="confidence-badge '+confClass+'">'+esc(s.confidence)+'</span> — '+esc(s.reason)+'</p>':'<p style="font-size:11px;color:var(--text-secondary);margin-top:8px"><span class="confidence-badge confidence-insufficient">'+esc(s.confidence)+'</span> '+esc(s.reason)+'</p>'}
     ${briefLines.join('')}
-    <button class="soft" style="margin-top:8px;font-size:11px" onclick="toggleQrAdvanced()">${quickReviewAdvancedOpen?'إخفاء التفاصيل الإضافية ▴':'تفاصيل إضافية ▾'}</button>
-    ${advancedHtml}
     <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
       <button class="primary" onclick="quickReviewAcceptFull()">اعتماد</button>
       <button class="soft" onclick="quickReviewSkip()">لاحقًا</button>
     </div>
   </div>`;
-}
-function toggleQrAdvanced(){
-  quickReviewAdvancedOpen=!quickReviewAdvancedOpen;
-  renderQuickReviewCard();
 }
 function onQrMainChangeFull(value){
   document.getElementById('qrSubWrap').innerHTML=buildSearchableSelect('qrSub',NEW_TAXONOMY[value]||[],'',null);
@@ -2159,9 +2204,8 @@ async function quickReviewAcceptFull(){
   const subVal=sselValue('qrSub')||null;
   const beforeMain=record.main_category_new||null,beforeSub=record.sub_category_new||null;
 
-  // Patch جزئي: التصنيف يُحدَّث دائمًا (هو أساس المراجعة السريعة). بقية الحقول لا تُضاف للـPatch
-  // إلا إذا كانت لها قيمة حقيقية معروضة فعلًا (مكتشفة أو محفوظة سابقًا)، أو إن فتح المستخدم "تفاصيل إضافية"
-  // وعدّلها بنفسه — فلا تُكتب أبدًا قيمة فارغة أو "غير محدد" أو [] فوق بيانات قديمة لم تُلمس.
+  // Patch جزئي: التصنيف يُحدَّث دائمًا. بقية الحقول لا تُضاف للـPatch إلا إذا كانت لها قيمة حقيقية
+  // معروضة فعلًا (مكتشفة أو محفوظة سابقًا) — فلا تُكتب أبدًا قيمة فارغة أو "غير محدد" أو [] فوق بيانات لم تُلمس.
   const patch={
     main_category_new:mainVal,
     sub_category_new:subVal,
@@ -2173,36 +2217,23 @@ async function quickReviewAcceptFull(){
     migrationStatus:'migrated',
     updatedAt:new Date().toISOString()
   };
-
-  if(quickReviewAdvancedOpen){
-    // فُتحت "تفاصيل إضافية" — كل الحقول المتقدمة أصبحت تحت تحكّم المستخدم صراحة
-    const checkedRadio=document.querySelector('input[name="qrCaseStatus"]:checked');
-    patch.jurisdiction_status=sselValue('qrJurisdiction')||'غير محدد';
-    patch.procedural_results=mclValues('qrProcedural');
-    patch.evidence_methods=mclValues('qrEvidence');
-    patch.case_progress_status=sselValue('qrProgress')||'';
-    if(checkedRadio)patch.caseStatus=checkedRadio.value;
-    patch.tags_new=mclValues('qrTags');
-  } else {
-    // لم تُفتح التفاصيل — أضِف فقط ما كان معروضًا فعلًا كقيمة حقيقية (تأكيد ضمني عبر "اعتماد")،
-    // ولا تُضِف أي حقل لم يكن له قيمة أصلًا حتى لا يُكتب فراغ فوق بيانات محتملة لاحقًا.
-    const jurisdiction=getMeaningfulJurisdiction(record);
-    if(jurisdiction)patch.jurisdiction_status=jurisdiction;
-    const proceduralChips=[...new Set([...(record.procedural_results||[]),...(s.proceduralSuggested||[])])];
-    if(proceduralChips.length)patch.procedural_results=proceduralChips;
-    const evidenceChips=[...new Set([...(record.evidence_methods||[]),...(s.evidenceSuggested||[])])];
-    if(evidenceChips.length)patch.evidence_methods=evidenceChips;
-    // case_progress_status، caseStatus, tags_new: كانت معروضة للعلم فقط (إن وُجدت) ولم تُغيَّر — لا تُعاد كتابتها
-  }
+  const jurisdiction=getMeaningfulJurisdiction(record);
+  if(jurisdiction)patch.jurisdiction_status=jurisdiction;
+  const proceduralChips=[...new Set([...(record.procedural_results||[]),...(s.proceduralSuggested||[])])];
+  if(proceduralChips.length)patch.procedural_results=proceduralChips;
+  const evidenceChips=[...new Set([...(record.evidence_methods||[]),...(s.evidenceSuggested||[])])];
+  if(evidenceChips.length)patch.evidence_methods=evidenceChips;
+  // حالة سير القضية والوسوم: كانت معروضة للعلم فقط إن وُجدت — لا تُعاد كتابتها هنا
+  if(mainVal===FORMAL_DEFENSES_MAIN)patch.caseStatus='قابلة للاعتراض'; // فروع الدفوع والنتائج الشكلية قابلة للاعتراض تلقائيًا
 
   await window.__cloudUpdateCase(s.caseNumber,patch);
   Object.assign(record,patch);
   await writeAuditLogEntry({caseNumber:s.caseNumber,oldMain:beforeMain,oldSub:beforeSub,newMain:patch.main_category_new,newSub:patch.sub_category_new,proceduralResultsAfter:patch.procedural_results||record.procedural_results||[],evidenceMethodsAfter:patch.evidence_methods||record.evidence_methods||[],reason:'مراجعة سريعة',source:'manual',confidence:s.confidence});
-  quickReviewIndex++;quickReviewReviewedCount++;quickReviewAdvancedOpen=false;
+  quickReviewIndex++;quickReviewReviewedCount++;
   renderQuickReviewCard();
 }
 function quickReviewSkip(){
-  quickReviewIndex++;quickReviewAdvancedOpen=false;
+  quickReviewIndex++;
   renderQuickReviewCard();
 }
 
@@ -2269,9 +2300,13 @@ async function keepCurrentClassification(caseNumber){
   closeReport();renderCases();
 }
 
-/* إعادة تدقيق جميع التصنيفات — أداة صيانة (الإعدادات ← أدوات متقدمة)، قراءة فقط، بلا تغيير آلي */
+/* إعادة تدقيق جميع التصنيفات — أداة صيانة (الإعدادات ← أدوات متقدمة)، قراءة فقط، بلا تغيير آلي.
+   القضايا التي لديها classification_reviewed_at (اعتُمدت مراجعتها يدويًا سابقًا) تُستبعد نهائيًا من الفحص
+   نفسه — لا تُحسب، ولا تُفحص، ولا تظهر في أي اقتراح لاحق. */
 async function runFullReaudit(){
-  const active=records.filter(r=>!r.isDeleted);
+  const allActive=records.filter(r=>!r.isDeleted);
+  const active=allActive.filter(r=>!r.classification_reviewed_at);
+  const alreadyReviewedCount=allActive.length-active.length;
   const suggestions=active.map(generateReclassificationSuggestion);
   const looksCorrect=suggestions.filter(s=>s.alreadyCorrect).length;
   const needsChange=suggestions.filter(s=>!s.alreadyCorrect&&s.suggestedMain).length;
@@ -2286,7 +2321,7 @@ async function runFullReaudit(){
       <div class="card" style="margin:0"><div style="font-size:22px;color:var(--lemon-text);font-weight:700">${needsChange}</div><div style="font-size:11px;color:var(--text-secondary)">يُقترح تغييرها</div></div>
       <div class="card" style="margin:0"><div style="font-size:22px;color:#b5564a;font-weight:700">${insufficient}</div><div style="font-size:11px;color:var(--text-secondary)">لا توجد معلومات كافية</div></div>
     </div>
-    <p style="font-size:11px;color:var(--text-secondary)">لم يتغيّر أي تصنيف. القضايا التي يُقترح تغييرها أو تحتاج معلومات أُضيفت إلى تبويب "تحتاج مراجعة" في صفحة القضايا.</p>
+    <p style="font-size:11px;color:var(--text-secondary)">لم يتغيّر أي تصنيف. تم استبعاد ${alreadyReviewedCount} قضية سبق اعتماد مراجعتها يدويًا من الفحص تمامًا. القضايا التي يُقترح تغييرها أو تحتاج معلومات أُضيفت إلى تبويب "تحتاج مراجعة" في صفحة القضايا.</p>
     <div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end">
       <button class="soft" onclick="closeReport()">إغلاق</button>
       <button class="primary" onclick="closeReport();goToNeedsReviewTab()">مراجعة الـ${needsChange+insufficient} قضية</button>
@@ -2404,7 +2439,7 @@ function renderCaseDetail(r){
         <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">النتيجة / المسألة الإجرائية</label>${buildMultiChecklist('dfProcedural',PROCEDURAL_RESULTS,d.procedural_results)}</div>
         <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">وسائل الإثبات</label>${buildMultiChecklist('dfEvidenceMethods',EVIDENCE_METHODS,d.evidence_methods)}</div>
         <div style="grid-column:1/-1"><label style="font-size:11px;color:var(--muted)">حالة سير القضية</label>${buildSearchableSelect('dfProgress',CASE_PROGRESS_STATUS,d.case_progress_status||'',null)}</div>
-        <div><label style="font-size:11px;color:var(--muted)">حالة الحكم</label><select id="dfStatus" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px">
+        <div id="dfStatusWrap" style="${d.main_category_new===FORMAL_DEFENSES_MAIN?'display:none':''}"><label style="font-size:11px;color:var(--muted)">حالة الحكم</label><select id="dfStatus" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px">
           <option value="" ${!d.caseStatus?'selected':''}>غير محددة</option>
           <option value="نهائية" ${d.caseStatus==='نهائية'?'selected':''}>نهائية</option>
           <option value="قابلة للاعتراض" ${d.caseStatus==='قابلة للاعتراض'?'selected':''}>غير نهائية / قابلة للاعتراض</option>
@@ -2420,6 +2455,8 @@ function renderCaseDetail(r){
 }
 function onDfMainNewChange(value){
   document.getElementById('dfSubNewWrap').innerHTML=buildSearchableSelect('dfSubNew',NEW_TAXONOMY[value]||[],'',null);
+  const statusWrap=document.getElementById('dfStatusWrap');
+  if(statusWrap)statusWrap.style.display=(value===FORMAL_DEFENSES_MAIN)?'none':'';
 }
 
 function enterCaseEditMode(){
@@ -2471,7 +2508,7 @@ async function saveCaseReview(caseNumber){
   const classified=!!(newMain&&newMain!=='يحتاج إنشاء تصنيف جديد'&&newSub);
   const patch={
     originalText:document.getElementById('dfText').value,
-    caseStatus:document.getElementById('dfStatus').value,
+    caseStatus:newMain===FORMAL_DEFENSES_MAIN?'قابلة للاعتراض':document.getElementById('dfStatus').value,
     main_category_new:newMain,
     sub_category_new:newSub,
     procedural_results:mclValues('dfProcedural'),

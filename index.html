@@ -92,8 +92,6 @@
 .acct{display:flex;align-items:center;gap:8px}.acct img{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--mint)}.syncbadge{background:var(--mint-soft);color:var(--mint-dark);border:1px solid var(--mint-soft);border-radius:20px;padding:4px 9px;font-size:10.5px;font-weight:500}
 @media(max-width:760px){.app{display:block}.side{display:none}.main{padding:0 15px 85px}.top{justify-content:center;flex-wrap:wrap;height:auto;padding:10px 0;gap:8px}.page{margin-top:20px}.hero h1{font-size:34px}.grid{grid-template-columns:1fr}.mobile{position:fixed;display:flex;bottom:0;left:0;right:0;height:65px;background:var(--surface);border-top:1px solid var(--border);justify-content:space-around;z-index:5}.mobile button{border:0;background:none;color:var(--text-secondary);font-family:inherit}.mobile button.active{color:var(--mint-dark);font-weight:700}.hijriBar{font-size:10.5px}}
 </style></head>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.11.0/mammoth.browser.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/docx@9.7.1/dist/index.umd.cjs"></script>
 <body><div class="islamic-deco corner-tl" aria-hidden="true"><svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
 <circle cx="110" cy="110" r="96" fill="none" stroke="currentColor" stroke-width="0.6"/>
 <circle cx="110" cy="110" r="14" fill="none" stroke="currentColor" stroke-width="0.6"/>
@@ -163,18 +161,35 @@ const THEMES=[
   {key:'slate-gold',label:'الأردوازي والذهبي',dots:['#3F4A59','#586473','#C6A86A']},
   {key:'mint-lemon',label:'الليمون والنعناع',dots:['#2F6F52','#73B98A','#F2DC5D']}
 ];
-const THEME_STORAGE_KEY='diwanThemeV1';
+const THEME_STORAGE_KEY='case-register:theme';
+const LEGACY_THEME_STORAGE_KEY='diwanThemeV1';
 function themeStorageKey(){
   // نحاول أولًا مفتاحًا خاصًا بالمستخدم المسجَّل إن وُجد، دون أي كتابة لـFirestore — محليًا فقط
   return (window.__authUid?THEME_STORAGE_KEY+':'+window.__authUid:THEME_STORAGE_KEY);
 }
+function migrateLegacyThemeValue(newKey,legacyKey){
+  const current=localStorage.getItem(newKey);
+  if(current!==null){
+    localStorage.removeItem(legacyKey);
+    return current;
+  }
+  const legacy=localStorage.getItem(legacyKey);
+  if(legacy!==null){
+    localStorage.setItem(newKey,legacy);
+    localStorage.removeItem(legacyKey);
+  }
+  return legacy;
+}
 function loadSavedTheme(){
   try{
     if(window.__authUid){
-      const u=localStorage.getItem(THEME_STORAGE_KEY+':'+window.__authUid);
+      const u=migrateLegacyThemeValue(
+        THEME_STORAGE_KEY+':'+window.__authUid,
+        LEGACY_THEME_STORAGE_KEY+':'+window.__authUid
+      );
       if(u)return u;
     }
-    return localStorage.getItem(THEME_STORAGE_KEY)||'navy-gold';
+    return migrateLegacyThemeValue(THEME_STORAGE_KEY,LEGACY_THEME_STORAGE_KEY)||'navy-gold';
   }catch(e){return 'navy-gold';}
 }
 function applyTheme(key,skipSave){
@@ -215,6 +230,30 @@ if(typeof document!=='undefined')document.addEventListener('click',e=>{
 applyTheme(loadSavedTheme(),true); // تطبيق فوري عند تحميل الصفحة — قبل أي اتصال بـFirebase، وقبل معرفة حالة تسجيل الدخول
 
 let records=[],draft=[];
+const WORD_LIBRARY_URLS={
+  mammoth:'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.11.0/mammoth.browser.min.js',
+  docx:'https://cdn.jsdelivr.net/npm/docx@9.7.1/dist/index.umd.cjs'
+};
+const wordLibraryPromises=new Map();
+function loadWordLibrary(globalName){
+  if(window[globalName])return Promise.resolve(window[globalName]);
+  if(wordLibraryPromises.has(globalName))return wordLibraryPromises.get(globalName);
+  const promise=new Promise((resolve,reject)=>{
+    const script=document.createElement('script');
+    script.src=WORD_LIBRARY_URLS[globalName];
+    script.async=true;
+    script.onload=()=>window[globalName]
+      ?resolve(window[globalName])
+      :reject(new Error('تم تحميل الملف لكن المكتبة لم تبدأ بصورة صحيحة'));
+    script.onerror=()=>reject(new Error('تعذّر تنزيل مكتبة Word'));
+    document.head.appendChild(script);
+  }).catch(err=>{
+    wordLibraryPromises.delete(globalName); // يسمح بمحاولة جديدة بعد عودة الاتصال
+    throw err;
+  });
+  wordLibraryPromises.set(globalName,promise);
+  return promise;
+}
 /* =====================================================================
    محرك تصنيف بالنقاط (Scoring) بدل أول تطابق (rules.find)
    كل تصنيف فرعي (CATS) له:
@@ -1484,10 +1523,10 @@ async function handleWordFile(event){
   const file=event.target.files[0];
   event.target.value='';
   if(!file)return;
-  if(typeof mammoth==='undefined'){alert('تعذّر تحميل مكتبة قراءة ملفات Word. تأكد من اتصالك بالإنترنت وأعد المحاولة.');return}
   try{
+    const mammothApi=await loadWordLibrary('mammoth');
     const arrayBuffer=await file.arrayBuffer();
-    const result=await mammoth.convertToHtml({arrayBuffer});
+    const result=await mammothApi.convertToHtml({arrayBuffer});
     const parsed=parseDocxTable(result.value);
     if(!parsed.rows.length){alert('لم يتم العثور على جدول صالح داخل الملف، أو الجدول فارغ بالكامل.');return}
     const preview=buildImportPreview(parsed.rows);
@@ -1496,7 +1535,7 @@ async function handleWordFile(event){
     renderWordImportPreview(preview,parsed);
   }catch(err){
     console.error(err);
-    alert('تعذّرت قراءة الملف: '+(err.message||err));
+    alert('تعذّر تحميل أو قراءة ملف Word. تأكد من اتصالك بالإنترنت ثم أعد المحاولة.\n'+(err.message||err));
   }
 }
 
@@ -2082,10 +2121,17 @@ function exportCaseNumbersTxt(){
 
 /* ============================= تصدير إلى Word (.docx) — يحترم البحث والفلاتر والتحديد ============================= */
 async function exportToWord(){
-  if(typeof docx==='undefined'){alert('تعذّر تحميل مكتبة إنشاء ملفات Word. تأكد من اتصالك بالإنترنت وأعد المحاولة.');return}
   const rows=getExportScopeRows();
   if(!rows.length){alert('لا توجد قضايا لتصديرها بالفلتر أو التحديد الحالي.');return}
-  const {Document,Packer,Paragraph,Table,TableRow,TableCell,TextRun,WidthType}=docx;
+  let docxApi;
+  try{
+    docxApi=await loadWordLibrary('docx');
+  }catch(err){
+    console.error(err);
+    alert('تعذّر تحميل مكتبة إنشاء ملفات Word. تأكد من اتصالك بالإنترنت ثم أعد المحاولة.');
+    return;
+  }
+  const {Document,Packer,Paragraph,Table,TableRow,TableCell,TextRun,WidthType}=docxApi;
   const headerRow=new TableRow({children:['رقم القضية','نوع/وصف القضية','الاختصاص','الحالة','شهر الأرشفة'].map(h=>
     new TableCell({children:[new Paragraph({children:[new TextRun({text:h,bold:true})]})]})
   )});
@@ -2604,6 +2650,22 @@ function deleteCustomCategory(main,sub){
 }
 function newCase(){document.getElementById('search').value='';draft=[];document.getElementById('preview').innerHTML='';show('home')}
 function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===id));if(id==='cases')renderCases();if(id==='trash')renderTrash();if(id==='taxonomy')renderTree();if(id==='dashboard')renderDashboard()}
+function renderActivePage(){
+  const active=document.querySelector('.page.active');
+  const id=active?active.id:'dashboard';
+  if(id==='cases')renderCases();
+  else if(id==='trash')renderTrash();
+  else if(id==='taxonomy')renderTree();
+  else if(id==='dashboard')renderDashboard();
+}
+let activePageRenderFrame=0;
+function scheduleActivePageRender(){
+  if(activePageRenderFrame)return;
+  activePageRenderFrame=requestAnimationFrame(()=>{
+    activePageRenderFrame=0;
+    renderActivePage();
+  });
+}
 function initNav(where){document.getElementById(where).innerHTML=navItems.map(x=>`<button data-page="${x[0]}" onclick="show('${x[0]}')">${x[1]}</button>`).join('')}
 function setSync(text){const l=document.getElementById('syncLine');if(l)l.textContent=text;}
 initNav('nav');initNav('mobile');show('dashboard');
@@ -2671,7 +2733,7 @@ function renderSignedOutUI(){
   syncLine.textContent='غير مسجَّل الدخول';
   window.__authUid = null;
   if(typeof records!=='undefined'){records.length=0;}
-  if(typeof renderCases==='function'){renderCases();renderTrash();renderTree();}
+  if(typeof scheduleActivePageRender==='function')scheduleActivePageRender();
 }
 function renderSignedInUI(user){
   const html = '<div class="acct">'+(user.photoURL?'<img src="'+user.photoURL+'">':'')+
@@ -2743,9 +2805,7 @@ if(!configLooksReal){
       unsub = onSnapshot(collection(db,'users',user.uid,'cases'), snap => {
         const list = snap.docs.map(d=>d.data());
         if(typeof records!=='undefined'){records.length=0;records.push(...list);}
-        if(typeof renderCases==='function'){renderCases();renderTrash();renderTree();}
-        if(typeof renderDashboard==='function')renderDashboard();
-        if(typeof runHijriMigrationSilently==='function')runHijriMigrationSilently();
+        if(typeof scheduleActivePageRender==='function')scheduleActivePageRender();
         syncLine.textContent='تم الحفظ ☁️ — آخر مزامنة الآن';
       }, err => { console.error(err); syncLine.textContent='تعذّر تحميل القضايا ⚠️'; });
       unsubCats = onSnapshot(doc(db,'users',user.uid,'settings','customCategories'), snap => {
